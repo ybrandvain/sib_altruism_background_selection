@@ -1,0 +1,242 @@
+//  (f$)genomicHeterozygosity(o<Genome>$ genome1, o<Genome>$ genome2)
+//  (f$)subpopHeterozygosity(o<Subpopulation>$ subpop, [i$ sampleSize=100])
+//
+//  Calculate average nucleotide heterozygosity for a pair of genomes,
+//  or for a subpopulation (using a sample of individuals).
+
+//  Created by Ben Haller on 10/24/2017.
+//  A product of the Messer Lab, http://messerlab.org/slim/
+
+/*
+
+Ben Haller and Philipp Messer, the authors of this code, hereby place the code in this file into the public domain without restriction.  If you use this code, please credit SLiM-Extras and provide a link to the SLiM-Extras repository at https://github.com/MesserLab/SLiM-Extras.  Thank you.
+
+*/
+
+
+/*
+
+  Given two haploid genomes, the number of segregating sites between the two, divided by the length of the chromosome, is pi, the average nucleotide heterozygosity, which is the standard measure for the genetic diversity in a population.  The expected value of pi is 4*Ne*mu for a pure neutral model.
+
+  Note that this function assumes that L is a defined constant, the length of the chromosome; if you don't want to define that constant, you will need to pass in the chromosome length as a parameter instead.
+
+MODIFIED
+
+*/
+function (f$)genomicHeterozygosity(o<Genome>$ genome1, o<Genome>$ genome2, o<MutationType>$ m)
+{
+	muts1 = genome1.mutations[genome1.mutations.mutationType == m];
+	muts2 = genome2.mutations[genome2.mutations.mutationType == m];
+	unshared = setSymmetricDifference(muts1, muts2);
+	pi = size(unshared) / 100000;
+	return pi;
+}
+
+/*
+
+  Estimate the average nucleotide heterozygosity in a subpopulation by sampling individuals at random and averaging the heterozygosity of all of the individuals sampled.  Note that this function normally uses a sample of individuals, of a size supplied in the optional parameter sampleSize; but if sampleSize is equal to the number of individuals in subpop, it will instead compute the heterozygosity exactly, as the mean of the heterozygosities of all individuals, rather than taking a sample.  For large subpopulations, that will of course be much slower than using a sample, however.
+
+*/
+function (f$)subpopHeterozygosity(o<Subpopulation>$ subpop, o<MutationType>$m, [i$ sampleSize=100])
+{
+	if (sampleSize == subpop.individualCount)
+		sampledIndividuals = subpop.individuals;
+	else
+		sampledIndividuals = sample(subpop.individuals, sampleSize, replace=T);
+	
+	pi_total = 0;
+	for (individual in sampledIndividuals)
+	{
+		genomes = individual.genomes;
+		individual_pi = genomicHeterozygosity(genomes[0], genomes[1], m);
+		pi_total = pi_total + individual_pi;
+	}
+	return pi_total / sampleSize;
+}
+
+//INITIALIZE
+initialize() {
+	initializeSLiMModelType("nonWF");
+	
+	//carrying capacity
+	defineConstant("K", 1000);
+	//starting population size
+	defineConstant("popSize", 1000);
+		
+	//fitness
+	defineConstant("fitness", f / 1000);
+	
+	//other
+	//defineConstant("replicate", 1);
+	defineConstant("cost", c / 1000);
+	defineConstant("benefit", b / 1000);
+	
+	defineConstant("seedPath", paste(c("seeds/seed_",
+														fitness,
+														"_",
+														iter,
+														".txt"),
+													sep = ""));
+	
+	// m1 mutation type: altruistic
+	initializeMutationType("m1", 0.5, "f", 0.0);
+	m1.convertToSubstitution = F;
+
+	// m2 mutation type: neutral
+	initializeMutationType("m2", 0.5, "f", 0.0);
+	m2.convertToSubstitution = F;
+	
+	// m3 mutation type: negative
+	initializeMutationType("m3", 0.5, "f", fitness);
+	m3.convertToSubstitution = F;
+	
+	// g1 genomic element type
+	initializeGenomicElementType("g1", c(m2, m3), c(1.0, 1.0));
+	
+	// uniform chromosome of length 100 kb with uniform recombination
+	initializeGenomicElement(g1, 0, 99999);
+	
+	initializeRecombinationRate(1e-8);
+	
+	initializeMutationRate(1e-7);
+}
+
+reproduction() {
+
+	// randomize the order of p1.individuals
+	parents = sample(p1.individuals, p1.individualCount);
+	
+	// draw monogamous pairs and generate litters
+	for (i in seq(0, p1.individualCount - 2, by=2)){
+		parent1 = parents[i];
+		parent2 = parents[i + 1];
+		
+		//fill litter with random individuals
+		litter = matrix(p1.individuals[1:litterSize], litterSize);
+		
+		for (j in seqLen(litterSize)){
+			child = p1.addCrossed(parent1, parent2);
+			child.tagF = 0;
+			litter[j] = child;
+		}
+			
+		//have two siblings interact
+		ind1 = sample(litter, 1);
+
+		do{
+			ind2 = sample(litter, 1);
+		} while(ind1 == ind2);
+			
+		// altruism is dominant
+		ind1m1 = ind1.countOfMutationsOfType(m1);
+		ind2m1 = ind2.countOfMutationsOfType(m1);
+		if(ind1m1 > 0){
+			ind1.tagF = ind1.tagF - cost;
+			ind2.tagF = ind2.tagF + benefit;
+		}
+		
+		if(ind2m1 > 0){
+			ind2.tagF = ind2.tagF - cost;
+			ind1.tagF = ind1.tagF + benefit;
+			
+		}
+	}
+
+	// disable this callback for this generation
+	self.active = 0;
+}
+fitness(NULL){
+	return (1.0 + individual.tagF);
+}
+
+
+1 {
+	print(paste(c("\tfitness: ", fitness, "\tbenefit: ", benefit, "\treplicate: ", replicate)));
+
+	if(!makeSeeds){
+		sim.readFromPopulationFile(seedPath);
+		sim.subpopulations.individuals.tagF = 0.0;
+		sim.generation = 4999;
+	}
+	else{
+		sim.addSubpop("p1", popSize);
+		p1.individuals.tagF = 0;
+	}
+}
+
+4999 early(){
+	if(makeSeeds){
+		sim.outputFull(seedPath);
+		sim.simulationFinished();
+	}
+}
+
+5000 early(){
+	target = sample(p1.genomes, 1);
+	target.addNewDrawnMutation(m1, 1000);
+}
+
+early() {
+	//age table
+	old = p1.individuals[p1.individuals.age >= 1];
+	old.fitnessScaling = 0;
+	
+	//first only consider individuals who aren't meant to die yet
+	adjustedPopulationSize = p1.individualCount - length(old);
+	//then adjust survival for carrying capacity, K
+	p1.fitnessScaling = K / adjustedPopulationSize;
+}
+
+
+late() {
+	if(sim.generation >= 5000){
+		sumM1 = sum(sim.subpopulations.individuals.countOfMutationsOfType(m1));
+		percentM1 = sumM1 / (sum(sim.subpopulations.individualCount) * 2);
+		
+		//get status
+		status = "NONE";
+		
+		if(percentM1 == 0){
+			status = "lost";
+		}
+		else if(percentM1 == 1){
+			status = "fixed";
+		}
+		else if(!(sim.generation % 10)){
+			//status = "ongoing"; //removed to save space
+		}
+		
+		if(status != "NONE"){
+			//write to file
+			writeFile(
+				outputPath,
+				paste(
+					c(
+						sim.generation,
+						fitness,
+						cost,
+						benefit,
+						litterSize,
+						sum(sim.subpopulations.individualCount),
+						length(unique(p1.genomes.mutations[p1.genomes.mutations.mutationType == m2])),
+						subpopHeterozygosity(p1, m2),
+						percentM1,
+						status,
+						replicate,
+						seedPath
+					),
+					sep = ","),
+				append = T);
+			
+			if(status != "ongoing"){
+				sim.simulationFinished();
+			}
+
+		}
+		
+	}
+}
+
+25000 late() {
+	sim.simulationFinished();
+}

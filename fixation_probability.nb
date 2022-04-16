@@ -1,0 +1,2847 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 12.3' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[    155439,       2839]
+NotebookOptionsPosition[    151284,       2763]
+NotebookOutlinePosition[    151737,       2781]
+CellTagsIndexPosition[    151694,       2778]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell[BoxData[
+ RowBox[{"SetDirectory", "[", 
+  RowBox[{"NotebookDirectory", "[", "]"}], "]"}]], "Input",
+ CellChangeTimes->{{3.8538940721412487`*^9, 3.853894080058063*^9}},
+ CellLabel->"In[1]:=",ExpressionUUID->"17845039-9e0c-4fd5-bf28-15f42445562d"],
+
+Cell[BoxData["\<\"/Users/vancleve/science/projects/background_selection_\
+cooperation_thomsom_brandvain\"\>"], "Output",
+ CellChangeTimes->{3.853894080480987*^9, 3.853963792865745*^9, 
+  3.858440909854944*^9},
+ CellLabel->"Out[1]=",ExpressionUUID->"9d2ed6df-9b44-4fcd-9545-9b315689db6a"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Fixation probability with dominance: Ewens (2004) 3.30", "Subsubsection",
+ CellChangeTimes->{{3.833909268386176*^9, 3.833909274287817*^9}, {
+  3.833909314068248*^9, 
+  3.833909319755455*^9}},ExpressionUUID->"f3fb7c69-5da4-4d13-bb27-\
+1b2c28622367"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"G", "[", 
+   RowBox[{"x_", ",", "n_", ",", "s_", ",", "h_"}], "]"}], ":=", 
+  RowBox[{"Exp", "[", 
+   RowBox[{
+    RowBox[{"-", "2"}], " ", "n", " ", "s", " ", "x", 
+    RowBox[{"(", 
+     RowBox[{
+      RowBox[{"2", "h"}], "+", 
+      RowBox[{"x", 
+       RowBox[{"(", 
+        RowBox[{"1", "-", 
+         RowBox[{"2", "h"}]}], ")"}]}]}], ")"}]}], 
+   "]"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"PInt", "[", 
+   RowBox[{
+    RowBox[{"p0_", "?", "NumericQ"}], ",", " ", 
+    RowBox[{"n_", "?", "NumericQ"}], ",", 
+    RowBox[{"s_", "?", "NumericQ"}], ",", 
+    RowBox[{"h_", "?", "NumericQ"}]}], "]"}], ":=", 
+  FractionBox[
+   RowBox[{"NIntegrate", "[", 
+    RowBox[{
+     RowBox[{"G", "[", 
+      RowBox[{"x", ",", "n", ",", "s", ",", "h"}], "]"}], ",", 
+     RowBox[{"{", 
+      RowBox[{"x", ",", "0", ",", "p0"}], "}"}]}], "]"}], 
+   RowBox[{"NIntegrate", "[", 
+    RowBox[{
+     RowBox[{"G", "[", 
+      RowBox[{"x", ",", "n", ",", "s", ",", "h"}], "]"}], ",", 
+     RowBox[{"{", 
+      RowBox[{"x", ",", "0", ",", "1"}], "}"}]}], "]"}]]}]}], "Input",
+ CellChangeTimes->{{3.833902227028157*^9, 3.833902260080681*^9}, {
+  3.833902386641576*^9, 3.833902425302294*^9}, {3.833903349757608*^9, 
+  3.833903353236473*^9}, {3.8339041425113564`*^9, 3.833904142986393*^9}},
+ CellLabel->"In[2]:=",ExpressionUUID->"00d06b46-9e6d-4871-b149-98887d688f49"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["\<\
+Fixation probability with additivity (h=1/2): Ewens (2004) 3.31\
+\>", "Subsubsection",
+ CellChangeTimes->{{3.833909268386176*^9, 
+  3.833909332277781*^9}},ExpressionUUID->"6e8f70b0-6922-4b2b-aeb3-\
+cd33a0752168"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"P", "[", 
+   RowBox[{"p_", ",", "n_", ",", "s_"}], "]"}], ":=", 
+  FractionBox[
+   RowBox[{"1", "-", 
+    RowBox[{"Exp", "[", 
+     RowBox[{
+      RowBox[{"-", "2"}], "n", " ", "s", " ", "p"}], "]"}]}], 
+   RowBox[{"1", "-", 
+    RowBox[{"Exp", "[", 
+     RowBox[{
+      RowBox[{"-", "2"}], "n", " ", "s"}], "]"}]}]]}]], "Input",
+ CellChangeTimes->{{3.803134429944354*^9, 3.803134477529744*^9}},
+ CellLabel->"In[4]:=",ExpressionUUID->"76e5420f-3e76-477a-a59e-14ce5ed164ad"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Confidence interval for fixation probability", "Subsubsection",
+ CellChangeTimes->{{3.8339098322362413`*^9, 
+  3.833909841294393*^9}},ExpressionUUID->"33cd1584-ef10-4e0b-863a-\
+1e92e5c935f3"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"fixCI", "[", 
+   RowBox[{"p0_", ",", "n_", ",", "s_", ",", "nsamples_"}], "]"}], ":=", 
+  "\[IndentingNewLine]", 
+  RowBox[{"Module", "[", 
+   RowBox[{
+    RowBox[{"{", "pfix", "}"}], ",", "\[IndentingNewLine]", 
+    RowBox[{
+     RowBox[{"pfix", "=", 
+      RowBox[{"P", "[", 
+       RowBox[{"p0", ",", "n", ",", "s"}], "]"}]}], ";", 
+     "\[IndentingNewLine]", 
+     RowBox[{"{", 
+      RowBox[{"pfix", ",", 
+       RowBox[{
+        RowBox[{"N", "@", 
+         RowBox[{"Quantile", "[", 
+          RowBox[{
+           RowBox[{"BinomialDistribution", "[", 
+            RowBox[{"nsamples", ",", 
+             RowBox[{"SetPrecision", "[", 
+              RowBox[{"pfix", ",", "$MachinePrecision"}], "]"}]}], "]"}], ",", 
+           RowBox[{"{", 
+            RowBox[{"0.025", ",", "0.975"}], "}"}]}], "]"}]}], "/", 
+        "nsamples"}]}], "}"}]}]}], "]"}]}]], "Input",
+ CellChangeTimes->{{3.833627772957102*^9, 3.8336279253473673`*^9}, {
+   3.833627976974177*^9, 3.833628095120489*^9}, {3.833628173076825*^9, 
+   3.833628189628581*^9}, {3.833628275032983*^9, 3.83362829601497*^9}, 
+   3.833635672975683*^9, {3.8338928319601917`*^9, 3.8338928572939873`*^9}, {
+   3.833901364084692*^9, 3.83390136777516*^9}, {3.833909845716012*^9, 
+   3.833909848774786*^9}, {3.833909914098567*^9, 3.833909958646141*^9}, {
+   3.833910132141019*^9, 3.833910134284349*^9}, 3.834684551375703*^9, 
+   3.8346847580830383`*^9, {3.8346848960491743`*^9, 3.834684896944996*^9}, {
+   3.834849619917293*^9, 3.8348496201128283`*^9}, {3.834849792746873*^9, 
+   3.8348498017652273`*^9}, {3.834849832859005*^9, 3.834849833304862*^9}},
+ CellLabel->"In[5]:=",ExpressionUUID->"2039aea0-2ae8-4ba0-917b-104e39013a29"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"fixCI", "[", 
+   RowBox[{"p0_", ",", "n_", ",", "s_", ",", "h_", ",", "nsamples_"}], "]"}], 
+  ":=", "\[IndentingNewLine]", 
+  RowBox[{"Module", "[", 
+   RowBox[{
+    RowBox[{"{", "pfix", "}"}], ",", "\[IndentingNewLine]", 
+    RowBox[{
+     RowBox[{"pfix", "=", 
+      RowBox[{"PInt", "[", 
+       RowBox[{"p0", ",", "n", ",", "s", ",", "h"}], "]"}]}], ";", 
+     "\[IndentingNewLine]", 
+     RowBox[{"{", 
+      RowBox[{"pfix", ",", 
+       RowBox[{
+        RowBox[{"N", "@", 
+         RowBox[{"Quantile", "[", 
+          RowBox[{
+           RowBox[{"BinomialDistribution", "[", 
+            RowBox[{"nsamples", ",", 
+             RowBox[{"SetPrecision", "[", 
+              RowBox[{"pfix", ",", "$MachinePrecision"}], "]"}]}], "]"}], ",", 
+           RowBox[{"{", 
+            RowBox[{"0.025", ",", "0.975"}], "}"}]}], "]"}]}], "/", 
+        "nsamples"}]}], "}"}]}]}], "]"}]}]], "Input",
+ CellChangeTimes->{{3.833627772957102*^9, 3.8336279253473673`*^9}, {
+   3.833627976974177*^9, 3.833628095120489*^9}, {3.833628173076825*^9, 
+   3.833628189628581*^9}, {3.833628275032983*^9, 3.83362829601497*^9}, 
+   3.833635672975683*^9, {3.8338928319601917`*^9, 3.8338928572939873`*^9}, {
+   3.833901364084692*^9, 3.83390136777516*^9}, {3.833909845716012*^9, 
+   3.833909848774786*^9}, {3.833909914098567*^9, 3.833909958646141*^9}, {
+   3.833910132141019*^9, 3.833910134284349*^9}, {3.834598556880363*^9, 
+   3.834598576680616*^9}, 3.834684762940234*^9, {3.8346848910532293`*^9, 
+   3.834684891451868*^9}, {3.8348496237847147`*^9, 3.834849623891473*^9}, {
+   3.8348498077545652`*^9, 3.834849837379915*^9}},
+ CellLabel->"In[6]:=",ExpressionUUID->"3365dff5-ed5f-4b17-b881-1ad010330c3a"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Figure 1 from the manuscript", "Subsubsection",
+ CellChangeTimes->{{3.8339096726392393`*^9, 
+  3.8339096760403957`*^9}},ExpressionUUID->"034353c6-1f10-4b78-9c9d-\
+235d52f0f9d4"],
+
+Cell[GraphicsData["PDF", "\<\
+9E14ARda;S<:9LCUl^G[Yo>Pd<C62S<P<21_HVX:?3`P;dIYK7AULR0_AVaQM6E4
+IF=_I6DP;daUKVMdJ20a<3@P?Sh:LgAbIF5]2WP1:e@8E2QD<50`/S1Fb5D`]S@3
+/g;0;0<m0a0`=c>b=;HdELP1:/<@bU08ElP3B^PJ0[FH0cFKL1FUP/Gd0e:;TU<;
+BTXCLaB:<X6FP0`7VP2f0<>Ti5`5OLmL@`FGO:230P6hDb7d2VE^I7=dLVEQK@YU
+KVA_HVX:<B0`86mRJPXl?20_E7U`IB0_D65WIB0_D65bIFid838P<21B82mBIG=_
+MG9SIG<P=20`858P;d=_KWAUKWAc83<P<21B82m=IFAYHD9_N21K<20`83<i=R0b
+>3=M2Shn2VE^I6mRJPXd830PKf9Z2S`l82m@LVmSDfEd85/P;e14AR0_BFeQIfE2
+82m9KF5WID<P;dU]HFMUBB1M82mHCf9ZIF=d83`l82m9KC4P=B0`858P?ShP?Sh:
+IFiTKf9Z2SDP<21_HVX:?3`P;eAiL6DP;eQ?HVYUHg@P;e=eHWAiL6DP;dU]HFMU
+82mGJFAdJ20g<30P;dQUJFMXM20e<30P;dU^M6EbL6m/HGAU87AbMFD:;d=_K6mb
+Dg1QHfDP=R0`858P;dU^M6E^M20_D6EbHfE`M7EQK20_@VUdLe1ULT=_KG1_KVE^
+M20h82m<IFiWM6PP=cDb<SHP;dIYK7AULPX_A4=DA6ESKfAU83hn2W=dLVEQK@[o
+f?oP011:ATU60041002@09000?oQ0815N6UV001=C@0Z000020040AX01@000040
+000n0A/01@00004000160BP00`0000400P00QfT010000040001>000000000900
+00010000T00000400j0100<0000100400:0200@000010002_:0300@000010001
+m000003ok@0hD6Q_M6mcJ6m`83<^<00h@TU=10@00000000h@TU=12D00000013D
+7HcIS`2b1>V02IS/n49nol004@P1m0:l0`4R008A0@<A0Oo401l000450@410@41
+0000000000010P<41@H720T:2oo40;D@00810`<210<51@@40001O@420`044@DB
+8C511Q=AH@LRLA@bPI6Q22=2/L4ED]7`93=RLX892QHG61TJ9BHW:2TZ=3Df=cPi
+>T=4ADI7B4U:DeAEEUMHFEYSI6EVIfQYJW=dMGIgN7UjPhB5QXN8RHZBTiBEUYNH
+VIZRXjBUYZNXZJZb/kBe][Nh^K[2`lC5a/O8bL[BdmCEe]OHfM[Qh^?TiNKWj>WZ
+lO;cm?GfmoSin_o401l100<10@410@410@40000000010P<41@H720T:2oo40;DA
+00810P@40`@71@@40042M`010P<A10DQ<@HB@E47HG4C8S:121A2TJ6a`@TS<e;`
+5F9bd@XF93CQ9O4G61TJ9RLX:BXe=SLh>CY3A4E6AdQ9BU=DEEIGF5UJHfAUIVMX
+JFYcM7EfMgQiNX:3Q8F6QhR9RY:CU9FFUiRIVZ:SY:FVYjRYZ[:c];Ff]kRi^/;3
+a<G6alS9b];Ce=GFemSIf^;Si>GVinSYj_;cm?GfmoSin_oK04<00P820P820`82
+0`D30`<51PD51@D620H61PH620X820P820P:2PX:2PX:2P`<30`<30h>3Ph>3`l?
+3`l?3`l?3ooK04<10P8210@41`@41a0;2@/@410@410@410@410@410@410@410@
+410@410@410@410@410@410@410@410@410@4?oM00@0;?oJ00`30@024@<A03l0
+oObRRRP0XXXX0::::02RRRP0XjLVR_6?fPK>ce7hGG^WjQ17MF]eOj?5;5:XN>B=
+mC]UI7E/QUH4PPS171X0mUgYoN56m?k`[i/ohDMl5Ol0XWoQko`EFWoa^SoQAg`E
+o`2ROn7_o1EJOo6j0?Y?NWmhDKdo_2_VcoQAg`Eoj9ohNol01EJOo6j?n57O1GoX
+WoQko`05EYolKX0nTmjOgQA_Cnl:nK?n57O1GoXWoQko0<5EYol06j?n57O1GoXW
+oQko0<5EYol06j0?Y?NWmhDKdo_2_Vco08DMl5OnROl0Qko`EFWo0<KXo`257O1G
+oXWo08Nol5EYo`36j0?Y?NWmhDKdo_2_VcoQAg`Eo`2ROn7_o1EJOo6j?n57O1Go
+0:9ohNol5EYolKX0nTmjOgQA_Cnl:nK?n57O1GoXWoQko`05EYolKXohDMl5OnRO
+n7_o00EFWoa^P3jCgYoN56m?k`[i/ohDMl5OnROn7_l0`EFWo`0KYYn1o`04e1I_
+07Qh0MBM:]?o08g@1m:kdo_2SNWmhElfOl:>n2_o04Co0<?On2Zdo`3SM7o2S_P[
+o`14o`33goPZ]?l0hg@1m9kdo_2SNWmhElfOl:>n2_l0dCo`moh:[CohgAo`Xkh:
+o`3A?o3goPZ]?oSM07dW_Cnl:=jOgQGcIo`Xkh:om4ol?Ol0PZ]?oSM7o2S_P[od
+Co`mo`22Zdon=d0OBNm?k`XgYoN5O=Wo00Xkh:om4ol03goPZ]?o08gAo`0:>n2_
+oA?o00moh:[Co`2=d0OBNm?k`XgYoN5O=Wo2S_P[o`14o`33goPZ]?l0hgAo`Xkh
+:ol0A?l0`moh:[Co0>=d0OBNm?k`XgYoN5O=Wo2S_P[o0=4ol?On2Zdon=dOl:>n
+2_l0dCo`moh:[Cohg@1m9kdo_2SNWmhElfOl:>n2_oA?o3go08:[CohgF7hVn2?`
+HRl>J[97h1l?XjFTi16UFP88S>23iM07eSAG5O3KoTWGQGo/5F?o0:8B^eX0::::
+02RRRP0Y2@>YaBeljO5o`_hIlGO4K`=YOR_B;?F[=;CFIA1NflMc495nb0>4TEUg
+04P76NCjd0OA>m?k`XgYoN5O=Wo2S_P[o`14o`33goPZ]?l0hgAo`Xkh:ol0A?l0
+`moh:[Co0>=d0OBNm?k`XgYoN5O=Wo2S_P[o0=4ol?On2Zdon=dOl:>n2_l0dCo`
+moh:[Cohg@1m9kdo_2SNWmhElfOl:>n2_oA?o3go08:[CohgAo`Xkh:om4ol?Ol0
+PZ]?oSM07dW_Cnl:=jOgQGcIo`0:>n2_oA?o00moh:[Co`2=dOl02S_P[odCo`0?
+On2Zdol0SM07dW_Cnl:=jOgQGcIo`Xkh:ol0A?l0`moh:[Co0>=dOl:>n2_o04Co
+0<?On2Zdo`3SM07dW_Cnl:=jOgQGcIo`Xkh:o`3A?o3goPZ]?oSM7o2S_P[o0=4o
+l?On2Zdon=d0OBNm?k`XgYoN5O=Go2So089ifol020N7/SW7mUFWOo]WC_l0QAg`
+Eoj9o`27_o1EJOl0a^P3jCgYoN56m?k`[i[?`?l0PX>Ch0l?3o^5FWOo0;Id_o2S
+_P[o0=4ol?On2Zdon=d0OBNm?k`XgYoN5O=Wo2S_P[odCo`mo`22Zdon=dOl:>n2
+_oA?o3go08:[Cohg@1m9kdo_2SNWmhElfOl02S_P[odCo`0?On2Zdol0SM7o00Xk
+h:om4ol03goPZ]?o08g@1m9kdo_2SNWmhElfOl:>n2_o04Co0<?On2Zdo`3SM7o2
+S_P[o`14o`33goPZ]?l0hg@1m9kdo_2SNWmhElfOl:>n2_l0dCo`moh:[CohgAo`
+Xkh:o`3A?o3goPZ]?oSM07dW_Cnl:=jOgQGcIo`Xkh:om4ol?Ol0PZ]?oSM7o2S_
+P[odCo`mo`22Zdon=d0OBNm?k`Xg:NQ5O=Wo00Xkh:om4ol03goPZ]?o08gG9n9_
+QKl<_36XN5=Il=n4M7dVoQl@JD4^;B`]h9U3g2Z`Ehd33891`NAa@1mPdDDD0555
+501AAA@0DDDD0555501AAA@0DDDD0Oo@oObRRRP0XX[T?4GSk`OhCeCB]5l@jW7I
+G^]B2>dSL<Bk6A8PBE12:I9Hh`cUE;^R0kVD40jnRR^1dghXo3oEkCGM@/ML]f]O
+3B_9Z4[UXhh8Ho<gC5W2QXOgDP4ZTXBSP<B[H0>nX[cho5C`4_Q<N=SZPo/UY_/`
+KbI_>nd1o;<?fOIioVQP@Ho;gS6LHiZFkn9gP:cTdR>KF8VGGHkNFcUS3b`_5M/Z
+Fk]:R]76Tk/ZA<k:968E2FhX0kb_8OSYo`0TjVok2NRonWBe[/1hll8]h^?P@JU6
+MLE=i]l=oM4VcOSIiWUTBNG^gk27fkNJhWhnG45Yl<[Zj^Y5QQQe3AWMg8EDEMC]
+RFHWP03TTd0M1AG6o`32a_Qko`13AYOo086`Oo5dOl;6n7_o04=6Uol0PK1olG@1
+fE5LKo`/KhNom3AYOoPK1ol05dOl;6n7_o@dJGoh6`Oo01M07IDEa_l0`/KhNol0
+@dJGo`21/7oaM7o2a_Qko`13AYOo086`Oo5d0MUAG6ol;6n7_o@dJGoh6`Oo01M7
+o2a_Qkod=6Uon1/7o`0G@1fE5LKo0<;6n7_o04=6Uol0PK1olGAo`/KhNol0@dJG
+o`21/7oaM07IDEa_o2a_Qkod=6Uon1/7o`0GAo`/KhNom3AYOoPK1ol05d0MUGco
+0?5;C[3a9lDoQghAlEF/EohI_X]IWU];U5U][WDKJ>0fTL/KPXnf9kVEEH41X``6
+E17Ygo2a_Qko0=3AYOl0h6`Oo5ePn8]Nn3?RkC_k8lDjYXF[fFmI?9^[RfV@>WgG
+2^a0HMR>AfX0iol0InUT?PSD;::AiM;dgG]L/]<InP/;KD9XXHd?N:8:HXSb?;AL
+LEkQG0JMhdn5^Sf5_YFTjmXeUIFTJa@`@GE]7556P`Z8R/5E@>00<2[_o2a_Qkod
+=6Uon1/7o`0G@1fE5LKo0<;6n7_o04=6Uol0PK1olGAo`/KhNol0@dJGo`21/7oa
+M07IDEa_o2a_Qkod=6Uon1/7o`0GAo`/KhNom3AYOoPK1ol05d0MUAG6o`32a_Qk
+o`13AYOo086`Oo5dOl;6n7_o04=6Uol0PK1olG@1fE5LKo`/KhNom3AYOoPK1ol0
+5dOl;6n7_o@dJGoh6`Oo01M07IDEa_l0`/KhNol0@dJGo`21/7oaM7o2a_Qko`13
+AYOo086`Oo5d0MUF5hYoi5SEo`3[c^?o04FeIGo2a_Qko`13AYOo086`Oo5eQn9o
+R9l?gl=J/RN9];IV]9`0;f0TTa]o]d0N^o3KoTWGQGo/5F?o0:8B^e[R_Q]obC[`
+[of2[7od@UCFGSk`OZ?Rfll2fFYabjkHAVBJf0K:ZXSI`68f<b2J8^Z/F@B8F03[
+T0jnR/gFMHd_`mY=i[^]g:FFWjO2lma?8MZAaAP/c<O@0Ea=glGOQeHN5;Ga]NJb
+TFSgTlU]5:HiMiWQlccXS3/leGRlVDbZb0aR=bhD8a01jAAG6J]l@_1NQj[Y>RJY
+ZdD=i[Vgk6_c>/PTIHhbGD544S^ZAUbXMf2:Ba0ZCC_7_Q;EO4UahB/=@FGEKEIF
+J;I8XH@<ZCNG8bR>Da<j;:8fHa/bQmY8507GehShnoi:[h8ojl=JoWIej1hClNN4
+O7:gSn5=BSe1K5`T^`<^=`9AegPKhg09BALXn3]Hh>?;ORU[>TJ7lC?0mi[Mm1Ym
+^eW[B2BhUF92a=V@^ib1TP7RP3_::hgo08F=l?OnQXd_o`03H?l0h^So08F=l?On
+QXd_o`03H?l0h^P3/Z:hgoQHg`moj6SBo`3`=Pon;XohF=l?OnQXd_l0l3H?oRj0
+>bX[SOl0QHg`moj6SBoo00=Po`3Rj?l0QHg`moj6SBoo00=Po`3Rj0>bX[SOn5SO
+3goXJ=;o0?0f3oh^SoQHg`moj6SBo`3`=Pon;X0k:R^=o`25SO3goXJ=;ol00f3o
+0>;Xo`25SO3goXJ=;ol00f3o0>;X0k:R^=ohF=l?OnQXd_l0l3H?oRj?n5SO3goX
+J=;o0?0f3oh^P3i3l=FFW`j7h3n8M[4PlOjahd^K?D;/:1NG0Jk^h[ncVLO>d5_K
+a]/SK:X88b5GHY7/WkC]SXGROmWOakMB>]k7Y^TjUL`]5<faKZf]i@Y?U/0aSK9f
+]T1`3SLX8jjf_?PCIn9Io6EYMN7HMN^@EU_dU]5^W31EKM:3^>@ZPllQE1h0aISe
+Wh9aJ9Mn6H[k`lVSgoWVi/Q;J2fV=dc??iT@>ao=IfJC8>l/BfBC@1b?aTl5GWRO
+a9hGeAm7dkaIYVV@JTTnRJW>T<3bcR3b[d2B>E6Jf2?6LZBZc/bo<03Zo/iJQ[FZ
+O17`UNjmLRm^W]2Zg0IWFN197FgUEgbc;924L<a9H44TTi[BlDJQl3?6m]5IN<[c
+`m[U_0aJ>>mU];QD;3Jf18CSL>6mA`LR^TRn8?`hPRB23a;Y<LLJQEEKb0:ZPH00
+3h00j2P3]Z:hgoQHg`moj6SBo`3`=Pon;XohF=l?OnQXd_l0l3H?oRj0>bX[SOl0
+QHg`moj6SBoo00=Po`3Rj?l0QHg`moj6SBoo00=Po`3Rj0>bX[SOn5SO3goXJ=;o
+0?0f3oh^SoQHg`moj6SBo`3`=Pon;X0k:R^=o`25SO3goXJ=;ol00f3o0>;Xo`25
+SO3goXJ=;ol00f3o0>;X0k:R^=ohF=l?OnQXd_l0l3H?oRj?n5SO3goXJ=;o0?0f
+3oh^P3/Zlmn8GgO37oH`jAojD[FQo`0;6n7_o@dJGoh6`Ol0aMLEhalIn3mH^O2e
+QY>^f5kMBN8M9:a@GDDTS1KQBL:[4W0i?507eGAAA@0DDDD0555501AAA@0DDDD0
+555501AAA@1oom7mo::::02_1?ROl>_5_RWa93Mn7CI]YnZfU_YnY?MG4/De[3Kg
+ZG@U]4B6@?8bNH^6N?329]a2T3g^RP3U`oSCoQ=6S<FWo`329OfN29?<Uo]7ndO=
+>E<Ncb_/oTh8KO_glKM_=O>NPO13a_3h;lAn5]GW/;N@N6[?`aY</=a=>;R?CCL]
+3MGfj68Zd_W898Ul`;RC4SKjn]::0?V`o3chRSCh_5bf^VWaG7hVOa3o06IoJ4hd
+hZmRfUnAm[nbNITFkNMWk=Scn<HnN/Zkn6OaH]=6n7OP?ChM6eG`[hJ]K1]FBOD;
+VaV^[nbJ=XmR9IG0JeQI?=F;O6I74J<ba:jbOE5507cl_`dlFOl02f_n4QHfOo2>
+;[QlB2HG4WfdgAdCnaO/Q]o9fNE]9Vlkclia7iN1^[8oJ4n6NPN8_3ln]J[NJXh^
+KgB;FFcCE;b?Ci8IKngQMG/UU5^fi7>BD9cce0=OC5N2O]=g4m[l6]E^KFAXIHkg
+AfEd9EU8e>ei178=C>G:VcO2d7EZaY;Zd__<CoQSo`3Ieoj4fdoGo6So08HooIeo
+j4fdoGo6_4_n4dlHOm1fo`3o00:Uo`3RZ?l0Q=?67o@M_ol0`:Uon:[`_kOQo:cm
+FohQ7R?nOlO^IkKo0<<Oo/jom2KJO[oSAo`ao`3/jol0@VfWjohehUo`VWS3oX>g
+o`3h5Boo01E7o2JN<?l0X>go0?h5Bol0aE7m_`oUHOl048lAo`0ohoLcfgoQSol0
+Ieoj4fdoGo6SoQSo0?Ieo`2Q=]?eo`0JlBohCCaQo`11fol0o0ZGo`2:XohCCaQo
+d7Ko0?l00ZGo0>:Xo]n7l[3o08Q7R?l0Wo7kVNfol<Oo0;>_o@VfWjohdOl037ok
+>_l0d9]Yn_l0SGRGo2JN<?l0X>go0?h5Bol0aE7o00VWS3oX>goo085Bo`3aE7m_
+`oUHOl@Sa7o?n?g<m]ohHol0fMOnQ=]?eoaXo`26?ofMOnQ=]?eoa[a;oQ=?67o@
+M_l0o`02YOl0hZSo08CCaQod7Koo0<2YOoRZ?kOQo:`ohQ7R?nOlO^IkKo`ao`3/
+jol0@VfWjohdOl<Oo/jom2KJO[oSGRGo00VWS3oX>goo085Bo`3aE7o2JN<?nPkO
+o`3PE;olEAoKl?iF7o48lAocoSmc?KOn6?l0mWGo0:4fdoGo01XohHoo06MOnQ=]
+?eoa[a;o08CCaQod7Koo0<2YOoRZ?n4dlHOm1foo0?0ZGohZSnghOb/?n8AhSoWo
+01niW]_o00aonc[o0=2KJO[o08dOl<Oo0;>_o@VfWjohehUo`VWS3oX>gol0h5Bo
+o5DOl9Yh`oj3]ol0n1D_o`0EAoKl?iF7o48lAoco08oLcfgo08HooIeoj4fdoGo6
+SoQSo`3Ieoj4fdoGo6_4_n4dlHOm1foo0?0ZGohZSoQ=?67o047Ko`3l2YOo08ZS
+nghOb/?n8AhSoWo7kVNfo`337ok>_o@VfWjohdOl<Ol0k>_o049]Yn_n=N9Ol9Yh
+`oj3]ol0n1D_o`0EAo`VWS3o0:3]o`3n1D_o0<EAoKl?iF7o012?4Ol0?n?g<m]o
+hHoo06MOnQ=]?eoaXohHo`3fMOl0XCKCmOl06_W[oQJ^XOl0@hBon31_oRj?n5Zj
+Qod>4_l0h<6on;[;oFFSfo56Oo4::go@A7lCj5ohHol0fMOnQ=]?eoaXo`26?ofM
+OnQ=]?eoa[ijo`25ZjQod>4_oP`Ko`2;ZiJO4Ca1Oko/?RNj^O;a^l^mMm^NVM[W
+6LDea9BK/Un:6_2N^m5R8oLcgWoQSol0Ieoj4fdoGo6SoQSo0?Ieo`2Q=]?eo`0J
+lBohCCaQo`11fol0o0ZGo`2:XohCCaQod7Ko0?l00ZGo0>:[CnghOb/_oR4N8oio
+aniW]_l0`aonc[od9]Yn_n=H_RCmTOl0Ik]O3^ZGE_h?]DUQ]IgAQ^b6E2@Acf=N
+FOl02JN<?nPkOol0PE;o0?5ESn8O6GRm]0e=Febn8=[<23Lbo`1`o`2e@/oQo:aB
+l9<@UOflO^Imco3O?o2^o2fBBOk:/NBLTo^4jV_>?3g`jlFjMlC9=F_CIS`iIGNY
+jQJCag4[GddfZ;5^RVR<:X/LA4^29Wg3b_UGJLNTO3So099ihGok1EUoj8B^c[gc
+lS?7o4?QghQn<?0oRS@]MGBkKD9;fEm6ncCCV2Be]iDV/aN/lNi7TI=]`8eM@Y>g
+Md[Pk_hKo4b?A;7Gm>]]9UlDY[>ZJW=Ylmk>==F?D[NNfE4^1J/iJ=GSMVncSNO=
+0a_cGdiA@1l^jUl5_5E[Lj1YFPG5]MjBVVn6m<e6i_;RE;Z2?`eNoK8iKJ=HY5UT
+^0kXiJB8X`Al_S0jcAO3?a?^oRoZ?RkaYIjDnQfl=aIJ;9JjSL=LFUY:HfL_J]IA
+XKRhM0II?];2=4B>=Ol0F?9k]A@1h1l4OQ[h/l2nHoR`fB_IJ9XWQbd5U?9>/m[X
+OfWIMb1hHO:TW=bL`[iRX5696ca`OSGh2O3kGoRMhHdWaAoJGR2`_kKEkYkKE=D_
+;n59HV]][AAg4[[5PB<<80<H7@37egGb;ndKZVYjEhml0CJGMcFLSF^]0]38dK4O
+j7`BY1aF>8[:W1cO@m;9l]US<C33AMW9f^M9o`0<Oo/jo`3@VfWjo`2=7o37o`2c
+[od9]Yn_n=N9Ol9Yh`oj3]oo0>1D_oaE7o2JN<?nPkOo0?PE;ol05Ehgm_`oUInU
+o`348lAocoSmc?KOn6?o0=WGoXCKCmOlJ?l0QSomWGoXCKCmOlJlBohCCaQod7Ko
+0?l00ZGo0>:Xo`24dlHOm1foo`30ZGohZSnghOb/?n8AhSoWo7kVNfol<Ol0k>_o
+049]Yn_n=7o37ok>_o@VfWjohehUo`09Yh`oj3]oo`21D_l0lEAo`VWS3oX>gol0
+h5Boo5DOfo3nEQoa2?4OlohoLcfgoQSo0?Ieo`2Q=]?eo`0J?n6?o`1WGoXCKCmO
+lJlBo`24dlHOm1foo`30ZGohZSoQ=?67o@M_o`3`:Uon:Xo]n7l[3oR4N8oio`0O
+^IkKo`0<Oo/jo`3@VfWjo`2=7o37o`2c[od9]Yn_n=N9Ol9Yh`oj3]oo0>1D_oaE
+7o2JN<?nPkOo0?PE;ol05DOfo3nEQoa2?4Olo`2?g<m]o`26?ofMOnQ=]?eoaXoh
+Hol0fMOnQ=]?eoa[a;oQ=?67o@M_o`3`:Uon:XohCCaQo`11fol0o0ZGo`2:Xo]n
+7l[3oR4N8oioaniW]_l0`aonc[od9]Yn_n=7o37o0>c[o`12KJO[oSGRGo2JN<?n
+PkOo0?PE;ol05DOl9Yh`o`2PkOl0oPE;o`35DOfo3nEQo`0@Sa7o03oSmc?KOn6?
+o`1WGoXCKCmOlJ?n6?l0mWGo0:4fdoGo01[a;oQ=?67o047Ko`3l2YOo08ZSoQ=?
+67o@M_l0o`02YOl0hZSnghOb/?l0R4N8o`2OlO^IkKo`aol0/jom2KJO[oSAo`0<
+Oo/jo`3@VfWjo`2=N9Ol9Yh`o`2PkOl0oPE;o`35DOl02JN<?nPkOol0PE;o0?5D
+Ofo3nEQoa2?4OlohoLcfgoQSo`3Ieoj4fdoGo6So08HooIeoj4fdoGo6_4_n4dlH
+Om1fo`3o00:Uo`3RZ?l0Q=?67o@M_ol0`:Uon:Xo]n7l[3oR4N8oioaniW]_o37o
+0>c[o`12KJO[oSAo`aonc[od9]Yn_n=N9Ol02JN<?nPkOol0PE;o0?5DOl9Yh`oj
+3]oo0>1D_oaE7m_`oUHOl@Sa7o?n?g<m]ohHo`3fMOl0XCKCmOl06SoQSol0Ieoj
+4fdoGo6_4_l0Q=?67o@M_ol0`:Uon:XohCCaQod7Kol0l2YOoRZ?kOQo:`ohQ7R?
+nOl07kVNfol037ok>_l0d9]Yn_l0SAo`aol0/jom2KJO[oSGRGo2JN<?nPkOo`3P
+E;olEAo`VWS3oX>go`3h5Boo01E7m_`oUHOl@Sa7o?l0Smc?KOl0QSomWGoXCKCm
+OlJiKa9nc[l7_QkZ7QGaCh>l>`jIZU][nUZTlAH<5T^5Aaej5B@JlkohCCaQo`11
+fol0o0ZGo`2:[9^o4oRFo`34OPfe_]F^kV5o4NTkTTWTMCoY:m@a8=GBcb4i:?:m
+CTaoQMGXD9egFCDDg/nQnS=555NhOUXDDDD0555501AAA@0DDDD0555501AAA@1o
+om;mo::::02RRRP0XXXX0::::02_WcmZEdSn2>/_8`EE^m899>01oJM[Gd7Gcmne
+5obA?F?n_cAooCWJeUGn2GXNQU?nmD_lDOcAlTOf_YGo03n`Omo5o`0J?kGd[oWm
+Pokn;oSGPgaLn?_o00Zca9KN7_k2o]CkAJ9MNKmZlW6nBA=^gbWcSIW>NoB_;?l0
+Q/Oo0:U3o`0Wo`3kW[lfUGPWI/o/n63ZBEe7lSk<o]OB_nOf3o_h_n=7m[jEo`0o
+/7oOaOl06_S?oQ/OoZD?o9oo0>ijg?3?kEgo00TORCBO3go2;OIokD^h;GcO]foI
+ilPCM]lPIaW><S?[@/A3^=h6Z]NGlDOF7m[jEocn`Ol0OaOlJ?kGd[oWmPokn;oS
+GUOR_hhN4o1n_gGQgDkBmU^KCI_J6>9T?V8/P`FTDm66N>]Lmo`d[h5oilMBo`2o
+D?l0lN[dHh6/eMA>M@OHmeo]OB_nOf3o0;n;oSAoJnUOlo/7oOaOlJl:o`26UO0_
+o?SZGoOZ7ohmFQY7k@OPcF]F/]7]K;D4V_ihh4;aa1@d[10F8U9aTlh1XN0[;Ea3
+TOHmUo]OB_l0WmPokn;o08dOf_YGo?k1o`1o5oa[`CaglGO4WQOaGOJ5HFeY91KN
+E]JE92igaZibETDMF?KYG8ol;llHOlnMQogkUol0S]>>0Z=9X`MF9mDof_YGo?k1
+o`1o5oaXo]OB_nOf3o_h_n=O:go2o?67o?WHOmniOoS]MMh4n;_RCaAh[/M2_kJd
+SP^O=g=4TPLK8fLH;B<>ZS]dXUP:RCK1EHW_Om[jEocn`Ol0OaOlJ?kGd[oWmPok
+n;oSFQAG6JJ6OoJnUOl0?k1oglGo01Xo]OB_nOf3o_h_n=J550J6OoJnUOl0?k1o
+glGo01Xo]OB_nOf3o_h_n=LGOO4c@K2m^;6J2i<U]8lK5D@PU2@LILLLEEohF_hM
+o`2ONjokhCohiDNdGLi7Sj:dLS__kGd[oWmPo`2oRohdOf_YGo?k1oglGo6^1ohF
+_hMoimk[o_Q?oSUK_Qka_YGRBmNa/HYXi8hc8C8ZPH10k<g?==C@hHfS9l/IJWcI
+AAAGibO41G[G`^^kBeo]?kE>T>kbLKf2ia_cS9[bF_H_Q=oc5Ol0]QokD[d/XogR
+?co9WXIEo7Slo`0VNYOf_YGo03n`Omo5o`0J?kGd[oWmPokn;oSFQAGfamSXIol0
+JnUOlo/7oOaOlJb=OeKBSXFY0G/99]Y_nFRog3kedmI7R3oT0jUoekCOnP6V]b:U
+^EWj5o3LPo3_`/Ab3YESo`2R4[]:hchLOlTll;omPZbom49GIenSWlFQAAA@0DDD
+D05O67kDMcKfgSKhN_LbY4Y]mJ6GH:<oj7jemWelKo]>OlScl?_n_KF_oK>^7<_h
+4cj[PSoTKHOeoAWQo`3JnUOlo/7o07lGo6Snem:oioH?noRoheXDEl:OeGXIo`3J
+nUOlo/7o07lGo6Snem:oioH?noRoheXDD1XIo`3JnUOlo/7o07lGo6Snem:oioH?
+noRoheXDD1XIo`3JnUOlo/7o07lGo6Snem:oioH?noRoheXDD1XIo`3JnUOlo/7o
+07lGo6Snem:oioH?noRoheXDD1XIo`3JnUOlo/7o07lGo6Snem:oioH?noRoheXD
+D1XIo`3JnUOlo/7o07lGo6Snem:oioH?noRoheXDD1XIo`3JnUOlo/7o07lGo6Sn
+em:oioH?noRoheXDD1XIo`3JnUOlo/7o07lGo6Snem:oioH?noRoheXDD1XIo`3J
+nUOlo/7o07lGo6Snem:oioH?noRoheXDD1XIo`3JnUOlo/7o07lGo6Snem:oioH?
+noRoheXDD1XIo`3JnUOlo/7o07lGo6Snem:oioH?noRoheXDD1XIo`3JnUOlo/7o
+07lGo6Snem:oioH?noRoheXDD1XIo`3JnUOlo/7o07lGo6ZdFXjO?h^l5A@GDDSW
+a7Y>5Ee9?nT;f1[IZUoc=GP[o/Hm9ol0BUJj<9o5SjXlKR;o072_oPUnC?deXXX[
+m0?i32RRRP0XXXX0::::02RRRP0XXXX0::::0?oCoObRRRP0XX[ihn;7SWaOhNlD
+Fm_hO_D/[?BKBfe2NgN19Fe<g5o5J6fAV>D:XF0:h?Vb`TTZ6A`3j7XZQoJ^VOfV
+M4nf@ofR8O]7fKc5lkbBfcc?;c^fK_UgHaWS>JnB=1n<7a07PGaChWe2kQ^[Xn5;
+;a?J99K:RJE=Z1_5=]>4H5h[Ob599?V4Y=U/K@03k6X[iR?S3alK67`D=J8e6CaD
+oQljmmUPgOIT/7e4CNCSb?<b_f@WI]lcWIf[@dWhPN<=Hdch9N8F^hX8o6TXQeBg
+SP7UcnIX]iO2B9f;?6WVfj/P1bD>6=07dKGcmne5o`0TCeSo0:o=7ol0CWJe>WRG
+aaXgaTOB_5SgD?Q_G[gk5X0QBcNeUJ?C5^i1<`9^dOO3M5B@4`RPhb^kPof[]MlG
+`O3cEM9]O33G>S]Lj@ae;kI2PE_k@]Vfn@OgQnH1LnnNP[:_l4_@m3:OmjYOhXoV
+SlN_f^?nBTJKo`1PV7odO?GbeGdcneG?Mg7a2dikbfnb^=;Q0GN7b??Wib]O<eOT
+]OhfOgGQ?hD@[]oQWobDS`Yof5[7o`17YG4EfO`hJA?R5hGN9?<MMD/RZia^8WC0
+bNVJR6j=ZW`/mjn>Go9D]KokM_l0dVR[bJ_DOSA;?=lBmHT^HO/lQnciCL6aoXlN
+>Aab>Jl^[mB`Wl:7X_b?0S/P[[O0?o8mN7?n`UIonSU[TZjS`>dRN=O3ka9iS[Z5
+XEG>=a4Zh6CdcFUKh7j3NajmlGonBRJ]o`1/?oA4MNJej5lE9Ii_7^ZBG<?fN@nA
+U=`K7kU<LSSTLeikGThOn77dAhDmf5NUO23o09:9Y?l0fgom4BEi[GXG`[UWQlNj
+G9K@oJ91in4g1Lo^GcbN>1cAR?hL_AQ3M7g=AGcAZoa1lHff[G]]7NN@/DlR2?bh
+Vf1F82k]_>>VNmIgo2b?6Wo@Aol08<Go0<AGP[3B8UVE=>eWoGc?ZRR_UOl0hFAh
+doj2?oT6;ohR^Rl:N>_5fXjoJfLlo`1]BCOV7K57^`S7k`DHaS?hHXUQY9G:QV<9
+BDDW[oGLhoa9o`0S5ZWo05mCo`3X`eRe[JldSjkZ;bYiK]Lc5UcWJBib<S[R/V_8
+NilUFn=nXEjMl:?nAR^?n_EooAREiSGXG`fW^kOGIg/kKkDi]V1GN4`=jLiJZYo4
+SXbon=7e>9XXX[h@h`[f;hCOlaGo0;HOne:lM[e;hJg=oKofSmR/o]NkbMgkaDfh
+ghnmecGYIAo_4OWnC?AbYOkA7ioTcQ_n5Tn=OnPSo`2@HOl0hRSo08FCheoj2?l0
+i1Qon8[QZ:n_^cm4mW7/Mco`/Wa[o`117ob33ol04Ego08AlBJehQd7a9oK5cmXn
+cfgbO8RHgY9WkP6Lh7F_1jm<l2g5m1XGRHFMYmZ3F`g7NZKOTUamk[WnUG1jXilE
+CG/iFAna_`hoi9ihGok1EUoj8B^c[RoQ/BOQehF963oIESaof`B_;?3OSWaOOO5F
+CCkfmBCAkjkeKChm=42;;J3Be]bUbI@Mk2D^aH=THUPfQB6;oYQo3am3dEiUl@_6
+Yd_`5[n]n4Kff^;kCfnanJYFhS];UY4QIYeEQoakko<T@T72T75N@GWSShQ?XNWn
+6h?4<EUZ9egF=<TebFdRIIXM<][ViSoMLA2@V9DV8D0R:OH8bE:P7eIAGbOZ_aIl
+LGMahNeNaHJ?K[Y_QKDKZ`TPEcN_hSe3k5;K1f9I6]UG:k2<bBAkbEbYmNd;G?44
+WaPlGN5KnmFhdZcdOA=@/hA4Z=19NcjS3<2hnI``]Hb=g@ia@1jUGa_ndiob??`n
+o`2_KF_o06c[dkh8n9O75k5NN5ORTmd_S7CK;C[fnQVBc5^Rg`U@6fNb;1T<e_<^
+93_6d4iDZcO>Wk@OR;a]ON?_1RJ_hBKC4]hMIF1SO@COJ59]L/0W:H01`gGMk6^7
+<_h4o@nZh8oi6f7mOdIcU5LooJF^o`3@7?l0goSXo];GOnP>OnolMO2g?j/iFM1A
+G?l0mYJko`10Lol0On>Snd]Mo`2P>Ol0_o7AL>EW@DEco`3JF^om0Lomo`2>Snd]
+Moj0ioko0<M5`iFM1AG?o`1YJkod1cogoSXo];GOnP>Onol07AL>EW@DEcomYJko
+0=0Lo`3On>Snd]Moj0iokoadG3UId55Lo`3fU[_o041co`1ohj?kBego0:0io`2o
+lM5`iFM1AG?o0=YJkod1cogo08j?kBegoX3Wo_l0adG3UId55Loo06U[_o@7?oOn
+>Snd]Moj0ioko`0M5`iFM1AG?ofU[_l0d1co0=ohj?kBegoX3Wo_o7AL>EW@DEco
+0?JF^ol0@7?o07oSXo];GOl0X3Wo0;oadG3UId55Lol0fU[_o@7?oOl0SXo];GOn
+P>Ono`37AL>EW@DEcol0JF^om0Lomohj?kBegoX3Wo_o01dG3UId55LooJF^o`3@
+7?l0goSXo];GOnP>OnolM5`iFM1E;oVJ_1Go06<NTol0YB]IWmYJkod1cogo08jR
+]KkEY_6?PV>idd`AWa7Y>Gli6aoY2mQcGAPgnmSjXlKR>?l0`Weol4_bInY]555O
+X1o8@DDDD0555501AAA@0DDDD0555501AAA@1ooDoObRRRP0[W=Il7n4_4NXjIZo
+R3AK;DkkAI3=Hcg=_7=;Jb4ZBl;^Y<KIACUB>EDm@:j>RP367Qg`n?41lFSC;Gng
+3JRa=oi:OJcJ1o=47WHgnE_>oIWK^iaV/gC?0OPSA8]GPdO`oYmS5[lTT^XY1JaA
+[NbCIla[P:X4YOLMaO>LW?DeeM5074=l<oQbgQ4N06l;JFO38KOo06FK:7k5^lcc
+]gTK?;gNIlnM^MocMNJUeOhMO3ka1=Y=a[gQSBmBUd4PjLmcI@C=I43J3KUd9R`1
+PK<LEfE507<FoPW`KJN99o6=[XES3[ed^fGD4]XU^i0EEB6V2kcUED79i2Z>P5NK
+O]6JK?[?`V_m;]FEIKZodJ=Bi8D4jYJmL0W7hEkQGUGaWoi4Co^:j9ojM;FYU5==
+<eXEYDiaZAgC_man5okNVSg?`ln;nSj;[C9??=XE_L:e^BbK6^[Y02G27>D?Kdi[
+hUohB>ao^BOT?lJno`3o08:[o`39`gQko/E[Cod^_Zo<^_4U`iQVk]?kcm:Yn;^L
+aBRYAol00C]On4S/OkTWi3o6_B?PeO`jilGo00=X]X6BOD=MdbgSI`0PNFjSABa1
+9aTlh1nUN1Ek?ncSo`0W3O2oo/JM4ol0Bj6T^6l;fOgU?aOcUZg=7o`4n]OfU]1^
+o2oa/lAj5Z3abG5]mSg=4BD>ndQLH;:Yj=jMJl:g2_Z7m];o09>GlHom`ol0m=m_
+GbgGkKUO1V1UQZDVWMaGGbAlaElHljS9aDXjOgAnhEgG`^/IMFn9WQ7B[LZ/]iZm
+Q2QLT:6T^4D4h1><WWR^2[e;h6olU[n7o`3f<>UOnULEM6:h:`:YBJCfODV?S;WK
+JCU7o`01?HOSkhAe;`mlF]MdNmTRNJgnbkS6c5C_]XV62E1j7d[aknbkSnl_iWo2
+_ZKmZkoT_gRWo]aom8X:nMjnO`7262U@YbJNZGGb?U<MhfIk2]>4IA/Vel:kV3oI
+MaoNGlco08Ek3l0_2>YN8OReXFSfDTBCG7f[JI6H:=U]:ab@Y?@NUNNEm4O/Xol0
+9O_2goKmo`2TDm6?h@`DJ5BBCdCjn@H7a/cfMJ49BSI];hEg>KlIn2ME/O66^fD/
+/9Ng_kZ=R[=PU9F1aUAaaG=Ol8WZ?o?B;lfon9[gGhTOlU4lDol0HE__oAkeaMN5
+ChG`SRWIoNO9H_adcn=FLE:>SOfEg??_n4Ce7oWY5nKOo4ejEl8?Qo[>]O4CBM<]
+I[M9I_?`GI`_b`B<Lh@WX?BZeNdO/mOlUPd3o]jom9IJS4l;hADi=9k?ZKiEhhim
+?5DXBU6cTUl:kXl=lHN1MG/_5^]fL/d1N2n^Hf:/f2EUH76E775Lko`QfYolmHOc
+KohV_NOR7ob?oRKo0;2Mkoj?N^>[h]i1Qncnll76n?744JdhZD=6o/[^NKol8MZO
+o?F7lfon9[fOh6O3;G_47Rfk/k>h]TM;6B@VAW0`9HQf@llePEm9O/^olSoZ7oH<
+Uol0Al=>>@hNncnlm;Q_accj[SZE>LXfKoUAlJol8CZ_o?F7o_Y_oRJ?n49eGoW[
+3ogdgoa=NXDEnGofIBk7Sol04NN8?iXOn0Xl_oh@WEOnN/?o07dgo`0CGd5l2_Q=
+hSl@OfgmS^KA?8ncK_<N@IgNKS64Kd[SJn]_fF_nIWokL_l0f_GZi9UE5hZ2JkoT
+cjCQ7a^cf_V=:UDU6c_mUOb]WiZol8MZOo?F7lfon9Xoh@kDo`3W[3nKOo4ejAAG
+ggmPhO/o_?g?oR:nKocAo`30CcOo08@kDol0W[3nKOl0a=Nlo1ghFN8=Ml>n=9KB
+h]D5YJaU]k^<kXilH`Qo^V^>[j]oIboi5KhROmND?oX^iY[8l>WNcnlRYhZI]9>;
+U7o`4n^?QaobCc`_o`1PZbom49FQJn3o00UHn9;caSIJ;IFn_JQ6/=cZ4M_6]g=6
+XD199P^mU0AAPTl:_mdHcoQao`0Tll;o0?H:/_l0d@UMWG/7i`LeKn3?1mYYn[JA
+Jj5H`f>_Bg4nXfjFdBaG/ef<G4U`PGK:lXhTI`BhnmV/^jn6?`g__2d7PNml:jGL
+N7;E]lFVbFD;fJ?UVg;0D:0T/a9aTUSWZJkVRP3VmCl6n4MJeKBmNeSA;:ne?@ba
+/;ZNfSTW]2n=gTB<YJ?>dIfTI`?@EFPl0n1;Ka=MN=;K`iY/GR6nS4=aZBFL:g/d
+H60TThGc6G762a5MKA@1cGQS`Gh?l5F/]Uh>d>ad>gWH?97HfdM/S/1]1HAZX900
+0cd0070[`OhgN3]ClIo4O`7HJG;3595Ijdi<c<ZhcISSJ[7?hEm>eiGhRoi:mh;o
+0>`M[Ol0j5IeWFY:LG2Fc>g;/`ZHF_74D_RSZSa[oQ@OS3oWl/?noT_o0<JXo`25
+1n<?nOb`o`2oT_l0lJ[jiX[cOk4XNIm]o`0A?cG_7o`4nA_n51n<?nOb`oknBol0
+aZSo08D7h`oio;3o0;nBo`3aZ_[VRSna:7V7o4Clekaol1?TKoQ@OS3o09o;3o_i
+;ol06Z?n51n<?nOb`oknBol0aZ_[VRSna:7V7o4Clekao`30Ci6ohD7h`oio;3o_
+i;olJXohD7h`o`2Ob`oknBoo01Z_[VRSna:7V7o4Clekaol00Ci6o`251n<?nOb`
+o`2oT_l0lJXohD7h`oio;3o_i;olJ[jiXXo/BQiQo`0A?cG_7o`4nA_n51n<?nOb
+`oknBol0aZSo08D7h`oio;3o0;nBo`3aZ_[VRSna:7V7o4Clekaol1?TKoQ@OS3o
+09o;3o_i;ol06Z?n51n<?nOb`oknBol0aZ_[VRSna:7V7o4Clekao`30Ci6ohD7h
+`oio;3o_i;olJXohD7h`o`2Ob`oknBoo01Z_[VRSna:7V7o4Clekaol00Ci6o`25
+1n<?nOb`o`2oT_l0lJXohD7h`oio;3o_i;olJ[jiXXo/BQiQo`0A?cG_7o`4nA_n
+51n<?nOb`oknBol0aZSo08D7h`oio;3o0;nBo`3aZ_[VRSna:7V7o4Clekaol1?T
+KoQ@OS3o09o;3o_i;ol06Z?n51n<?nOb`oknBol0aZ_[VRSna:7V7o4Clekao`30
+Ci6ohD7h`oio;3o_i;olJXohD7h`o`2Ob`oknBoo01Z_[VRSna:7V7o4Clekaol0
+0Ci6o`251n<?nOb`o`2oT_l0lJXohD7h`oio;3o_i;olJ[jiXXo/BQiQo`0A?cG_
+7o`4nA_n51n<?nOb`oknBol0aZ^Hl@o23a;hJeC`S[=mLfTT<7R;B2`SN@/Lg:m0
+dJSmJnh:l/n:o`3b3o3WoH`j?ojE9EDlWXaTY;XLn;lALb[DYDI]FTVWYg?Dj:::
+m@n42RRRP0XXXX0::::02RRRP0XXXX0::::0?ooEoObRRRP0XXXX0::::02RRRP0
+[bKhfXdWP1dAc4cJYXP3;PUOn9YJlS88o<6_FJlZn<oo028WoLEdCodjF]07hTol
+5BkNJfoJ1l?Y?LbGC7`_J7M8410nfg_7b:Xan6Jo=J_ddoh:[ol09`gQko/E[Cod
+^_Zo<^P0[f?mWI6ToJ1n6:8iSI_56RP<^2E9_H^AT4I7^2:lL[fOmW7o09>6n5oo
+06=>ROl0YM3@1m]O]TaB@O]8n;hYIV^7Gncl^hD<Lf5_e21EhjL2_V:_ZCm];oTi
+OaSo0=`oo`1=m_GbgGkgTol0^U7o00ao97b^8oRBmF5NWo196Tn<gP94La/f_jD0
+bh9DVkSi6@ATNh8[c2_D_PKo0<U[n7oo06<>UOl0YG5GCS?h<oAoTACn97done;5
+91lMo4lD/cG3[mRbkQ@acI`M@PEN>W0[in[j8oJ^o`2BoN:Ong7o0=8X:nMjnJbc
+oMZGn5OTO7IWo_=Go4oc2_X7mUZ:BOhkn68XYV]gKkKQd2UQRcWj1`blm>AGcmGd
+AnbSo`0Unl;Om_go0:ACdIWo0;]Eo`0;o8</o`1iYOhUnIe?a3AXo7oRI7Lb<^Yg
+X;=P5R9gi>01Tn`0[SZkChTOlU4lDol0HE__oAkeaMO>DOPAlGS_hloEoV5N`o0>
+:BOh]J555<e^kOJ/>PD/<Fd_@>6GWYb:lN[fSmW[oT/6POl0KeojBbeWRohDoAoT
+MFBOkk@oaAo=61hnAXo7OR=7Lb<^YGP;=P5R9Vi>01Tn`0[TZk7hQol08ol0RKo/
+9g_o0:?N^>[hAWcNHOajWZoc2_XOmVRgV^O7MnT5c9J/==U>j<8BAid?7cZ`an6J
+nN:nT_fGOnAoe3o/6BonShJ4N_`Uo`0S:QjWP]555OTah0EmDO/cf]aLo`32BOIk
+bFdfoHlnF8c^cigGc4OYkH[iG[jfoIJoiVOo0;L_oJmN_TGnm`nOi<n]h5oi6]7o
+0;Nom9Il>dDDEnRWm3QGdol0/nf]aLn5oR0H;bFefFLFA68c^c7LmMj=dm/MJnH:
+n[OfL_l0TE_R9oei@ol0X^iX0n]oQ_al>o2`jol04Z/OoA2EfULIl>?nBNN5o`3/
+5FGo0:8B^cX0::::02RRRP0[b3aKKcG?aJl591MBF[3CmJ>j<8BNK?SieHOYG[mN
+En8_nB_N2ol0/7Jgo`2QFM07LOfEZ?l0d6K[o_Rgo`3S=7mUJSod6K[o0;h]o`3h
+cFiA@1QofEZ?o@I^_nn;OohcAoIFXol0@I^_nn;Oo`2<e^DD0HOmUJSo0=1Vjokh
+]ol0hcAoIFXom1Vjo`2n;Ol0n<e^DD0HOmUJSod6K[o_Rgon<dOfEZ?o046K[o_R
+gol0S=KU5067oIFXo`3@I^_nn;Oo0><dOfEZ?o@I^_l0_Rgo0?S=KU5067oIFXom
+1Vjokh]ooS=7mUJSo`11Vjokh]oo08cFiA@1QofEZ?l0d6K[o_Rgo`3S=7mUJSod
+6K[o0;h]o`3hcFiA@1QofEZ?o@I^_nn;OohcAoIFXol0@I^_nn;Oo`2<e^DD0HOm
+UJSo0=1Vjokh]ol0hcAoIFXom1Vjo`2n;Ol0n<e^DD0HOmUJSod6K[o_Rgon<dOf
+EZ?o046K[o_Rgol0S=KU5067oIFXo`3@I^_nn;Oo0><dOfEZ?o@I^_l0_Rgo0?S=
+KU5067oIFXom1Vjokh]ooS=7mUJSo`11Vjokh]oo08cFiA@1QofEZ?l0d6K[o_Rg
+o`3S=7mUJSod6K[o0;h]o`3hcFiA@1QofEZ?o@I^_nn;OohcGVOa?dnmQ]O3DT^Y
+cg2Sa3Y6DMH@YodY>^b=Cn]NdEiIlEon@OhLo`2aQdOo0=:TX0mCXXXX0::::02R
+RRP0XXXX0::::02RRRP0XXXX0ooFoObRR_??6?aHn6g`o`1FdO@O6OR:cd[DmOUB
+6`]IY?gmblTZ@;/S6F:nI8RK/K@c04ld0NQeigh_n9gQk`G[>VJ9Z/=e=;Z>aWT]
+hC;5JABCafbBg;I6a6VUA0@2O_<@4AfGY_3o08Xl>n:h;^il=jS1ZDEQMg5QL61`
+oTgMY8HYhGamehg13:NO`8[cOhQO2_D?6V_fnYjOZl>WFMeK`fF[`BF[G3gMW1M9
+LY7589Xa2gn/S;<TPfbTQ@E6@3fJ_8=:n=gP[E=9l@jkRk]K7`iI3DiI9[MQmXdm
+o>lZj]UD/dTLY]iA6<1ffSi<<QK]aY_RSoQ=6ePjg6O3Qdl@3B_/RnH;gcBa^_]N
+oM]<N8o:l_6A^gMZlDd;h0GFWn5]Nl:jW[lMa1MJ9Kn7M8N2b<;JMYmRIf]6L??:
+9id<Zkg7UXoU9Q5bf@3_3lG]27QYMN6VJRKekljF=942o`1XoKU1H`K=oUi4H<^k
+c=WUo?^aFS5lDO3=bgPUk9KVi]O7go8=^DQ8Qi/iKmA<F:]6GQQLP4Ib<42^8?`S
+lCofC7ZJjoHSa[7[[N81Z1djDf7fU[E]>:OHo]HTfOHFlTOjCWMnlof:UVn4GR:b
+/?QUYGQWa3JF][l?9TWT=iYdUe;O^;2N`HkXk^1HBbg<SWiI?WfmP@@3/en9oQa_
+7KN0?;^AM[=mTndV;oA3OOIAOOI19W?WOICin=^gIo5^1F/[hdc`;h8l]Y53o`1Z
+J9`B<ol08D]NeIjo2Jm7a>ohC<j_4M66YWGE/?/[OJ1ZQd_nb2gfWc]WTOI/]iGT
+K_=>kc<O;G>o7OhIo3WE]97S;E?2fUGV_[Z>Ra3DI[:2Bl4Ie6gS:2MT<VdXaG6k
+6dTM2J0?b8oh:Z^So]2n7RS1Qo`ReYd>OnGjn[lcZoB3oPZ3XVSJ3lOM0/m3/8=>
+PO`cJb=7Ka;4QLg]j2aE01W00ck2_cOX0:mVoIb87k@_`_9>0?5>ROl0YM3GS=N`
+O/mFe_NO7ghJFMi4/l4oRKAXi8gD<SXek46EU?11711jd0OLo`2fPb]nd]haIB23
+oIo8o`2`OKel^Em;o]PjKYfTO]5n;M>dVeR/[F;k1/QQAHhegF=^a`ZP0I99?^Jn
+J:oNlWogBSoQSnB?ULAo4Uj/:mAn1a0n=G`o9>0?46UOnULMNGEjIl5[Jg_?S7h4
+/kb9Ih9mNd^>B=e38j=MAQUIC`@A`@N]M><oPcm7nA5?hTOEOkES:gallD<Y11na
+LSo[bP[ih[g_mYkCM>dShiN9M>dVeR/[F;k7/QQAHhegFL;72Z01TTTni[`B_V//
+o`1fYOhEnAlMVOl0_=Go01?l`[j7oICIEn?WQMV807fgTol0GU?GcaG_Ok<>VjMZ
+o`0L_3FWJ]JaG][;m/g`c8/TKKK>IQUF11`@2?LDIWo^eGo2o`0PbcoNJGn9OVMa
+lAb3l@o511b3ZUko0>Sg[S:jkaoKFmWhklBFMW4/446YGTLLJ:5A4FI`ZZXh00h0
+7B^A[ibSl2?RlMo7Wj_l`[fOmWaUGh_j0c403kEbOn_FF_6:mKn1FVjMZoaDdCC]
+F]H[feUndkhITFB=]]]:`b[0Ph817^:caOl02Wj?lSZbCoOJ7n:?iXXO48Pn?_4Y
+1b3ZMkoj>N^?[Z_7E]KfOSOa3IfLB`@@JSMaaaXXE4AIV2ZZSP03P0M:iF_Q6O=i
+Qo7ZN[o<:nSo0=UmdCamZ1MPXo/bGZLOl]XJnL:mnoIbdCA]NlKgeW[UQ1Z<2JM;
+8/Ma4/Z1a=20`E`AW18ckVQ7[l9OlS:QjWS=555OTah0EmIo/^bAYo`TfmP^O/GD
+hoikElVEm>O/iN6o3_R3oQ8OkOd^ee;k?mTl_kC2TfcOifkK_1aW0cS[PEjnAOkg
+3ioTcjgPGoTJdOl0]kodUWa_AAAGj:Od>5OEGk>TR9hFn8NmP^K:76CSoUWLelZe
+m:O0O`khOek`ahmOG=<]]AJf/hS4KR59C6FS^<kMh><h6LNPX0nd?Q_o0<Tll;om
+PZaom49FOYWa>l?J[hg^o0U_3M;Mf_W:]bl9FdWU]Q4dlDD^OVN8CakP@0OV2US7
+84d?Q/0_`kl;:X`1YER0?nf2Ea^RO2_D=9n8<_RNKEhIm3Q^;nm/M?FeI9X;cDQ6
+;RBBiliUTG:bU54B4NJ@F>dI0?BO4gR;CO2GQnolBj`G5WYdCCB29398`GXZ8_;>
+a`ZZ>BB0:ll_?SEhK/_2mWhUOCMCTU_;bidlJM7K1kn>i/UVNiAh`ngmdT4SUPiE
+`1iIL^PJgZOPCaChQl8n9O3ORGa95Ng6Yg/ecYMbUP8AYdBb9=IA?6/Ynd6gT@<c
+UT<WC2mJi2jn3gRdj5Ig6VN9[>dlH@jWOjW=Z;JJlUY8fXaBfkaRdne:j[76lN`n
+NC^RD]T5Q@1fN[o5k`SY>Yj;YgnTGTN]9Ib[LfdGVFm_5Z<bfeW9>f@EFhVH97P<
+Li;1EEV7BJIhbdgE?6>]n28X;R7D=2][:kUJF?K393O]>TCA=TU/=KB1^1PS_GU6
+Xo0TOJm3]_3^[AJMXUUHj9Y^XFd]ZdleeJN7[[kEI95<9XeQnIY4U;AbKTOiMS04
+mWYgPSa=Jo5GGO7]g[=U?Y6/jIHJJ=?GCi4^8ednBjUAcM6jI7;=MbKQmWGP:1Pi
+90;WP3hWn7?R>UbnQAg<?T`feg6;Z;bSLF=j7=[M`lW<<oU_/9`gbWLZV/Wa3Lfc
+O5k`IRE3]doF/o<>?V/jYO2ChDgo0<=c>nZja5[4TNVjIXMVdEZeZHm<dOco0;:/
+fjJKcKPVhT</ZnF[O;R=LLlQZ?`Rn56TO67`a;YGPcAK9mC/]IU^S3Ye_6KRAF]B
+[bkD6mPGHP]TSLODd0OBGfR3oWX_iRSkA1ocdGlaG8Ol:gn7Wo@[jGoh1@oo0157
+o2]oQiod:nUon0D?o`0A@1eofR3o09j;nHXnd@Olm5o<Eb7o00[OhNOm2_YOoP53
+o`34DOl02]oQiod:nUon0D?o0<A@1eofR3oWX_iRSkA1o`0m5o<Eb7o2]oQio`12
+_YOo081@o`3a57o2]oQio`12_YOo081@o`3a507GoJ8?nNRoV:?]47o?AOc5LQo`
+[OhNOm2_YOl0h1@oo4DOl:gn7Wo@[jGo0>0D?oa507Go06R3oWX_iRSkA1ocdGla
+G8Ol:gn7Wo@[jGoh1@oo0157o2]oQiod:nUon0D?o`0A@1eofR3o09j;nHXnd@Ol
+m5o<Eb7o00[OhNOm2_YOoP53o`34DOl02]oQiod:nUon0D?o0<A@1eofR3oWX_iR
+SkA1o`0m5o<Eb7o2]oQio`12_YOo081@o`3a57o2]oQio`12_YOo081@o`3a507G
+oJ8?nNRoV:?]47o?AOc5LQo`[OhNOm2_YOl0h1@oo4DOl:gn7Wo@[jGo0>0D?oa5
+07Go06R3oWX_iRSkA1ocdGlaG8Ol:gn7Wo@[jGoh1@oo0157o2]oQiod:nUon0D?
+o`0A@1eofR3o09j;nHXnd@Olm5o<Eb7o00[OhNOm2_YOoP53o`34DOl02]oQiod:
+nUon0D?o0<A@1eofR3oWX_iRSkA1o`0m5o<Eb7o2]oQio`12_YOo081@o`3a57o2
+]oQio`12_YOo081@o`3a507GoJ8?nNRoV:?]47o?AOc5LQo`[OhNOm2_YOl0h1@o
+o4DOl:gn7Wo@[jGo0>0D?oa507Go06R3oWX_iRSkA1ocdGlaG8Ol:gn7Wo@[jGoh
+1@oo0157o2]oQiod:nUon0D?o`0A@1eofR3o09j;nH[bgh[CA=HN75Ee9?R7An0A
+o`0oBEdOo2]oQiod:nUon0D?o`0AGW?a7l4n3M8Rl<gnUJ3HFEc7hQdSK;3JaA^^
+KU@L<ZPSRP3gZRRRP0XXXX0::::02RRRP0XXXX0::::02RRRP3ooeogb_[fddfb^
+=A_iEP]KF=iII6>5B=0FIRO@04V_bHoJ3n>7`WekaO=hln4GaCl4J[=Zl7Qjde6`
+eSEG/VA?3V[=Z]^mYLa@g6gcFUTSVSJ?16a`MbUFoG6_ceoJZn;n/O3OhUJHWRCa
+[Ln0o342N6im;I35KfF[gDn]R;F8K^jUSK0]K1HgF5GSbTTTQ;Q<80N`o/XJ[YOR
+g`ih`n95]hVdGa=ZWS3Gf_MC?QjEim</KZ6`/kA;B:FADNAT]h8GTTI5;/i>eEfP
+OE=O>_k>_SWDOR3Hn=O446ZcN8?2DWR:hohA[Diha6K[C9;JgVObR4Cc;N6lT^HH
+9<IJ:=NG`7Kj:X0::::02RRRP0[b[hco0?8ROmaGA?l0djF]NZei=lKI13h0NDQV
+2JYXQ`X;<LJYJm0>C@1n;7o1EOl0i>6l?Ol0H[FWoYMOEnIMOYCo0<5Bk];gmX7`
+o;77961hG]5a;6dKOlO]jNS077?F_cFX0:mWoIaoi>6n5ol0f=>ROnUd=N<Ek7nc
+]88_fPOQU:@F2N:=5K2P/aaNa7P3TWfX0niOfd_nCUo6?oL?o`3COKel]em>o]Tg
+2gGkB?RnM5M0gmWlB:DHH/;LLZf2:nHZoNlWo`1dXohHoTSiG4Oa9N[2_D_PKobF
+_hOo0?H`jEojEaEiKGYg`BT4GaVl1BT5PV_jDf51ISRkS?079?]GCS?h<oAoTACn
+97eEneMobGkaCofho`3Y51Gc_Gd3ne;L;MO7Oa?>R^PKk5a8YAQRcP7:]PR_Wj_V
+//ogJUoQGi7afIokcEoa?l`[j8oIAoi;mhFokO_o04RW[ig[j1oIJ^5]OS_hHWMG
+L;m]hSD^acIcSQEbCAVOnkEOl;o8</ogVUoRGiWIo4So09:9hYok2]moj?N^;[/?
+R789O7oRJD0Z7e>mK30Z`c>ii1i1mZhn_W:?`8n;aglNOZoc2_J?fN_nB`J1o`1_
+GoY;;GRmN`o0>hFen;>QC^[^5neLAZGHi]YA`Zi9[?5o`YnSo8j/TogfQoRSnJ<_
+hQolSohVo`2`WNonSg[SZjgam89O7OR>D0Z7e:lK30Z`c<ai1i1mZi:_Q6O=iQo7
+ZN[o032_Y;mUgoTOm@ok1T_o0:?Q[i][j7oIY^d/_7Mo;97983Y/ZhRSJA_mM2NR
+PW77FQ7[l9OlS:QjWR5555OTah0EmKO/]Ol0<com^Go]N_TV_ZSmVNoS/Ol0Q9?<
+RVTgoHlNE4lV<NMefPhjlI[elRog^7co02ImK`;o0<SFSofmo`2T/n:j:::oACnQ
+`[j]oIboi5KhROl0GU3o0>RkV_U:_YomWjnS/_2oa03aBbNIIaHlZ=Y<HS^N^d77
+G_@1mSO3SoTWWQOo0;1EUoj8B^c[RoQ^Lo3_`/OnXEHonR4[]:02RRRP0XXXX0:l
+[lAOlUNl5ol0H>e_o`12/jmD[b3aMN9IO5[`E8lLTP>Wjd<AA]8N]WfD4d0N_dEQ
+o`1_fol0cjgOoP;;o`34dOfoKol0?[Mon0/_o`0C@1^DEQofoKoln]go0>0/_oa=
+7m_fo`3cjgOo082bo`3a=06iAF7o06oKo`3?[Mon0/_o0<CAoKm_o`0n]goh2boo
+01=06iAF7oKm_ocjgOl0h2boo4dOfoKo0??[Mol0P;;o0?4d0KU5HOl0Km_o0<n]
+goh2bol0a=7m_foo03jgOoP;;ol04d0KU5HOm_foo?[Mo`3P;;olCAoKm_l0ln]g
+o`20/_l0lC@1^DEQo`1_fol0cjgOoP;;o`34dOfoKol0?[Mon0/_o`0C@1^DEQof
+oKoln]go0>0/_oa=7m_fo`3cjgOo082bo`3a=06iAF7o06oKo`3?[Mon0/_o0<CA
+oKm_o`0n]goh2boo01=06iAF7oKm_ocjgOl0h2boo4dOfoKo0??[Mol0P;;o0?4d
+0KU5HOl0Km_o0<n]goh2bol0a=7m_foo03jgOoP;;ol04d0KU5HOm_foo?[Mo`3P
+;;olCAoKm_l0ln]go`20/_l0lC@1^DEQo`1_fol0cjgOoP;;o`34dOfoKol0?[Mo
+n0/_o`0C@1^EiIlEo`3T7n7?naQdOodZB^go0;O]o`3We^oo005Uo`3RJlcn9f[`
+gE[hJQB2i@]hQdSVB2A5o`2?YNYH0D0NdDDDD055E[fm/m=/imAe2M;Je]HfUVUT
+H8TLJ3Lc<ah2Z0BBN0:lMl=O]9O/mN<]@TdW`SlBo3V]G/D4]bl5WZ][LB;10YNF
+@[78B4A@FI/H0i=07]M5E=?e2aeJ`]]DdbhS^k>lRBJ2J9PlL/DRQTM66@b/Y117
+15Fj02RRRP0XXXX0::::02RRRP3od?gXebNi]]5e2i/fI9h[NEhfB5[UPjXBYF5B
+6T8?A0@Fj0lenI=clHOSmN`Vg_?4N_Ca=eBCh;JhbW7/Kk5OZEG`IndUh2n8_SSa
+e[PdnhlF9HjEhJ/MBd63`mZUgYMWMg]SObbJ[Ig4UY;3Vj^kHfl=_icHf]8dFeTM
+Z0?NOfM_4oS7aGh9_;oa_OGVXG/>XB@a_Nn6;_`Y8/:`a<Z[IGT/dSZ6IR9P`ERB
+P6D9?_EO:Ok95U;Hn3O4`][Ka?7X]a[//nUcN<9;imIW]Y;Be;VE=@IYXdRW4/4@
+`PI8`neVIYI?ZbP0XXXX0::::02_:_S?o`0R9og5M4om>U[GZ]NEO6Oo094Co^:j
+9ojM;FP3lE?n2Zoo02L=hNok5Jdom;[j_c;[m=?n2Zoo02L=hNok5Jdom;[j_c;X
+0:mWoIaoi>6n5ol0f=>ROnUd=N<Ek?l0/holW3O2o`3k6WA?oBj6P3kQoKBoi>Gl
+Hol0L?l0oCOKel]emBO]YOl09boS7o^7o`3Y_]jnFjoNlWogBSoQSnB?ULAo4Uj/
+:mBn1_l0bF_hOol0H`jEo`2ULENFejUl3Ol0T]O`o`3naQd[o`1:hZjLIo1Wj?l0
+8RWlB?ZKmZko09;mhYokLOl0dRP[ig[j8oJ^o`2BoN:Ong7o0=8X:nMjnJbcoMZG
+n5OTO7IWo_=Go4oc2_XSmU7o09;mhFokO_l0dRW[ig[j8oIAo`2BoN5_ngko0=8Y
+j<co0=fZo`25oT6FOkcBo`0Bo<jchTOlU4lDo`3HE__o04NmLGGJO4So09:9hYok
+2]moj?N^;[ibSl2?RlMo7Wj_l`[fSmW[oT/6POl0KeojBbeh_G]7k?Go02F3@?l0
+]jom9IJcaOl02Wj?lSZbCoOJ7n:?iXa?R7ob?oRKo/9g_oXmjhj^an8Oo8on9_l0
+/9g_oXmjhj_Q6O=iQo7ZN[o<:nT_fGOnAoe3o/6Bo`3Xn6_Vf_Y;mUgo097o053o
+0;1T_oXn6Q7[l9OlS:QjWP]555OTah0EmKO/]Ol0<com^Go]N_TV_[KmU[oVIol0
+]bom[ejnAOkg3ioTcjgPGoTJdOl0]kodUW`kAAAGj:Od>5OE_k>Go8[O4Co[bQom
+5g=O:EOE_k>Go8[O4Co[bQom5g=07eal>?l0TWWQOo/5FGoXQ:k>^<n77o9??2oo
+062[;od@UMW@0DDDD0555501GUOR;oT[gP_o0;1f]ol0XEWGZUNEn8_nB_N2o`3/
+7Jgo0>QFM07ZU55501AAA@0DDDD0555501AAA@0DDDD0555501AAA@0DDDD05555
+01AAA@0DDDD0555501GUWaGo0>@OhLok67AooBY:mC[bch[o0?8?l>OmS3XooYDU
+07ZM55507WGaPoi9;hfok0NYOnTdUO;G`EeohajGnc7YNZJghId3AM;dc`33LJKZ
+=SZdfXG/Td>WA]0I[>OC;N90b0^oknD:`2HMBF7fc[6TjO[nTGfQJ]5imSZ<4]]?
+7^IMlDbU7GLY33:TS888k6/Jdl4n6;7`A3l>;FbfN7KOCUdU;Gc93RbB7b15iQHb
+74HfkRfk_W?=07`KhAdcaehboJ<n5WRNhn8>ZjM9Z_`dGEIkFe]]:44Vbid_kAKQ
+I;9f4E`kki2[2A2@8GRCiJc_6Wa3n?eYh?l0SAlI;Kam;YmQl:_4Mo5YNS@F5Pm_
+OF5R]];;3OBB@=<`IGTSS<Ca>WgfMbE2oIf]O0WhKJh?2[BfMiHcn2[Ok7YEaYnY
+GfWg4=YR9F]WW]Ihi9HG4<Nn>EWERP918cFSZ?`Kn6n[N5?5WPSD=8lgAO74mcMJ
+aKoJ9eneCGRZ/cKeT3akPRlA/X6>0>J0?SKamlD_fP_5o`0C_RMXW`]CGkI?Qc=K
+JOYM]Y5[XDmUNglUQ3O5mF>ZCAgGT^IeSEKDaHS1LB5cQ=gh_o4Oh_N4_4Wo00Ug
+SCE=Nl2N1K6bdbkBmdGCm>eSCKFLP=Oaji4jBgbaZC]3faB=Hl^I@`hnSO7Gk?7`
+Yn8f^GGR7a=Ymf;_DX4]=@5SZMoYd>YFdN@T=o3Ic`aGLH35@/j^=Y:OL9Deo4Wk
+=O`KlFJmLN8=JdFIW_T]hkfcP_kffdfoFd@A`OKM?PVBd^O;AEAO>ROiEENEE@03
+`Sa_l@ORMh?n<<fXn?l0a1[OQK`Bf]jIJj=LjMY^WjUhL^[>k5_0KOE916nXfec=
+M>lJbUhX8mdA1KiPggIGR5kncYl8mAlGcn=;gBKRFk^[f7Di[Gnd;dJG;Z5^DJ:l
+TddCRbJh@aXA:HBfi@fM`1[fnP0XXXX0::::0?oAoOb^AohCW`dO7Ol0`[F>hNCG
+edkneY8DRTI8K=Y_8SNFD;iLIUT3R96H=9iLQD4A^AeS^/J<kW2Z2BO@2_cln<Ga
+@n7OQKhPJKlEo0Ga_l<n2MJlFn7[19;KG[M]@doEM9RW^I;6kRB:i]9DM7V^5F@>
+b^Y8:l0P0neo2GSW`ehg6/3`mL?;;X6Xg6TglD/DT4]_NFfd/S9:Z]QTM98f0fbA
+^TR4XbTn1o77CMF_?76RB`F>XGUai5/^QCFL5e;1JJV=@PJNFiN06>931]bdYD65
+Idb@k:Ko0>bhoPkE?2gRCaQhJlNfWa9e?a9[DUg[N/F2;3JWD4];J1H8HENCbHhK
+F>1D@b>f?VIRF=OCM07;SaC4O6SN2_k=e3cEdlJQm^nb_oIfdbV;b1MOLndI6haO
+NfO=d[hfl6j;heG`1ho]m<doE[GF9O35]1ZQN6k]YKga6Y_OkAU/6V25i95:19hR
+b<304LQ<3kaXX0n:fdf7oQ18BnRjVOQ^?5Sb]YOmWJPK_na?/SXZOH17m[lWne<B
+Q?:`8<7KiHcFA[6Rn=?k7n6lGR6`eJjej7@m:SdbA8K^LfF/9MFa^G_iHPbA]i8D
+BBC5@j;L:2@k:O^^RP3iN]=9^=9oJ8^]GdRfTeM]M^co06PmaY5i0=;]Hm:B=6]m
+CT8]YTNN2=C4P9;C^@@HY<jOahSn9AdWOYEaY2n7o`2dM5bTl=`eiiWmXff?WF@A
+kMn?hLkLS[cGdMGUGaWo0>A4o`2h[XWo0:M;FP3l?_l0PYn=LGhnj0=ONgNho`24
+I]MY]UMDfOKKg6@iHicW_S6:o>6_ddoh:[olW3N7_naF]?l0d^_Zo<^P0[eomW_k
+BOSkl=1I51LOl9=XgUV@4X7nfaKM`63S?G1cR_8:mWoIaoi>6n5ooHdj9ojG@d0O
+JOkH0e8O]5N;A[3@]Moj1_<0IHon?6ga]34WYS>Ce[iY[jToKBoi>GlHo`3L?ol0
+COKel]enmi?o0;YAo`0<ObAl[R?hT_EQGYO`GndWhaN11I51LOfmYOUV@4X7neAk
+M`63S?G1cR_=:mBn1_l0bF_hOol0H`jEo`2ULEM><oPcm7nA5?hTOC7kCPe8O73a
+:=HJ5[_o04?NH0bao`37W3SJ69?C6LW[GP]OA7kEgo9O_5?o06honTD5O>mO=IIo
+^e;o00[lShk<o`3NJ_l0ROiQG_Gk<He8o73`d=7J5K_o04cHI`cAo`37W=WL58?C
+><7[GP]OA7k:?o9O_2go06oOnTDm6Iok]Eo`_lPbcoNJGn9OVM;hnndSaghS5jD=
+aoJEiiQS125o>KM]1bLIjI>LEbEMYlB?nBRN:Ol0/:ggoXmjh^_W:?`8n;aglNOZ
+o`0`[e[h63DSlDm46S]2]goY>`cQVSohmYLkPY1jIaPmJlU[fSmW[oT/6POm_GoY
+;;FN;oQCm7nAeI9o_]3o01Ao=7>N>O]8lKN81NU3LOfSMnHH`@QOcVgK@LW6NVCW
+5L]GHo4?oTOo01=of4kgo`17_G7El8ci_<?hmCeOiQG_Wk>Pea_6ej=0NgBho/jG
+LKUGI=WW@i`4:W>LMlHcGPMOBGk;_o8ojQof39Oo04O3@Sen4_l0TID?Dl5XXX[l
+V?02_Y[mWAO4[Ol02@ol8m9J9oajNKmZBAlojkK]f<^>nLneO<]OFgk;Go<co`3K
+UokG[elRo`1kQlobImK`;ob=J?l0fmojBchMXXX[m5?j72_Y;h4[hSK`ahmo/2Bd
+AAIaNMmYBARAiMa]fK6G7O>LmZnKJn[OfL_nAFn8WoGU3oj;^J0?[OhKIohEehFg
+MOk:/Lhojh9GQ?Q7CMFRn?>XGLUSZ4NYNOZ[JUNb`GBf4nV>U[oIdDDcSk>kYQMZ
+Xa:<]bL:GK?^o`0>?nBNN5on`EIOnR4[/j0?3O7GR2olIo37a[3XFTj_ICJILG6W
+cAbfTm]MGL5/jOJW/0^99EVQ;RgTSnnf=W=N6j]Y<Go2^]76Xj7[<oPE?46/B@jK
+KF=nKj>bN2k5RF]4CkB/@^C^P@aSb]e^`22<4OLU507aEhXdSabf_N2AhV];nol0
+4:JMhHF`^[B2jU]kKDhM@3Jk9LCA1XXDT]_;1leU</BbaXF98[ZO2VWj[Ko7KDKj
+F`e6?DEVeEmB_9;Nj5Q?YKYJo`1WA@b/?8TM<3JTK<b<]c`YM/oEU507bol0/eJ=
+Ln6;7D_2e[K?Lj?YmYYXQeNhdRkdJj_[_I;7L[?1N7c97S4LCVH01S:DiJ=SD^YA
+O5`O63`aoJ]cXK:K;FO/_T`GBTAk[GMi^jDiK6g6g0jneOCMNEn8_nB_N2on`M[O
+oXEW@1^NGlB_nOSB?no=aol07:?;n9Go03lJAogi^?l0hiGLDD0L?iOa:oin=8ok
+lg7o0<LXl_hUOlo6TOl0OVhon>Eg55073nGlB_l0WhdSo_cLOo7:?;n9Go?aY7oO
+Vhon>Eg55073nGlB_nOSB?l0_cLOo7:?;n9Go?aY7oOVhol0SUMaA@1`oUo4[oWh
+dSo_cLOo01bSboREo`0o6TOmnKSo0>>Eg55073nGlB_nOSB?no=ao`37:?;n9Go?
+aY7o07i^?oSUMaA@1`oUo4[o09n=8oklg7oabSboREoclJAogi^?oSUMaA@1`oUo
+4[oWhdSo0;lg7oabSboREoclJAogi^?o08iGLDD0L?iOa:oin=8oklg7o`0LXl_h
+UOl0?aY7oOVho`3SUMaA@1`oUo4[oWhdSo_cLOl0abSboREoclJAo`1nKSohiGLD
+D0L?iOa:o`2OSB?no=aolLXl_hUOlo6TOmnKSohiGLDD0L?iOa:oin=8o`2o=aol
+LXl_hUOlo6TOmnKSo`2>Eg55073nGlB_nOSB?no=aol07:?;n9Go03lJAogi^?l0
+hiGLDD0L?iOa:oin=8oklg7o0<L[c[hS9hg4GQTj_=YcF_l0`T>TKa17</Wo01l[
+S1Ib>_]G_]NFO5Oo091oQco/HM7o0?BY:0?Dj:::0??o08/n:mAl1o2_aUhhdR>:
+Jol03^RjSZ=^ThIXFV];JBI5T2/[52bP<0`>>Q1i[l?o0?Qj_nd=o`12mhFol1;k
+o`2CJoI[mXko09=in:7o06:f]ol0Y3=GlV=07jJOl?EofQ_nQNl;On0Umol09]OH
+7k5?kJoaDoJ@n:VZn1o76UJ;Hf5SX/nXXnW@G<DaVR^KJ4:aV^9UfKIV90D787><
+PoPGGjJOl4Z?nCQ_4?l0f:ego`2UeS@1o@1AG<n:o5VVN3]=CEME]kniQNEHP^WJ
+MMjW=^H4PV6bRVT2o:L^EfPh1>B<n>n:Y]AChgO3;FK3FMCR/=MQe:6GCGTN2d:A
+fKC8dUZEA_=gHci^FC605nH40nR::::02RRRP0XXXX0oom;mo:n=MAe[m/Zfn=oR
+]_3gQ7`kOn3aY^WAjIm^ejk]X6I;Zogc3bm<VHGDTAQ4lG:AZ/FbB@/`Ck9906C`
+1G`Mnd3YWSkFo7UkHn5mDcXGSk@]:dAM@CFXK:7@[CkO?;Zmf/3C8l/UiJ=771;2
+S^/T@1I4bJ0?Y;h@J3lD];]o4V]O5^o]9MFlAJV;f6`djh^;Z`d^fBd]kEKJgU^D
+RMPc@=>i4DJnI:n4j/g/5O=Gk<gQnG`cXoSCBm<PJal9an8kUO3]W9NRoNgdj>f]
+XgoN2JKI7=M;?L@a<ni8YDg1BMRoB]01AAA@0DDDD05NEO6OoTA?nh[XWoYd]JmE
+[bKhfa[=h0N9b`EmDd@7JaDljYJm6DPSjPd0ORao`EGo0>CQ_3go06:eYojGGeOV
+GGjDo`31D^cQ/OfPO3lD;B<Yl;fSIUUNI/oKKdONTISSSYW5OV]@0Ek?ncSo0<W3
+O2oo0;6WA?l0d^Q[aR_Ho`1WJ=I_fPOQU4i8Eo56RZB[5F`Kf8L<Y11m`LRP3kUo
+KBoi>GlHo`3L?ol0COKel]em>o]TflMYndSh_]hRk:_mWh<S]8g=QKWUW9HoROJ_
+V:_g_9omdXohHoTSiG4Oa9N[2_D_PKobF_hOo`3H`jEojEaEiKGYg`BSFKhcN0XW
+92_[nU:B[5F`K^<L<Y11m`LR^W6O`InSo8RWlB?Z[mZkoT_gRWo]aol0B:2_WN_X
+7mZFgS]?S_hW]hRk:_f;1TMY6i/h3bcT/Oa?]GcmGcFFOk]Bo`0:o8n>c?l0gV[o
+08WnHEm4O/XolUnl;Ol0KmojACelkem0o/]FlMglMo35_:GEFnfi<K]6g5W>N6@Q
+Qn1mZ<co0=fZo`25oT6FOkcBo`0Bo<k?hTOlU4lDo`3HE__o04NmLGGHO4>=HO7o
+08VR@TZVYgZP/aI/2Mabc4TWg9bJhn_W:?`8n;aglNOZo`0`[fSmW[oT/6POm_Go
+0:Bbeh_G/?`3]hk_h/j5KbUeE_]FC6kA]aKBWQT8HOPOJ/lGo2Wj?lSZbCoOJ7n:
+?iXboR7o0<So0>9_n`WNo`3Xmjhj^]lOA[3hklAa8BECD[a@FH/f1<`iIRBCkTi=
+LUG`S?Vl`oSe?EoV5OBGk;_o02?nXOl0H<Uom7`elfem3o/dfL=mhk_hYVTEAY/[
+IRUN5/nM2?_A/YacdcRQ7[l9OlS:QjWR5555OTah0EmKO/]Olc?o0=^Go]N_TV_Z
+SmVOC[Noo`24TlmiUl_k7SbYiHN_WMO;ILm><m>eN_TGnm`nOi<n]h5oi6]7o]ko
+0=9IlEdDDEnRWm3QGeKncUob:ga4o`2_:7odGLelYEm?o/oJO1ON5oR0IVUGbk>;
+7UCBAMHkW[iK;^jMld0OHg`ho`2BNN5on`EIOnR4[/jh_hKS7`kl;3oZ5F?o0:8B
+^dX0::::02RRRP0[b_a5o`0UNl5omPkFo`3d:c[eB_8?5eU3OO5W`E5<dRPJO[Ao
+MB_4N]WgSICn6J0?Gj:`o`3Q7[3o09jgOoPKLol0abSo08Aj`oijgOl0h6g?o`0L
+X0g::`on4N/?nN]go`21]colLXohAj`oijgOoPKLo`3abP3LX[3o0>4N/?l0W[Mo
+n1]co`37:?l0Q7[3oW[Mo`3PKLoo01bP3LX[3ohAj`oijgOo086g?oabSoQ7[3oW
+[Mon1]co0?7:0=bR_U_o08J=oIboj6jko`3:]ol04DOl=6o/iOl0@gGOoUFon8[^
+o/c4o`3?^Gg<h_kC`go?b?gXnY::nFon6SOfL_l0XK[_o`0Zgoa5M_hCn8g`UlLJ
+M[>[N5mM^kfed28CgcnKZ<OTa/[/3RCJFhSHhD4lNhZ:V0[`G=:Vd_AU@c2Q9fSD
+CnJ?KJ:nNol0QLO`@oj6Fkokke?o00XohG7l4?l0XIK_o__Do`32XnZEOi7mc>On
+fl5ocoSo0>1;o<nQ::nNo`3QLO`@o`2QU^onnmCo0<:j7BO6_`hl@J?[>]N7]C_]
+APd60g5dZCg/KQ0[^0XVM0BA6f>OZADc`mB:_:;Bm2XI_Q9>d:/Fo9YkJmcf>R_U
+7oQX7hHOln^_o`3P@ol0lUdOl=0o33oWeeoo0<27o`3T^/KWWOjfiKocoAmGEc_R
+ca=HN3]0^_4NYabbfeY/g[25J@nHjaS0IU7EQWWYGcWo0<=0o33o09mMOol00Qoo
+09;ZOaOhTl>N>OPe[oR;@5e2::fWQ]b]iLB]Ua=0a>ccY48`haW_fh1[WaME`YCW
+7M9_l3;4lDHFM2Zl;ECW6<V_T[Voo`0=<N1?nO3D_noD?oajSoQYS`9ochJUo`1n
+XOl0hmG`gAGa7n/F9k[kSl[o0>8QiUgGg7g9o`0=<N1?nO3D_noD?oaj_I_2ORJ`
+lHj1Jn8m<SUR][_O/FH:/Pl]fS>@[<>ZW7?B_be[kln2VSFUgl<]6^9I;UFKkATA
+gDlJlG4PhE72Sl1kek6Bi[F[eG2Y]JohXn^h;hZaN>aDZEMZbRgX[JgBoDm`X[3o
+0>4N/?l0W[Mon1]co`37:?l0Q7[3oW[Mo`3PKLoo01b_Ycm==b_;?R_o0<Po`iof
+<>So0?YDUM_o0<8mHOl0?Fko0?0fiol0SUNIo4kA[Be]O3LlDU`c;hQdS0T^Yi5o
+hnTjZkUCn8X0mXXXXX0lIoJ>o`2CNORQo`1R][Oo0:@cEo9SGmNoaEe[Do3O`_l0
+67R;AI_/fXjEXfXGE];]Eo;VP]gTSKJh:W30730Pm`AGhXOl=YO];ol0@honDkCo
+0?i7[g/XhN[Hf<YDVUK_Oo9W;R<G6VdY7iKenVWo00BXo`2CQ_4?oH[GOoYMHeZO
+l=YO];om3SoiC]?o0?TN_[WmS7mX?h_o01Hn:6ZN7O7n_of[Ye]Xdme75mU]H<C9
+LFlJ]^PRASQGHH9acdb1S]a_1n9XDYEYbSIMVol08bYiQ2DU59oelcm<j`]Al<j9
+Z^]JChQ_kKcM@d=YV/iMk[iA^8o:TnEB5KLQal`>>X`JgJ@/X8DWTm1m:nD>lFRR
+T130<Yb3b2:05XXXX0::::0?om?mnfEGDXh1EQPPlPPelPo5kh3g6_J[YBN2OQ=l
+<o46UJCYT=SK7a=IUIkE8GT:F]^/=SL97JX61AE8`c?QNin_jo?KmXFfd?l0hJ0Q
+?a4l<N?O4GQ^kl>FRfToPhN95P/[^6k^S:]eoHllL<SC8j5L:ID2O?l08dIX0mTo
+IBW5_hHlFn5Kc`EhJl0JahJl@CF>XJEhFSl^a4a];FN>MR8H0kc@Ba^62oj_H[HM
+FAOZF_1_fM[?hLf7PJj]_QUhIe[`_YXe2IYh]O/m@]=@^KYdSIkRA]DcLckU:Z9F
+IPMY@7i<3NlNO5EO1F^fVTajBnY@955MjWL9<T@/;BNiBeSU:=c9UfIbX:hSRT>B
+`E70?Fj::nOM6n?eQZ?QcG_4mkXTm]JJMY46_jNZCAb_ZFVgIV5ZdHnD9=:HOmFB
+@XTSbnF8D0nPZ:l??aOe3naXhAhO1lFbJbfPSBO]RNGm]FgJm?l0YFco05Of=C>6
+l_M]`=VJXGOak/AHN7=Hd_A9k^`eKCkCEM@MiXhWdbc_IXh4JA3^g^[^iME80B6D
+QR`E70?OjlZn<ol0b8Wo075M4ol0CYJeFGh/A7hSOl8@M;LF9e0j<^XNL^6e@JMo
+JYQlW6O;nbi?Vk_mH2Vgn:^>n?7a=n7nTjD?1^YJoIff^7DM5U5VlX4aS6XfdQKI
+ea/D]m1@1nAgo1EOoThK`mof:eYojGGeOVGGjROl59]7eWhQo7?@mJl2JKMn8;27
+`iJfkg5QKbg4Bc;NGSV<]6[0<5MBAe`@NmOW_o`ZchWOm2Q[7oP_^?l0hRP3PjmW
+oIaoi>6n5ol0f=>ROnUd=LYo`ZchWOl0@XJao`22nhon8[eSh2n0?7^Qo7?hMJe[
+?Q[E;:`do`0AjALG5a=ICY5335NA>lS/b0:ZZ2BC`0<d0OFWkJGo02L_haokQol0
+jKkN_U^_[?l0JcdWEo5Gk@?R[G_3FWg>ZJKMOHO:^KJ2BF9mUU0SKGEB3QU8?^2:
+nM?n48lJOm03D?l0`5Uon9[mcbS5DUQ::Lel<NZk8nHa5>G]9JMFL_GZG`=oi;Gl
+?ol0/HM:o`3B^:^Eo`248lJOm03D?o0FGohV_AOPmhIlBjAlFo16ZjYY5iJFEU[V
+VcccBfdZAaAAg<K>k<E`5E@BBNP[YaN;YNbWkjfOEMR:M>G<]3j;oJ^oi;mhYokL
+OoB:2_WN_XgmYB2ilBO6[a7[FP@BjQHG7f?bih8fN=mUY2SHH0PhH47g5N6Ol8ih
+Qoj1MeoghOl0`[ic;LACF7YYbG`[[i7b>IHJXlADJRoROCc<F_XSmU7o09;mhFok
+O_l0dRW[a7oQ7?4?o@;^_no3o`25Nio/e`G?Q_heN7=Jen2GCk2gnfNI??6bAY_]
+9TG;403;40NiXc;4DgQjRDUl;jn@IKQZRa5=^;n9M?<jOhTOlU4lDol0HE__oAke
+aMM[hmEko`0Ln8[nbAYkNie6kTSTABEM7VIUH7^23TEbWf:lo`2N4WoO1[ijUEQb
+[Dn>a^2[>]=Z3gOAmb[G]7k?Go9H=0okN_l0dUU[b7k5NOl0?2Co0;h=N[o0niPd
+;hXj;Z^/=mS/h?]>nFD5DGMKb:<TnY87eZ<EESk:N_AoTM>CH>//IAKPoRSdOM6G
+l@onAol04goHC_Oo04NmLMGGn>65o`2=O45mIiV]kSD;^B=e1:^Sb/EH7d8>AG;O
+IkSo09i=nA[hMXnMan0[^_DJY_Mm7g8JnT_fGOl0TOl0D?l0/6BonShJnLo/maoc
+bKlSG_Gk>n[jIhLlJg]m[e`UQK_YlTJ_<MZUc;4@X9kh1?hD97[L:H:]7<J<Y@JE
+nc?5j:OiLWmdoUAiLWmdoUGiImGZOb_kS`ok?[olngmc6EmKO/]Olc?o0=^Go]N_
+Tcbi?kYo:_YSmWGa9X?Q_oQ8?kO_X[3kAmTl_cVfkmWVk/Im<S?e[e/SXcF:Pg5m
+ObImE`CPjd<cYBU1YNmdOl[?SRR[?f>ko`2N3ol0O9o`XnagOo?1o`3_TohEnP7k
+lEZn[OfL_nAFn8Wo05i@o`3X^i[iKnagOo?1o`3_TohEm6o0gG]7l=N6?7RJoMaj
+NegIaR4C7I_:Ag6kKW[SL<oFP3k?n77o02Cc`_l0mPZbo`3A2EfMLEl=R6n7GQIU
+>@M:/B?no2Ec>SO5EMFlOCN4CY;`JLd]iJFVY6I6Bi^m>4I^H_:7c9]laPSI>h`b
+i2P8G0?Fj:iOa[hXPl5n5m@lBcfkgWf=1iM_6EEiiY64L<:5R53BB<Z0ThbNJl_^
+OS=ZLNPfLUWhGNklCG6Xg^VBjBUg615;YlL/dcRh:hJ=Xhe<9f0/IHPhSba@0mhX
+[`_D_SWYD=iXSJ9YcjYYFXFVTGmgN;<TOfBdefinbf4_UW9T3b1fO1D96S=USQC[
+jAlEhmClNG7Q=m:NgdccKfe]MCJM2UaMjL8cLaND?V@;_H:a9g66G8D12h1jkGUO
+R;oT[gP_o/7Jgoj5IeGn5gaFChTNL/VTbJ@kF6WjaJZlZbVKC=Elkk9<fd3bi6lR
+@?4Lk21lcI[coDOS1l;mFn<7QR?C?4mSL]Y]U[<Eb8iPgT^cFXEGad9:=nAX0nW:
+:hKo08FIh0oj3mYogl57o2c?07o@O]?noPX0kVR^6ohFIh0oj3mYo`1o1Ao`/c`1
+o`11ndokn2P3bWG?f^?fNo3N]jQhMe[aGmVe7B[RFe^H_/=loUc@>Hi5g90E>616
+E91k4R/[oQ];mVSo0:77o`0YfXOo02?Gi0O67`chUeOh]n=mEd_B;bk/[gG=BWPV
+R]YGSURT^I6AeH;PZbT44MAGWGo24N=?nP1Z7oP;;ol04enUD>4l_U2<WEMf^lOl
+SaYHn/VdXoPcma?n6d_fJ?l0XLOo02WJQol08mMml>_fPoQ1lF=KWl>n0=Oo0;Ee
+6f]f^Y8_/]e1R57B=VgCa8Y`cZ<0iijH1ao?ko`Q7SCo0:06XOl0P;;o0?4emXo/
+:`g7PSh]j_Z_S2gVdFbUd>hPBJkRN6=YF^KIPPI`0F:Zaaj0ebiW`cPJ>7WEYe6f
+UYZ_lRj6=ZbVX]J7c]AFeo`SWR7o0:1MeoghOo2SoQ7?4?l0d2k[o_`on5OCOFJO
+lbnlo<?Z]GnEoLH]OKWk:?l0bC_haOl0H:Qom4G]O7_o00SWR7oX5gGo07hOo2_[
+_mV^iQl>N1_RWHJoWCkSEM>RS]8ieJ=Yg4=fYE0`6hiMAajR_9c^_1hJBDUdo=7X
+IGQjR[GLG];YoMIiEAE[k5NOll9?nn3AmR_?nN4WoO1[boJ`kW`Ge6]o8o^IE[jP
+n0go0287aBok1RonR;Z_VWk5NOl0?2Co0;h=O@g`IeGC]5l5O4FaeJMKBhe;CeS]
+TTnEYWlZi6e0NYbbSlAG1VMB;XBBOKlcf^7l9EF:CL7];XoiI7QM5COIkSoWTgi6
+Sk?LOllVo8elOHn;o/n_o`0ngmc8JnV?2?l0bKIh[ok2LOl0j5JElfoIkSoWTgi6
+_Ol0`a[6Uf_`4lBN7kRiB?D[WD4TR]f>97@=KIH;g7b]nA[UaZKXE5i?lSj3Qc1E
+Xc[GPohLnSoUIhUACo;To^WlZ?;To^WlZo=_ZmCnEoLN7oImOoWfo^Hb_dAn1Go9
+:m4okNOo04YU[llO;To^WlZni?Pmhhl8J;l>M8dcE]F]kBjQndKhY72/^jNAQTNh
+8=O@L=dYA[]bE]?eAmohLHF[37CLh];TNjON9m2dE`go00/c`1od7kCo0;n2SoQI
+WP3o0:3mYogl5OK7kBMcGUWaGoi1oQco0;67Aol0dZB][oQIWP3o0:3mYogl5NMO
+4Gach@eR?`cYnUj_KgEc9hQdSK76h;75bY>1@1kmAAA@1iKlL_l0TRWa0ok5kEOo
+04TU[nL6_jB?S9Hg^ZO27aaYVVFlUgNGNQJW3332QTTUTT]I5A4A@Bc<B001TWPE
+n1?o00Xgheom4ol04?l0h:[_o`2=EnUL3Eh@YE5:BFZo8lK=8]bETNFemkOl4kOn
+Bejgo`1RmLonUMYGbgo`Xgheo`3A?o4?oPZ^o`3heGf_n`Ol>?R7h@n;f[jWh]l;
+jYXUW;XEa2TemICfdKB=MF[10lZ:2a2TPIcP4mSGd?469Y?1EDY;K^LN4YbEB>Qn
+X?R_GMFl?JJUmXgQfnlCc]:Z6ednBcSVEB2C8CNg5]7]1010L]TS2TI8o?ghVfl>
+/n5ofR_RA[UPH_R5h<^H?n4FTWRSNnd]Xm6/K[CHK:A6K0W_iIEObWfb^dTI;Z<7
+m::hgE_Qgh1eka7Hn;mKl>JMOjiY^ck=OCf/DUc3iK5TfB/YIMS<FG1nDTTH9=OR
+Qm:N;o]1GMW[<GPG`SZ<T=aXVZN;M>/?4M]_3YmVU]KRJ2g^Ekag5hU[6b?QI5OJ
+@b]]??l0`ll9N7;nKheo322do`2:6dgF[J:d/8Me_JFcbJGIGEeJfhQ:0@NNgV?6
+YfKiIDHH;;GdKON0O0^Yaji3Z?QgC[Y?4aS>ZRBdQOl0]0`a[56K[:o_RTJ:RUlk
+ED0H05Go00ohFl=N4m6Sl>n5m:]M9d^7ND]KF58H@I6;>MR03;/Bc76F99>BC@1l
+SN2o47a0dkmT?h=fGP3Bknoe3G?3GQne^KjaF2FKC;E]=SNJkF>hTAI9L3I23^DB
+>[^6AFDm?naM:Zo19m9Q/=@/;OB_4WR^eQ6X_i/kA9[em/c8I9FMT1l]fMRBj]bA
+QSm@jGYNVJ7YUWXVRFL>WjMYl<M_KFe_6/D<4<BQ8hhhd0E4A@5EE00000aCM;dS
+BM3]F/M5/X=?]VVW^35Ka[4QV^IFWWT:X0=l/[_8kMFMVHTTTd0J=55507ooe?gi
+TTSRSJFEPR82c<a`01bBBN`[h?e7hYo]:Fga_lE]hN/O1]oh?6VjM7YWfkaC;K@<
+bGEo_V7UjM<`^Y8S29h^DSEH]TTQIPWgIMF]]OFdeUN`YLFm`SAbAb:7AdLHIFDl
+44711h8[lfoSMhLn47`llBJQhOl0QmncEh3lCAn7k7BKoEk_DKN`d^6eReZmU/[K
+HZJMM?84<4//k48ZA[UMkID07egl3kKam9Hn9_4Wa5e_C]Ce7a1Z_fZ:cdNlV_l0
+C]:PS/kJfFdPWWF=fg65Yi<Aa[iTc49bFKXO6_`/d[a_[NWjeMjWNf7fEHh[Zg]C
+08M@]h[R>iB6ilf:AmRbAol0;=Xf:/jTT=aicnc4bf_QSa=X4o`kl?l0`^e3A]LV
+][_AO3/RBfhLf]];7LB_5JfR=9?4j<2Z=njl/<`L=6Wd[@1bhl=BSaXgS3nfM@<A
+dlF7mUnJWmW1Q:IO]8SfKo]11f5_<fk>=^NJlhdKh3n6M9d?a3hMVe?D;nbekCTd
+R<C=0[JOY/?W62f]3337]F4g3k7TlbCQ=c]/5NgdD0N=Wh=fYl>9YPlBJV^]YZIe
+PJj5/_k@ng<QQ<V`f_fG7fMSKkO8aiG7g_WZ_No0[`cLFgQ[Ck;D[oCk7`kIf^W_
+K`]0bjQIfL/DdDEfd/;^@7RbFSJ=V3b0TQ^?K::0?;En56T;l@Sl@?kA_2CLo`1X
+OfLC1mS6Y6b6WOK0O:loc?/PlWKigUH9KbmigEGn=ldM]l?;RlWKI3JjQY4d[WXT
+DFYFc^kNRZX;4mP2JmJZ]NG]WYe[9NjQ?7Jfl8bl/[14DNYI/0OS@1iWo`0;bn3g
+o@hjGoh4YoSAo`0;bn3go@hjGoh4YoSGCOl02`_0?o@bjIoh6`oo01M7o2`_0?l0
+d<^VOn1/?oaM07<ol;bn3go@hjGo0>1:OhdOl;bn3go@hjGo0>1:Ohedgo2`_0?o
+04<^VOl0PK3o0?5dOl;2l0om3;YWoPK3o`35d0Lco`0;bn3go@hjGoh4YoSAo`0;
+bn3go@hjGoh4YoSGCOl02`_0?o@bjIoh6`oo01M7o2`_0?l0d<^VOn1/?oaM07<o
+l;bn3go@hjGo0>1:OhdOl;bn3go@hjGo0>1:Ohedgo2`_0?o04<^VOl0PK3o0?5d
+Ol;2l0om3;YWoPK3o`35d0Lco`0;bn3go@hjGoh4YoSAo`0;bn3go@hjGoh4YoSG
+COl02`_0?o@bjIoh6`oo01M7o2`_0?l0d<^VOn1/?oaM07<ol;bn3go@hjGo0>1:
+OhdOl;bn3go@hjGo0>1:Ohedgo2`_0?o04<^VOl0PK3o0?5dOl;2l0om3;YWoPK3
+o`35d0Lco`0;bn3go@hjGoh4YoSAo`0;bn3go@hjGoh4YoSGCOl02`_0?o@bjIoh
+6`oo01M7o2`_0?l0d<^VOn1/?oaM07<ol;bn3go@hjGo0>1:OhdOl;bn3go@hjGo
+0>1:Ohedgo2`_0?o04<^VOl0PK3o0?5dOl;2l0om3;YWoPK3o`35d0Lco`0;bn3g
+o@hjGoh4YoSAo`0;bn3go@hjGoh4YoSGCOl02`_0?o@bjIoh6`oo01M7o2`_0?l0
+d<^VOn1/?oaM07<ol;bn3go@hjGo0>1:OhdOl;bn3go@hjGo0>1:Ohedgo2`_0?o
+04<^VOl0PK3o0?5dOl;2l0om3;YWoPK3o`35d0Lco`0;bn3go@hjGoh4YoSAo`0;
+bn3go@hjGoh4YoSGCOl02`_0?o@bjIoh6`oo01M7o2`_0?l0d<^VOn1/?oaM07<o
+l;bn3go@hjGo0>1:OhdOl;bn3go@hjGo0>1:Ohedgo2`_0?o04<^VOl0PK3o0?5d
+Ol;2l0om3;YWoPK3o`35d0Lco`0;bn3go@hjGoh4YoSAo`0;bn3go@hjGoh4YoSG
+COl02`_0?o@bjIoh6`oo01M7o2`_0?l0d<^VOn1/?oaM07<ol;bn3go@hjGo0>1:
+OheRN9OSIl8kW`iZ]_Kn;]=TUU]9eAE^D9IVS800cbBJm1ohF5h1o`2QUdco0<3H
+OoRj?n5QN0OnQUdco`03HOl0h^P1_`kSTRn7oQV:EBSYYUT[:``@A0P88?LEPjEl
+;=:dWagLn>8]C_IQ<ea;3YdQPnaF]aN29KRJ;K4/fnCb@C_UI@GTfPKn?C8i4UAI
+HV3Xh1EPLPPm23jDnP3cJGhJfmihJlBn6=FekE=BQlAgMcMRJiVRNKCc>@dLEVO:
+2Y7K/XJ1GEbY7c5QaG>G_`B/K_`aJJ97hUeJeeBe_[_DC[<?f<GlUaO9=5L5Pe/e
+_]J>ITEA20PE2^2P=NfDD0N?J]l5O3FXjUXUiJG]iYMWXl>WfdUSJV4FmkKjC>;V
+aS^394l^fgU1IO:TSg1VEmbW0d]:n5VUJEhj^_74NYG/`VJiUQdj@`OH[Jh_5RFh
+VR2a;=_TlX4kiFD5i=X6oSdnRP3bkhKO2WB?QV]b^WJUNJVI;Jcdn0gYPcJjMY`T
+5YIaNA55V>7cY=[BKiF;7O8g6<?hQN8]3l:O4[`I[ORFnRdgCe/mHQ=a>`B8BB6d
+:8F?0;1F87O1m:m][:eGGM4d98iMKe2gdm9B@SG4bA1R>X1LS9X0lol0n5iO1koX
+LM;o0?0U?lJ?n5iO1koXLM;o0?0U?lJjKoQHGP7o0:6GC?l0`=Qon;XohF5h1oj6
+GC?o00=Qo`3Rj0>Io`25iO1koXLM;ol00U?lJ?l0QNG`Noj77Boo009Co6^Vo`25
+QN0OnQUdco`=Qol0Rj?n5QN0OnQUdco`=Qon;X0iWoQNG`Noj77Bo`3`9Co6SoQN
+G`Noj77Bo`3`9Co6^VohF5h1o`2QUdco0<3HOoRj?n5QN0OnQUdco`03HOl0h^P3
+VOl0QNG`Noj77Boo009Co6So08GUl7_nQad_o`02Doa[Y_l0QHGP7oXIM<ol3HOo
+08^SoQHGP7oXIM<ol3HOoRj0>IohGUl7_nQad_l0l2DoaXohGUl7_nQad_l0l2Do
+a[Y_n5QN0Ol0XIM<o`30f7oh^SoQHGP7oXIM<ol00f7o0>;X0iWo08GUl7_nQad_
+o`02DoaXo`25iO1koXLM;ol00U?lJjKo08F5h1oj6GC?o0f7o`2;XohF5h1oj6GC
+?o0f7oh^P3VOn5iO1koXLM;o0?0U?lJ?n5iO1koXLM;o0?0U?lJjKoQHGP7o0:6G
+C?l0`=Qon;XohF5h1oj6GC?o00=Qo`3Rj0>Io`25iO1koXLM;ol00U?lJ?l0QNG`
+Noj77Boo009Co6^Vo`25QN0OnQUdco`=Qol0Rj?n5QN0OnQUdco`=Qon;X0iWoQN
+G`Noj77Bo`3`9Co6SoQNG`Noj77Bo`3`9Co6^VohF5h1o`2QUdco0<3HOoRj?n5Q
+N0OnQUdco`03HOl0h^P3VOl0QNG`Noj77Boo009Co6So08GUl7_nQad_o`02Doa[
+Y_l0QHGP7oXIM<ol3HOo08^SoQHGP7oXIM<ol3HOoRj0>IohGUl7_nQad_l0l2Do
+aXohGUl7_nQad_l0l2Doa[Y_n5QN0Ol0XIM<o`30f7oh^SoQHGP7oXIM<ol00f7o
+0>;X0iWo08GUl7_nQad_o`02DoaXo`25iO1koXLM;ol00U?lJjKo08F5h1oj6GC?
+o0f7o`2;XohF5h1oj6GC?o0f7oh^P3VOn5iO1koXLM;o0?0U?lJ?n5iO1koXLM;o
+0?0U?lJjKoQHGP7o0:6GC?l0`=Qon;XohF5h1oj6GC?o00=Qo`3Rj0>Io`25iO1k
+oXLM;ol00U?lJhSa]lC?Qoh]O`eX_QSa1Ij[O_[fUb22fVFB@Y7L:c]]GW2Z2BN`
+[ego08F5h1oj6GC?o0f7o`2;ZaIn=_1^XG<MUHJmHG=a<MZAaGDC^am5EF99nU07
+CdDDD0L9lDkbkdohHn;kn`WNf^[KAm@URURHY978U^k:b/^2[:@22>@Jo5ko08Fm
+lFOnQee_o`06EcolL[mV?RmobBKa[of1=Bom9Y:o2>_^N4jDIDilb_ZO3LFEIaZ@
+iGK@m4ohFmlFOnQee_l0l6Eco`37:n/of>?7OSOaAlC]C/?4_R7DMF]Hm7VUF:k^
+iYheT5aKZ62b<`30<AW[PWe[h8[k<oHKo`2B/j]of19ooBVf[f/iX@F5Z=AFgHlK
+9/ADN:YYbNoLoEBT;:259i?@OB^JlEjkZgQkCD_]6l>ggRNMYE@f^WbFLLbZ@BI2
+Kfh]XmX8083U/THDS97ino4fgQeW`_l0]5O4SG;0aO4;`IL`Ol8]9?56mmYKAj=H
+gFV`fDR<f1?ObbZoU?]UMY8bGDH?iHOZAnU58260ICT7T4ElcO]1GMW[<GPG`SZ<
+T=aXVZN;M>/?4M]_3YmVU]KRJ2g^Ekag5hU[6b?QI5OJ@b]]??l0`ll9N7;nKheo
+322do`2:6dgF[J:d/8Me_JFcbJGIGEeJfhQ:0@NNgV?6YfKiIDHH;;@1mL/bZYIS
+P3TTm0:0@`3:LPm3GaKh;^O24Wk7O`L/o6VPSaNnZJ1hIP/=7Uf^^XjRM?RTQSLB
+7bbRk6ULbPXRXdQ1:R_M?PMl=kWhEn08_2efKF>Ak^m__/VWXHm?/1Nc_>;>b@P4
+Fl6oHW2i`F2824D0mOXXXX0oomGmnIIHh8gVVLAaaP/c<L1@>BBCd0[cOG?Qgl<?
+7>/GN[jeYe[Z]mZFRBj?M4b5QLj?O<F<<dJ]]TRMUHa/`>g<V`SLnO@Kfb]=B/[S
+C[n9IkJjSN:F=QUGSL5FDSd8>3GiRN<oQmYOk>ga1Bi^_fPO5nUWFM3dkBM;d_Cm
+7/]MeSk3XlefjZjaJCMB=K@Rj`T[aQmaLBcB4X50?d1n6O`Zl3o27@9O3OP>bU];
+BhW=e>eaMG5kLCcU4Rgbg5e9;=8A76R;^LkDEE6500m4[`cmW[FM>lAO3hJkY7a5
+__RKJG]e:bJSZE]JfUc0DEHg]7P]KFclYXfDUTUR4XIR6>=X7^M01AAA@0DDDD05
+N>o7Z::OhJG<4j;979Z>S:b/0EICZMZ223`@Ae5NaEi3lM?nBMCOmQ?AOoCYJd0E
+o`3Q3o2Go@4/Oo0J;ohVSoQ3o2Go041;7o`6Rol0RJj:RP3WOn4?l9Om0Baol1X_
+oRJ?n4?l9Ol0@4/Oo0J;o`29[XZ:0>Moh@o`Uod1;7o`6Ron9Xoh@o`Uo`10Baol
+1X_o08V^RXX0igoQ3o2Go@4/Oo0J;ohVSoQ3o2Go041;7o`6Rol0RJj:RP3WOn4?
+l9Om0Baol1X_oRJ?n4?l9Ol0@4/Oo0J;o`29[XZ:0>Moh@o`Uod1;7o`6Ron9Xoh
+@o`Uo`10Baol1X_o08V^RXX0igoQ3o2Go@4/Oo0J;ohVVS`ShAHIGAK4m_l0SfRk
+Ol1[P_fPMAe;BOP_h_e3BkVFbUR/7lbhP9FF2g90^9THLZdL9M``888b2<I[R_3>
+Vn4_QglJ;kA?1/5YXGQbC`c1NjQ1KQ;NcS^1MV6dW8G22BJ?cUIn6LA;T]]603g8
+n4_20H8M5/0cI`?/dFCSoP=>o`24?l9Om0Bao`30J;ohV_0?R3h8l>o4ghQWBM0d
+JeGFm5^M<^]DlAc87^]>5/jg<5YH/L^/lZL]]:aY78GONcQ6nXJ0>Moh@o`Uo`10
+Baol1X_o08VSoQ3o00Uod1;7o`01X_l0hV^RXX0igoQ3o2Go041;7o`6Rol0RJ?n
+4?l02Go@4/Oo006Ro`3RJj:RP3WOn4?l9Ol0@4/Oo0J;o`29Xoh@o`09Om0Baol0
+0J;o0>9[XZ:0>Moh@o`Uo`10Baol1X_o08VSoQ3o00Uod1;7o`01X_l0hV^RXX0i
+goQ3o2Go041;7o`6Rol0RJ?n4?l02Go@4/Oo006Ro`3RJj:RP3WOn4?l9Ol0@4/O
+o0J;o`29[2lDN4?2Jn6]FIM5/PAJCT4FdGo?=_l0I[_j`_5?o8/J_oeig7oX]Z0>
+/n6go9>_2_l0f2[7o`149GJeaG`fo`2BMN5On`EHo`3XQ:kFP0XXXX0::::02_1?
+RIYfWjWlCo0m_ZE[5Ma2beYPTb;8^h6c`L<2<lekgGR?SkoTZ_PSo[`e[nMW@1Ho
+h@o`Uod1;7o`6Ron9Xoh@o`Uo`10Baol1X_o08V^RXX0igoQ3o2Go@4/Oo0J;ohV
+SoQ3o2Go041;7o`6Rol0RJj:RP3WOn4?l9Om0Baol1X_oRJ?n4?l9Ol0@4/Oo0J;
+o`29[XZ:0>Moh@o`Uod1;7o`6Ron9Xoh@o`Uo`10Baol1X_o08V^RXX0igoQ3o2G
+o@4/Oo0J;ohVSoQ3o2Go041;7o`6Rol0RJj:RP3WOn4?l9Om0Baol1X_oRJ?n4?l
+9Ol0@4/Oo0J;o`29[XZ:0>Ko0>4Al8ifo`1Rf>AcSk=5goh3@gQ;`PRUgdFaEAe9
+]XP?o@Jn=O3EUYl>Qn0oR7Ja8?7n/N=;Vce2k2PGU`6^k^:o/iW7c]1KflKK8fbZ
+22<QEf:Am1O5Vil6jkYNTJCMj3In>=@e2mTQd_CKQUT/i;^:>@BbG9H?6/E^PL^c
+8iDS2:dYAB0NTol027n4_nP9Hol0P=5olCBol8OhBoj0USoh3AOo01=O=Ga3n6=U
+hCoIWC`][4gmYG7QZ>:J6A2l<<La^0bR:8>@8XMnb57;K4ENM`cGe_@1c_l0`QoQ
+;oX2F?l0h3AOo4dOl8OhBoj0USoh3AOo01=M5A@1c_l0`QoQ;oX2F?l0h3AOo4dO
+l8OhBoj0USoh3AOo01=M5A@1c_l0`QoQ;oX2F?l0h3AOo4dOl8OhBoj0USoh3AOo
+01=M5A@1c_l0`QoQ;oX2F?l0h3AOo4dOl8OhBoj0USoh3AOo01=M5A@1c_l0`QoQ
+;oX2F?l0h3AOo4dOl8OhBoj0USoh3AOo01=M5A@1c_l0`QoQ;oX2F?l0h3AOo4e`
+gSK`ihNdnG`]MF6Uf]]>WR7BLBA@8SS=bX>2X1i5N]eikl@_^n6?naQdSodYFP3j
+6XXXX0hchSjCZ6_O3caAXNTaNOOJSYMkK@AkUGO;=0j8^iR56F86B@1g=OTeo`0<
+Xo7goXE_o9jbo`3SmO[9lB?nBMn:On`EOOl0XQjo9>_ZN7lCEY`TZKFoE=oZSlmh
+dae:SEYZY1^jNcBom]IHo`26DOSko`12]oi?FGoan_YWmUCh9O4khKO4?DMLlJj=
+oIeS?YLe/TWfRgVc:dl3QM/DS/?UASTS77GYGbmGdinbSobDCDOn`E=oj?P[d/ba
+eNE2LI=F]fOnIh>@iY@WS:LHdfVgo<Wn7:_c?d4[SMFn7OP7G_4MSh_e_`iYeo[V
+Vk?/em?JaBG<?U/FCI:bUUf<aIL7iBBAPTefELSZ_a0l2J5hRdo`Q[OR?C]?egE@
+3If5aM`aGMcTT3bXGH>nB21]1b@OB_Q3mP5__0?PGDhmLQe7`kYedWRHaWEA9J@_
+oJ1QSF:<gFEoO58dE5;ifZX0`0:_n7o2gQ[`WXdOQg`_YE[Y>U`kbU[J`Y3238aI
+c/@0IMRFHhba99bBJ]Je[NRn6m:^]NlAGm_YNVFB6Bh^[ZE888D7EY978E@?DT2/
+^`lKn3=Dl<ol9[Y^_F5ehN2?8MAR^XW/`TI:^aW36<1B26>kPPPld0I?R3hDo2ka
+KhGdk`AhZl7j=[?QcB?9=UYUkYm_LFE[mWS<<GTflR=77iLK54fZ=ZTZ<0TEZN3_
+0_PShNJAo`08o`20?3fWN6M;<SCOI=<]8K:glel1WlZ1DCL`0bLI>1D]mhcl8JIh
+H7SKDML/KG`jd<Mb=BU^HT/c1=Pab2L]iIAmbkF3HK8aW8ZoXF_J7hXdVfeo`eZ=
+_ZfVGZkh;ZdUBN2ELhg996B[388b3@1[DDDD0OoFoOb_VChPN3_S9hLn:UclG?Pe
+Hj9hQUecB;7AmCdgF[^OCfA==W^ikNJe^XH;W6CNB2F9hl=]AUH447jK[iHn;?ah
+lFN3_R0WP[`OX]SN@JBWQfieVj_[VB9d]o4N[WBkM;>6=6lee<Dcb<kXRH@O<F8D
+0kSh8N0_67Q2dlDN8oR7=H7aAhheOnf=@]m:l`f5XjfM]Ha``=:ZbBHR]DIiFEBl
+QHkEG07]mNEo3GhPgoSCE?7>PJ_HaFEmh:ejCB7JgU<d<l;f]_OfdXHZYEcKgLHU
+@Si9@h1IM[7eBP0XXXX0::::02_6?fP;^ddohGG^XGlbFe[JgnTCCBb/4SSSSe:f
+IgMV`5EE199>01Tek?GTGac];CD?Qe?HGl:G=]LjSXdD/DZQhi8ge>fEUIFb6EPL
+44H8X0h7oQO7`=oj:9hLo`31_Ioo01fSoQO7`=oj:9hLo`31_Ioo01f_D?l0QBo`
+Moj4C@Oo00Ef_oa^SoQBo`07OnQ4d7o`Ef_o0<KX0l_o0>5lO0go0::9hLol6mWo
+0?7J?n5lO0go0::9hLol6mWo0?7Jm@ohD_l01goXA=1ol5M[o`36j?l0QBo`Moj4
+C@Oo00Ef_oa^P3booQO7`=oj:9hLo`31_Ioo01fSoQO7`=oj:9hLo`31_Ioo01f_
+D?l0QBo`Moj4C@Oo00Ef_oa^SoQBo`07OnQ4d7o`Ef_o0<KX0l_o0>5lO0go0::9
+hLol6mWo0?7J?n5lO0go0::9hLol6mWo0?7Jm@ohD_l01goXA=1ol5M[o`36j?l0
+QBo`Moj4C@Oo00Ef_oa^P3booQO7`=oj:9hLo`31_Ioo01fSoQO7`=oj:9hLo`31
+_Ioo01f_D?l0QBo`Moj4C@Oo00Ef_oa^SoQBo`07OnQ4d7o`Ef_o0<KX0l_o0>5l
+O0go0::9hLol6mWo0?7J?n5lO0go0::9hLol6mWo0?7Jm@ohD_l01goXA=1ol5M[
+o`36j?l0QBo`Moj4C@Oo00Ef_oa^P3bbChjO0VJ=XI_R5hKM71EUKE[<PPl446GT
+6^8/?5?k8^Uj9Nn6M>e[`AKjAZAE[ZcBjddFliG0Gc8]femXD1@@L00300[j:ohD
+_l7OnQ4d7o`Ef_l0lKXohD_l7Ol0XA=1o`31GJoo01^P3iUecDof;O4f^bn:?4Ug
+l?l0E]IW<KBGefnTcgC]4XB<]=8FLU5EEG9h00705NUOl;hn1_l0dDC`ioh=k?l0
+n>ejQo`YOh>om29X?oP[]Ol0hgAo`YOh>ol0@RJ3o`22^eon=d0NGol02n?PKodD
+C`ioh=k?o`2>dOl02n?PKodDC`ioh=k?o`2>ejQo`YOh>ol0@RJ3o`22^eon=dOl
+:Gn3_o@RJ3oh:kGo0>=d0NGo0?2n?PKo0=54l>On3Nco0?S]7o2n?PKo0=54l>On
+3Nco0?S]NXOl:Gn3_o@RJ3oh:kGo0>=dOl:Gn3_o048VPol0P[]OoSM07Uoo00_S
+h6om54l>On3Ncol0S]7o00_Sh6om54l>On3Ncol0S]NXOl:Gn3_o048VPol0P[]O
+oSM7o2UoPkod8VPon2^eo`3SM07Uo`3`_Sh6o`3AA?3WoPg/o`3hkAo`_Sh6o`3A
+A?3WoPg/o`3hkGZ7o2UoPkod8VPon2^eo`3SM7o2UoPko`129X?o08:kGohg@1iO
+o`0;hn1_oAA?3WoPg/oo08kAo`0;hn1_oAA?3WoPg/oo08kGZ7o2UoPko`129X?o
+08:kGohgAo`YOh>om29X?oP[]Ol0hg@1iOl0l;hn1_l0dDC`ioh=k?l0n>eRn9OS
+Yl4Y_3^Z``o4;`jlSfTjZZj]J4TV<P00BlTekEo`YOh>o`3@RJ3o0>2^eol0SMHG
+RWh=O22?`cZlTOPK@UIK>h88dbe114KH8?Ud0MYl=PAl>o2`?16UF?l0j8B^d[S?
+QaobCc`_o`1PZbom49GId0555501AAA@0Elio67aChHl7o4C`?ZoRgEk?A;5[CFH
+QLGea7KA6A_/QE=l[:^hQB@<i>3jEm6EhQl@?3GQcaElDO1>Vn9m:]=H]5/MIT4=
+i17LAQe=V0`B@<=`181aWTd0LWo`_Sh6o`3AA?3WoPg/o`3hkAo`_Sh6o`3AA?3W
+oPg/o`3hkGZ7o2UoPkod8VPon2^eo`3SM7o2UoPko`129X?o08:kGohg@1iOo`0;
+hn1_oAA?3WoPg/oo08kAo`0;hn1_oAA?3WoPg/oo08kGZ7o2UoPko`129X?o08:k
+GohgAo`YOh>om29X?oP[]Ol0hg@1iOl0l;hn1_l0dDC`ioh=k?l0n>dOl;hn1_l0
+dDC`ioh=k?l0n>ejQo`YOh>om29X?oP[]Ol0hgAo`YOh>ol0@RJ3o`22^eon=d0N
+Gol02n?PKodDC`ioh=k?o`2>dOl02n?PKodDC`ioh=k?o`2>ejQo`YOh>ol0@RJ3
+o`22^eon=dOl:Gn3_o@RJ3oh:kGo0>=d0NGo0?2n?PKo0=54l>On3Nco0?S]7o2n
+?PKo0=54l>On3Nco0?S]NXOl:Gn3_o@RJ3oh:kGo0>=dOl:Gn3_o048VPol0P[]O
+oSM07Uoo00_Sh6om54l>On3Ncol0S]7o00_Sh6om54l>On3Ncol0S]NXOl:Gn3_o
+048VPol0P[]OoSM7o2UoPkod8VPon2^eo`3SM07P]]hooII/o4/oS:dlCN3XMN^@
+EU_d_]?FjL<5E]dXONLQE1ii2Z3`1S7eOG_f>?46W@J?[fXn0]B/;JNNjR]kVKBY
+XHkRiH_?:R>BZ_:a;>`6F9999=OBGo2UoPko0=29X?l0h:kGo`2=dOl02UoPkod8
+VPon2^eon=d0N4JKl@_fF]7l>;h>dSa=h=/M0CM]dj2ldj:c6mc8f85LAS;T/OUi
+Hijedol0`_Sh6ol0AA?3WoPg/ol0hkGZ7o2UoPko0=29X?l0h:kGo`2=dOl02UoP
+kod8VPon2^eon=d0NGol;hn1_oAA?3Wo08=k?ohkAo`_Sh6om54l>Ol0Pg/ooS]N
+XOl02UoPkod8VPon2^eon=dOl:Gn3_l0d8VPo`3P[]Oo08g@1iOo0<;hn1_o04DC
+`ioh=k?o0>>dOl;hn1_o04DC`ioh=k?o0>>ejQo`YOh>o`3@RJ3o0>2^eol0SM7o
+00YOh>om29X?oP[]OoSM07Uoo2n?PKodDC`io`23Ncon>dOl;hn1_oAA?3Wo08=k
+?ohkGZ7o00YOh>om29X?oP[]OoSM7o2UoPko0=29X?l0h:kGo`2=d0NGo`32n?PK
+o`154l>On3Nco`3S]7o2n?PKo`154l>On3Nco`3S]NXOl:Gn3_l0d8VPo`3P[]Oo
+08gAo`0:Gn3_o@RJ3oh:kGohg@1iOo`_Sh6om54l>Ol0Pg/ooS]7o2n?PKodDC`i
+o`23Ncon>ejQo`0:Gn3_o@RJ3oh:kGohgAo`YOh>o`3@RJ3o0>2^eol0SM07Uol0
+`_Sh6ol0AA?3WoPg/ol0hkG;N8oR]l;_5FXn5=5l;n<M6eSDIO46U<U]IjQKg4c1
+;QFHR>>AV8D0Th70i[gWoQBo`Moj4C@Oo1GJo`3a^^1lOO3?hLN7?n4HeO`mhDdW
+Bkj;a1Y8Bh]K622E@ebZ/0j866@B3PlSRP3j9XXXX0h_hTOlTklDo`3H:__o04@m
+OTWGjln=K8jWh=ekCQ?5KOJ[2jRlfM]TDNn9Ugb=PkDG>F>>1GiiOl:DUoj7O`_o
+0>3;o`2eek^DHVW2<U=f?c;Sc1E:]FVh:nSj[^N9em>O/XolU4e7o/5COnSh:hoo
+08DY;od>oQOo0<6Go`1[[g?mWkhN?hBlIG^X]hRdKEo</98_:djlndB[VF9]k;/G
+23KPW?DSe[]a^=YBYBS6FYli`kU]J6>YBU7A?^_lcjKlEgGS6dde9O0nVf6ZJPIE
+3AJSOBf48R`Mc2F6e^f;0h0Gb`22C^6<7lo?RKZ2fWQGmXg`GhTTR]OR?h`^KIo3
+MT;UF^;^BGAk63BSYfmDTTS]mBSU`E@K94TT8C9anU=A]54lRB/RUhlkF86Ece`N
+fJnE?g0nD_S[h`l=gUkhFRUeBgVdk`3hadRKaLVk4MS3=ICBfLUc^nE8d^Y[>h;=
+`RP>B0=`Ol;;K@?6NZo6OFK663Eo1V]JmKcFDSK;Va^kVddbbBi^;Kkb<Rg<Fd/_
+7WaB<3^bJn[FD<2[38?11kdf>=8TF:9@R805D3007@02P3ln_3Ua1YG`8oI:lCjo
+:;O`[X/>QCj[?98/M]KNIhK^8;>JiI/:8U_98@2B0/[A]WiJmgoIgVCDKchXN8m7
+TFK`][ORjh^]4USH?1=KSCk6:kVPIOUJ:CD8kYPbl<aIPC^cGdNj98SAb:6AP@@A
+T47Z2:5EDD8P2ZX`0>00:07DDDD0OooGoOb_cZn=ga;o067o08VO5;DOQilH?5FV
+jA[?PZf]95eJ;GfdRhBiNk^1;HNMJc`b6BeU]8iWRLT8dTCP1/6_dE[h4oJ1lNn?
+?1_a<lDjQl<Xo2fRcn7O3FRJU[Eo[MQLGegMjI;Z=k4k`Y1MFZ[1Y/HW^969L/dX
+@nF2681k;nc1[_``eG`YhPdch<JH/?PcA=GNe/MDS^9Ka=KIkFf^;Rn5a>39<`WV
+TPNAWUg=2CiQnj^GlLM=eJllLJ9;1HjQNG7TFbj5=I`GD/5YZHe21YiKUh0HhT<6
+g;BU@HEWC93/YjGmWOa[hhlFjAhZ/?R;[NSJm[OQgFg/6^?3m]9KjMmWNc]K^g4I
+T^;UY6<Lj_8BbkFHaQB44TWd;@1bhlDa7aXgP[ncM@leM?6XOK_/[ofM]<YRlPGG
+g?]6A^<Gg]WcM:n=_1^Rn=El0N?kOC=?eJeeRG`aK@JXGQ^kJFmlAZKgndIK1YPQ
+NBABPBN8/S0`178C0nlJ:0?R]]=Qo`244Q;j;ZIn6hlF?:fUo`1WJPK_na?/SXZO
+H17m[lWne<BQ?:`8<7KiHcFOZa_Xm;n4WQ_a9XN_7a>USY5aMjfVWJWZ7mVaf//C
+_KVFfSUSFm^VGbIgLX_UNHlc50TDWg9A@1lWYYf^o`33A3G@/M@5koK9UJm<5cmR
+?QWn`A481LkO/go8F`oTKo=gQYM^`i[On?>WO4^GC1MjC[fUFgQkndM51/i];VV_
+39oJ=^0`^U_Hdfkm[KO8c]1GMTkQm8ehCndWOGFVO23D]@/Gl^h]kkAWA/1/<=C]
+L71b3n=C>ETfcK3d7EZAYagKBnlkcnc_RCod7M;o0?1I=ol09U7mWO4WoX>jGoh;
+9_l0i<[iKohFmlA?nP]oi0Pon=dOl;Nn8Wo@Fol0847o0<K[a_kNXmWn7nInUOl0
+49/ao`2OT?_Uo`38We9oIga9o`2PkYOo08;9_oTbSnc_RCod7M;o0?1I=ol09UO;
+Oo2g_R9od5_o0211o`36j?l0QKga4oj2goT23ohgAoKe7/o`o`0`o`28CISo0<o8
+OO;o0>A?ZCnc_RCo0=1gBol0`FCOo9U7mWO4WoX>jGoh;9_o09<[iKohFmlA?nP]
+o`2@8?l0hgAo`]khROl0@FolP@Oo01^SngZ?IoQoV7o49/aoin@nnGob9mBOfMlB
+OnPkYOl0h;9_oTbSnc_RCod7M;ol5Tgo0<VEl]ol;Nn8Wo@Fo`3847oa^SoQKga4
+o`2P]oi0Pol0SM7m_DNco3o<?n8CISoclQml_oTCjTo/khTom1gBo`3`FCOo02IA
+oIga9oj3^Uon2bKo0>C:nFon5_O4CoX;On@8?oSM7o2g_R9od5_o0211o`36j?kN
+XmWn7nHOl@Vc7oWi3kiOo8We9oIga9oj3^Uon2bKo`2C:?k>n9?o047M;ol01I=o
+lVEl]ol02g_R9od5_o847oa^SoQKga4oj2go090Po`3SM7m_DNco00oc3oR4fHol
+o8OO;oi4nY?k>n9?o@Md_o`FCOl0bIAoIga9o`2PkYOo08;9_oTb_U_o08FmlA?n
+P]oi0Pon=dOl;Nn8Wo@Fo`3847oa^SngZ?IoQoV7o49/aoin@nnGo`0RODWmWO4W
+oX>jGoh;9_l0i<Xo/khTo`3@Md_o0<5TgobIGbgo0<;Nn8Wo045_o847o`0KXohF
+mlA?nP]oi0Pon=dOfmAk?l?l`ohQ=V?o03lQml_o094nY?k>n9?o047M;ol01I=o
+lVDOfMlBOnPkYOl0h;9_oTb_U_l0hFmlA?l0X;On@8?o08gAo`0;Nn8Wo@FolP@O
+o6j?kNXmWn7nHOl049/ao`2OT?_Uo`38We9oIga9o`2PkYOo08;9_oTbSnc_RCod
+7M;o0?1I=ol09UO;Oo2g_R9od5_o0211o`36j?l0QKga4oj2goT23ohgAoKe7/o`
+o`0`o`28CISo0<o8OO;o0>A?ZCnc_RCo0=1gBol0`FCOo9U7mWO4WoX>jGoh;9_o
+09<[iKohFmlA?nP]o`2@8?l0hgAo`]khROl0@FolP@Oo01^SngZ?IoQoV7o49/ao
+in@nnGob9mBOfMlBOnPkYOl0h;9_oTbSnc_RCod7M;ol5Tgo0<VEl]ol;Nn8Wo@F
+o`3847oa^SoQKga4o`2P]oi0Pol0SM7m_DNco3o<?n8CISoclQml_oTCi5X[bSoQ
+9MKo0>OSo`0LCo2SoQ9MKoin?o74o`0:SoF6SfOhOiWCo`0@Mc?o09nDo_UolRN[
+em8o0ZglACn6?7Qd6n][=E/h_>5aK?L5aiMa]fUIX]^>LigIb>V>OQOo08BGFol0
+WholLCo2_KoQ=holGJChNlHajOOnD]aJX91iDCI0BK7gU>>YjDea1AK]IoQoVIe?
+23<haLWDYoO;o`2A?e;n6fOn5MN5]abOk:/Lo`3OQ:kF^<n77o9??2oo062[;od@
+UMWG^WiD555501AAA@0EiGhRo`2B_N2on`M[OoXEWGZUN@N;W_Tn;?PXf4<LdWmW
+jeTBb68HcIliE7oU@1o?ElO?SklMM6n>_a6dSB?R=hT/K2alBJ_1Kfl6/GTD<<<E
+i:ZAaX/XEDE@0ZP0030h[bKo08J>oJ6oj:QhYol01gOOo7JSoJ9<YoJ1n9YVD98O
+56]KPYg0=m]Ub0B1TNn1m:lLX0mWo`26S_fQ_nRXN:Oo00Mggoaf_d=oh9Yo5WhZ
+N??S[[^TN>?6F]N8[27`gMCYKjSZ=cM`[<]iIZ95BIfD>5IP60cPTM2Jo8^_dYoh
+9J?O9nd3hP=Q37=9o`08_Mi4/QR6gkKILiE7ijLHo6P3nP^R/?kAhUoil;Co0<2i
+?oTNSkAhUoil;Co`;TonAj0=bR/?kAhUo`2O2dol2i?o097XndN9OnO2dol00^Co
+0>Aj0=bR/?kAhUoil;Co0<2i?oTNSkAhUoil;Co`;TonAj0=bR/?kAhUo`2O2dol
+2i?o097XndN9OnO2dol00^Co0>Aj0=bR/?kAhUoil;Co0<2i?oTNSkAhUoil;Co`
+;TonAj0=bR/?kAhUo`2O2dol2i?o097XndN9OnO2dol00^Co0>Aj0=bR/?kAhUoi
+l;Co0<2i?oTNSkAhUoil;Co`;TonAj0=bR/?kAhUo`2O2dol2i?o097XndN9OnO2
+dol00^Co0>Aj0=bR/?kAhUoil;Co0<2i?oTNSkAhUoil;Co`;TonAj0=b_6OfPon
+B@joo`1^_oYE5GYGfSa;o`0n5Yoh5bOo02?GT7ajVeaoQ?[RgUYKa@Wk;^J>hNAQ
+oY<F<:HE1imaoBP3lhZ:::02_]o`YobA7hOOmS3IOnWAjn8:ndO2TVYOl:Mn7dOf
+N;k9o`093Ho_?=Kc?n@Vgo;?blMN?_l0CWfX0naj:::0>?l0R7ob87RKo/6G_oXQ
+jo:^_eDn8Ol0b87RKo/6G_l0j8N_b[ZI7hahXOaj?Xoc2_Y;mUgo097o053o0;1T
+_oXn6_Vf_Y;mUgoTOm@ok1T_oXn6TSi7Q;oTID?DnlZl_l@o6ChNN5_4Pl:jeZ</
+Ej[FjC_7IgDeYJ=N=/]e^k^:9[Nf<[H22NA2fASk`ceGR^dlHG^VY5h9eBadRo4Z
+UY]@/I=@Q<F3^DAAGEX`HW13NH@02=YcTO3Ga3l>N:kK`_l07chCGFTGNYN9_Ra>
+7dFm];2kJbW=oXeUYOVbg22F:e5W?Kb>bbc0Y4Z<2aK;FOdZOLgRgaOhNl3J9;hQ
+lCgA]K:=hXQ/RTWUTVWLAaA@``Zl///S/5B>=FMV82PV^DChbo3]o25chhKDIH]=
+/kXF<dLUWM9OAg[>/JFQ/FR5emXMW@93iGV?^DZY3:CiMlHkjneKD_3UoHJ?ZegK
+o33aEYeoZX6Wc/;fdWdnhQ<eT4@Vl5/eg7;880aEhV@0^^dn?jQX?R7Do4nYO72b
+d>o7Q^?hPJG[GfCk5L[OgVWFNQOf?=NoHFS5`BUa894@AkgR]UMEKLXH0nZWn=_`
+gSl9?hcOD9e/XkdJJd7f6ko]0Gk41KCnco9nenNM`8Rl[LE8L3H@eMKh<lKN6o7n
+Q[hQl;G;g=VIIKMa;3;KC`cfkV>F6J2M8iHY8g1ETTAF1jR_QOaEX^^N8;Wa;hlS
+dOE]<l9n:O7FTGSGeUIGBjgJF>VJA7Ko0=Z@FOU6hAYKf2>eHV5SmT;BU?;>j_X_
+mV[CkkC?1V]F/]]O;YkJkZ4^WGVZ`bfnYjUKC</Y^kb>IHi18dcBXYI4gA96hD1P
+:0?XNRRRP3ood?gl[i2n9oa>Ul0O7EKCaCh2eWaMhLe3`f/M[OJ;hH^]FNaVU^IA
+NFeaL`ABIR^TB1_9DWJH/b;QhcGekGR7Sohmn4o0GRb?`8=:e_a;hQJcCD9K;@m<
+We2Bg]9I7RSUWJ<NG497SMD3<2fa/3Pd0FoPIMO3fO`Be[l<O1Meh3d>b^YHEdfj
+d>G`nO<:Y8l/MY;52BSKanl2hIP`cUCSfB^6n7oSU?R1Xdf/aj5ZoQh@g3FofOFK
+=[6hKJR?iRa/BC6Mn0gLQQf[^J02RRRP0XXXX0:nOOfY6E?PU[;>@X5iXnBNWo8C
+]JnPZnOOfX`3l4mI16@KcAoo04if]IEoPUj7XICo0;eBo`0DOcAn<WkC_SGaAX_S
+f`]O3N_GUQK?YTC/UYMBAAV@cC0/A6`6k00ce`1GcWo`/chTOm3GZgoPM?l0o5ek
+Ine/R9lAm=2:57mT`m1SoU_?GbiGi?GTnMjWmdhBW5dhj7Ko0?2c?RAod=N[On1d
+o`3lGGGo00nn8_SfklNn6[FolCjW=KCJWIY:T]k<dKa]<PIF3?PZA`@N<EhcGKO3
+@0o4O`X2<Pj]Hol0Xm:R<WMJV]BW7UNQn_7fjaoin8onnaoSAm^/OnOR?o_/Ohel
+Mo5GhWN=_3OSkE=5dGD5][:flSbho/l3kMl:>gc?6F>F9?9[cgoQMGa;o`2P/_l0
+h2fgo`0J[jfWTmFDE9=Jn_l0TO=ZSODo@KkMHol0?a7o0=mSo6SkMHolo4Oo07f?
+lJo?WoQMGa;o0>P/_oP;KOl0aZ^Ql8o5chPjYh/dGC;kDeU][^m]XIDncFjkTTUE
+F6A62<Pm@LeD/VZYG^_ao`0Q^RckUngF?o?a7ogf?lJ?]eSo0<o4OoOHo`0JUnc`
+Olleo8DOIh?nNJoT:lPad8_]eSoclAommSo6SkMHo`3?a7ogf?l06YO/l7o?=Ob5
+7fN3oWV_i2P=2;kMHol0?a7o0=mSo6SkMHolo4Oo07f?lJbiMJl<@B_3=OfLLTI:
+/[BaQUHL444i15<o]o`Wo`11:bokoAOhdnETNdQg=OkMHol0?a7o0=mSo6SkMHol
+o4Oo07f?lJb?kOl02Ol0d4[;o_l0AOhe?KJ]hL_9U][>l]9iWc]B>B=V>1Th0>NW
+=7:`EB?Ld?]eSoclAol0OHoaXngF?o?a7ogf?lJnNmKlIn8k?FKnd]kUDRP^9DAO
+9R>5Eb0<U<m:c?l0Q>o5?o?f_oOR7ohR/7FAiT/iXYf/o`0?lcjGngF?o?a7o`1m
+So6SkMHolo4OoOHoa[iXo`24klDoloJomn8OoR:k[hON8]GecFI[CE9EWRBgI`_U
+A[l`M1W:Z3d9YZZVk5dLfYCTX9?Gn^ijkm^/OnOR?o_/OhdOK[7o09n8o`3_/Ohe
+;mWPo`2NJoT:?/l7o?=Ob5JWYj4Gfjaoin8onnaoSAm^/Ol0WhSo0>naoSD_fN3o
+09i[n@Xnc`Olleo8D1XO45555LijhEj]l?9hHM1lDRJADgFbhg43?bBm<eiCG[7`
+jSAm1lDke3H]UaTIoPUZjOa8i/Io2TO/1l=cWhMn5R?nPEHonR4[]:h_hKolTll;
+o`3H:/Oo04@UM55[FScjY?XL5m19ZEZRBcFZbXIhhi?^>lH>iEK718`NeOYYo3QY
+DE5??3J`bG=c8/D<BUgMb5EEDI99?00799[4TlFN5H]5QlBBjcI9Y5c/lZlJhS5]
+9iQfY]U;K3^?2h?9h507@DEAWeCC;Jn]]<^K^6:l_=aPQNAEUUf3Lfa2L]]79`3P
+MJYF_RK`iNj_LN7k;EKBheBdD]=JAca_LAZ<0UhPaMAl`i8kSeX0fjl[lAOlUNl5
+o`3H>e_o0=2/jm1dgF]7eTG9dNoP_QIc?KcnA:T_UCaoOSOJC]MLlZL4MaGWgR;o
+09:mh;ok1f]onQFM07l`gkAgo9`ga@ok6WFooBjJ_6:mWoJ>o`2CQ_RQo`1SC[Oo
+0:GCEha@0EnVWo1:SoThKa3o0=R]Mol0YMHenIMOYYo`BXoi>6l@o`3H[GOo0:GF
+=07m0555501AAA@0DDDD0555501AAA@0DDDD0555501AAA@0DDDD05N<o]1olTQe
+o`3kMOl0dZR[fJ_6OfPonB@jo`3m^_l0jEAD0OVKAAA@0Em_n5?nB8o3ko/HK;od
+j?Ga1GfohDoi8Sl?_naQ/_l0dj?@1mLdDDD0LghaP];[`Q[U[Og?f>fV/KU9ImQT
+lZ=XV3?/GU]Xi`>CS5O0go22O2_o0::;o`2DRion;[k`lOl0o8RN9?l0/6gWoXUj
+o<2_W/jcFYQiAS1;G_l0l>OTgR;RJM>]BDjDIJ?OVkogI8m?o`244n5OoAAOo:AL
+o`3aMNeo0S`eh:dKaONGGQcaGoK]beS8S@OHIKGK6IHRGgb<@L40HjlikElRem4o
+/colSgOo0?H=Uol0Ad=L>0cj]E[AYbB/oGo<nGhHa]:FHDHaXAC_^W>jnnKGh7g7
+AAGQOR[hnn6?2V]jaYlnUjQOJGhGT]XMNeNf5^K7B9;]4UAKWc9dWKK5;7;8HHI1
+76j^n1W7eio@9kYAG4n?O7NUO3kAHMEe6g^;nNm^X;6b/[=DJj_;biKK51297SSg
+7TUWM4A@c^bZY8h4O7g``WQfne>jd_DH=KdkEXM1Vd0[K]ZOmZg:Ab`FbkIcK4b`
+bY</WWnD8S_Me2]]0?M::l:?aol02lGQ[D=G^m:e:7F]<eF7@Y]0f@BJYoJ]b/L/
+5ZXSVJg9UQVSVFCco:4CNHkXZ^EmAl:joNN8m:o]3D=4_O3eb/SabFNX27cT:7[^
+]iIXWEQb[98`ae`@@03Y::::0?oAoOb_P?l0JDeFhn7?aSd[akhLn:T?PWEmKdI=
+>UdJgl9GORVmeB6bWVVBhUR/YeUB:0c/Z<8e2Ug1TKN5GkjMeSAWLhE@BCj0EnMG
+aSn>_QShFo5:cn;o081lJN3;jCachJdb:GCO4>ZbjHdfWF]aNbfEmHgDD5cU97^I
+UTAXm[K5IF1110?ZCmW[aMON>OQl?4ekhi/?R0]gMBR:n/=9TdD@XRXSFdeW=??:
+TdLPL_iQAQ^2U1S9mc[iCoI=e?C?5OQWaOl04JglCJ9hVeGaO[kGfZ7`k:lfUfEg
+5HFMX][3985NAU]h8GTTMEIgLWJZk@7o01`lFjWXGSSAK:7GiM6V=_KBj=Iac[4^
+[jPnX`@cFdR4IV2`/ZKNMZc?9P<R^X1mDdEc0lJN5chc?`l6XAol96^WSE3IHKc?
+/AU<0VcSK]l`5N^LmZn=_1ga4lGGOP3amZ^WN8kSD]D/o2m]OjURI;Y]5en@gX_k
+N5M[17]USG5/@0_UXBVIBF0?_2R_Ri_6d0l3`Uo6LRn06lF_YcN9_kCD?oI0]7UD
+o`1XijOfT1InK_g5N=nheYWhTBJKIO/nJUhblESB]DlBC97OFmcLaFP_dVdBlUgb
+`=/ba^EP8D32B<40b@20OGeO?gkDGo94mHojo=7o0?CWJePF_R>ld_l0J6^M8^=M
+Qef?G;``FnWFV[b??Xl4>UAb/egYXGbeSNJ9lBU]`NhR7>lKLOl0J^^OR>_`meF3
+Cm=dVC`dKWB2ma;NcYO1o`2d;LP2gFfJ8[_`<nL3]bLI01b[o1;d?@bWoNZGn:?i
+Xo7cm[So09:AY_l0f2HOoAlmO;EOC?kECJPga2dljU757;oIL>12k>^gcinYIE>L
+ikElcEnBeoSIoMN4oQA2^gn6Oo9B?2Wo065[7odNULAGIo3PbShQN5cKQFU6ZFF`
+<B5;NNV<T0T3?GPe4=dKE?QIkelL_nBYJgofkOl0Y=5GTeNXo6LgKO4_F3O8RCoj
+?^4K5T7nSah`B59hmZl^[mB`Wl:7X_b?0S/P[[O0?o8mN7?n`UIonSU[TZjS`>IA
+hel?Vg2]:=@]=PHT:FleLI8186N_1[B]l36mSkYlBO5g`ghGeZhd:o][^BNffKVR
+B<XMj1aP]8Yj<>gF/?l0hGih?oilkol0kmaOo7Jl8n:Q^flNjXKi4BOma^4K5T7k
+U<H92TlNeNNelmB`==`CIhlZ[CJ?[WoQOWPooWc_o`3_g5olM[Ll=o5g`ghXeZgd
+:`][^>NigkFUB<8=R5cT[8aj:NgF_RZ_@_QFK]O7^UVaA7Wo07ndB<E@o^GcTP<A
+akDEL3CD6d4J[KB>RlCo0?8bj]oemconS6[3[Hl@VDjoZI^0ZbVjVgQBBXKNLh90
+96NW0[7[>>algDn9QGLO3Ol0i7CC_nfgoXYjhN^`l16kGaIHVaA7WoNkA8aE3njK
+>B0a77]De?QIN6oRAmD@n9?nAReCo[jWo`3AQ[5[FehbWGMA=`5FDg<fl:BE3KcW
+1818cdh5I=O=_Llf]lKm@[dkhDOlS5LOmN[o0?Xa:la[d;hK=Z2jk>M=SRTUnc=T
+C>b;]gYd:ZacW7JZYo4SXbon=7e?GOl0Q?l0`Uoco`3o092Uo`3RJ?l0Q?l0`Uoc
+o`3o092Uo`3RJnK::nOo0;N[MUn?nIfOfgEk;lOlcjCo0>4ol9Olo`3o0>@YOoRJ
+fM9eoB=Llgnbio?lSK_nAUa^cSk`7XJnDjmBn6[j/_l0J?l0ILD4^O9gnM8bHnoS
+6e6cgcd[[`>Ke:]E@TUIo`2GZMN2cBYEZZ4T[?l0bmC`fRRR_J?]@[e_hLOlP7aE
+o`1Nbol0X4]NBEjGh5OE5d;a=oI/D<P=/=oVb<V?TUa]fXfNoG5GCn97=RohDSmS
+_QaobCc`_of2[;od@UN=N5o17RJan<UcZ]cXCfe]KGN[gSjhF]R]o3ZBFXQ]@ZB6
+O<GU1FgaZX5]7QVg2_I?Q]Wo08EehFgMOk:/Lhojh9GJEnVWl>7RGS>3aWhnn77S
+7AK[`a9Yme5MCFmYIbG=]<=G/[JA7EPb_/RBm@=7/U:/PKimXi[bSD_0gR[o08AC
+C]HO`=;ZT8eoFmAK`bI;0B``JWKGL4K4_>;H^ccKi54afRN@o<bh[k4XX0nJmBl<
+n;m7_OPeIYhO^_4UahFUSGEMEPT/T4J3B[ZaMgndG4<[IVVF@[6SO;TP5P5>QhHl
+;n9M7n;6XgVRf>YjOX=lfXCgl^X7CY;JJNIXfQNblQW^enH>a4feM^@bk]Vgj4XX
+0nI?fN?0oRW`T9chRdAm15WX>Pj6b>m^h_KcBAMOJKn<fl/^Hio?S2=;/VH8Mj;P
+DJUhAlJfWaPl<=NN>[fm5cIJbd8Nc/DncZ6]LXVb1M`>@<_^?bS1i>OY^_:o4Go9
+G_1OoH>e_od:cX0oUnoJ4RUQn?Wa;QWV=a;7hVeUGUH1Bk2mU1HQ@02CcP03d[b2
+_IofS_l0ThKhXOl0Hdjgo`2UdeN<D05OXmo`C0/M@e3hnJo3Y^YBJG:_QVjHbaaa
+b4[m]/Q]a:[3191cS?7e[lhJoCCo089DOlW3N8OnaF^ooBjaX0oLOoQ6_5Oo04=m
+eoh2fOl0lJXohA[aGod=meoh2fOo0<J[^J:0>6ohA[aGo`13OMOn0]Wo0?6Z?n4J
+lEom3OMOn0]Wo`36ZkVRP3Q_n4JlEol0@ggGoP;Io`3aZSoQ6_5Oo@ggGoP;Iol0
+aZ^iXX0hKoQ6_5Oo04=meoh2fOl0lJXohA[aGod=meoh2fOo0<J[^J:0>6ohA[aG
+o`13OMOn0]Wo0?6Z?n4JlEom3OMOn0]Wo`36ZkVRP3Q_n4JlEol0@ggGoP;Io`3a
+ZSoQ6_5Oo@ggGoP;Iol0aZ^iXX0hKoQ6_5Oo04=meoh2fOl0lJXohA[aGod=meoh
+2fOo0<J[^J:0>6ohA[aGo`13OMOn0]Wo0?6Z?n4JlEom3OMOn0]Wo`36ZkVRP3Q_
+n4JlEol0@ggGoP;Io`3aZSoQ6_5Oo@ggGoP;Iol0aZ^iXX0hKoQ6_5Oo04=meoh2
+fOl0lJ[bOhhJ7hP/oQM[EcON8kRoPCk=^QN2fAGcLAPIJ>=F63c`NgYGdSGS?k@O
+o98MOokMOoBZ:P3lcJ:::02_/?`YY^Zol:Zn7nXOf_;mR?R6aod?bXO;7o4bHOOf
+NIenKkg]d[hl[kOl:Ol094OQmof<=UojM7X0n^J:::0>BlOo0?8RN9?n`KNOnRG[
+l`:oDSaTfWYh@eamFlgk2]SLVOb=_VnD8VgnG^nGM]c]caW[G`5oJO`1o^n9o`0[
+;o6_W<kbb[GU5dnQnMLKL=H[7eJLl>UI9k^gDld[j9oIWoi7^ol0n`K;o`2SXJh7
+ndoP3oMlCoUIOhekIl1[chHG7RnlC`D=H5l;6@_o06QmWl[b_=RcSbOVgK]^<lHc
+kEinGi7GYeXcTUINIh6@L4hk3hbUGZ9L/G[ZOAoR_@MClAJJUQYGR:ol<c;:/Q^]
+>BdNIU08<I5kKg<Ndi1>43I0``6@OSkacl;?R@O3o`0HoQ7YFTG6]fWaPTc1[aJb
+B6aFnd^edZmNn@bAB6B4FcCYi<31mj8XGJM_g?AGfInb7cOlDm8lLn9=@dOE=7l;
+g4go00[Ga7HJ]I:KZe;JiK?HCF]emW3BZ8i8E_90Rg9S3bA0PQFEjla__Q[lAMFe
+Zmn=?mPB`jU5hcdoa3JN7gU]U_I==/]8>SB;8hV=]mYMIY[R=FVfP296MF1foKe5
+07`Ih[n37SWahMGn9EoY5mYmcLn<]<ej3@kJlQ]=CTdZ`d/JA;4mc3>8E^9dTWUD
+2ML9iJ6A71:O@O`4d7aEhOl02n[foR>d_=;/[WEk^hdOCmA^o]ekHjK84f@cc2Jh
+19U4/R89G4LKY7TK<3g2RP0XXXX0om;mo:n=MAn?Wa/dghgn:o1eWl6_4F^N7=:d
+gCW/Y;FKAh_=VT^[n>FjFFh_hPdDlLD?Ua74/NeS96PM2gfEG`IndUh2n8_SSae[
+PdnhlF9HjEhJ/MBd63`mZUgYMWMg]SObbJ[Ig4UY;3Vj^kHfl=_icHf]8dFeTMZ0
+?Y?h@JUlE]L]o4V_o57B6l>9Z>YQm6dRJFe^;Z`di;BgR:G4]VGRIi;U9iP198EF
+AE;l1EmO:ZB2@2Ei7/NUO:Wk95U;Hn3O4`][Ka?7X]a[//nUcN<9;imIW]Y;Be;V
+E=@IYXdRW4/4@`PI8`neVIYI?ZbP0Y0Z[TZ0<W9ag=;A@0cbhmWUkA/aSKSS7YRW
+dDD0=fZ6;P3L@0Cg`>UN>O7gCH=In6EcYMdc;5MJSX/K520`1eBejI16O`[fF_:_
+S?l0lR9og5M4o`3CYJdVTeIUdjTXBDh^cAn7go1A_AkKhNO6oA=5dEWWPVl>fe`c
+G13?_Jk^d81@8<H@M_GV_P7o08B>no^AoTOlJoACoPZ_o`0W3N7_naF]?oBjn[lb
+jliiAQVk^VSjb?7fLYFF9TM1o`097OOg8ob?n=NZO0ZoVechgo3gAK/:T6XN8]9]
+i6@4>4U^hTHZBB<h?6@OYGQMNco/hol09`g`_ok6WA?o04^QXo/O2ol0?]3O7nL_
+oV:TOHgkEfPfWQOhnn:M2dmi9;Nfn`kFU8;WOI@>LUEDMFm>UO?6hemAO]YOlW;n
+<Ol0^7onVng[iK[mcbWQg0b`]:CY:kS7lTO<E_4;>e>BF:U_i3]a[d?h@f<F[O5W
+`EYE`FF:le_CHG:41P/Uc6Y8b2<h?75NMEjUl3OnBeo3o`3k67B_oB^:^S5l>H5D
+Y]DU/ob8QhQiffTlE;l3ggmY3`SY_QkhdN8]7/Y9GQ]o/Vdb<YHkkB5STQ@>Ym:l
+>o/^go_=nHo`[jJoJ^oi;mhYo`2g7odRP[ig[ig;^7l4l?CKY;IOTO8iQhTIk6_D
+S75b/VngLcOk;]okcOV?l:maoI_l8jKhQn=7QgAkfBE8KSkG^<K:66bdVHH9DSZ?
+B_8:nR?fDOl0T_gQKo]no`3B:NS<N7l4/?DJY;IoT6Gn96Nb[dhbaL[=[]g8o7WP
+WB[7aahR/XYIRU_Z=g6YIUb@Tc0I`Xih[U?n4CdkoWY;nJoo01=N]o4SoTXWRWo/
+:ggo0:?N^;[`:FBHCUGk]7b6<lCLoEJJF<U^ngOd>HohA?C_nNT_i[olCGZg`An7
+nSJelCm5dbjV^4RVndi:<PKiKNAQS:4MAjEb5NdO/mOlUPd3o]jom9IJcaFBhADY
+=De/cXbOa<cjF;XaURiFLXm^jlSc3aah5dRblJJoIaCCU8=@^Xe;<^B5UH3>57?5
+L_l0l8MYWo?FKleon9[echQolSohVok2Mkoj?N^>[hQiGQoi4O?hka@hPENJF<W^
+ngLiCoQ3]<oijcOV_oa=NlO/lo3;@O47SBm/kbh^DA=?TT1SI0LRF8Md?7=NIEm9
+O/^olSoZ7oH<Uol0Al=>>EhNo`02?DhGlCLnZIQAQ?5bJKlSiEoh@WB_nN/goOBo
+o4dOl8CYGo?FKo_YOoRJk2R_bcjUBoU?4ohRSa1od6Co00ob>?l0n49d[oW[=ogd
+_oa=OBok>o`Vl>N8?n4PnfG=fWTOI=_U_6<k_=cW:=jEhaGe]nbeo`0c?ofiOnej
+mK8l3BN:PW7_nC?Yn3?4[?J^IDXE<G9YgkOb_b?cboh@kC?nN/gi[ol04dOl8MYW
+o?FKleon9[Zj:o@?k;`olR?gcoG[=ol0X9TLYo`QfVOlmI_cGohV_Xgh6O2c`o[_
+Q[ae;Mg5dQ];B8[/M1WM7LIcU3oM5N>emFo/iOl08[O4Co[bQol0AMcCFFHOnA4b
+hhcIZca4Sjhn77o9??2ooH:/_oA2EfMLIl>?nBNN5ol0/5FGoXQ:k>^hnD2RRRP0
+XXXX0:l[lAOlUNl5o`3H>e_o0=2/jmD[b3aMHFFXO5[`E3OFlM`RjO[A2b:60>K?
+W11X0oVAoJ>oi>6n:7oHdjgo0>UdeN<Ek7ndC571nd3lCHHE2Aan:=JEEDH00_I@
+01j2_7:02_ddo`22E7o9`gR7o/E[_od^/Jo<^_dYo`22FUQIJQnd3hPQ_h8kR=O2
+mf`FA@`15kI3>23cc@1o@GAF7o`S7Qco0:1M]ogiCo2SoQ6?3Wo@;]_no:OhD0KU
+5HOo00S7QcoX5fgo07iCo2So08AS`iod2kKo0;lYoQ@1^DEQo`32<N7?nPGKOmnD
+o`0:?n4Hl>Om0^foklYoQ@1^DEQol8ahLoj1M]ogiCo2SoQ6?3Wo042kKo_bWn50
+6iAF7o`S7Qco0:1M]ogiCo2SoQ6?3Wo@;]_no:OhD0KU5HOo00S7QcoX5fgo07iC
+o2So08AS`iod2kKo0;lYoQ@1^DEQo`32<N7?nPGKOmnDo`0:?n4Hl>Om0^foklYo
+Q@1^DEQol8ahLoj1M]ogiCo2SoQ6?3Wo042kKo_bWn506iAF7o`S7Qco0:1M]ogi
+Co2SoQ6?3Wo@;]_no:OhD0KUN<o]1ol098MOo`2gGodZR[d[oQ6?3Wo@;]_no:Oh
+Ei1lN]2dFcn4n^G=YH@@bYmUf^TJZ`cLa0h86NU07iaDDDD05OKo08Doi8Sl?_l0
+/HK;o`1>Sel@EmXn5=<dgoQC_`ne7k;5mZ?R6aoNk1_o0>@V`nmS?CS[@1mSdDDD
+0LIlAol0TWWRSo/5g_l0j8N_bJ[mIOR?o`0TllDOmP^mo`3A3enCE01GdcnbYobD
+?DOn`G=oj?P[iV[jIoIDo`2BQjSo0=P^KodO1@1mo`1O=GR7hoJSXfXn8MF/o3LM
+gh9l7j[KJ?ZnZ=NV:kBNKb?>V]k?b6BFg]CL89VJhSOiIMR=iJRCjE[i7lCo00Gn
+8NXan<oQgYLVW=h:lOJc7ZUeNbg4ZGeSKcN@M@]8kEH6SV<k@_iLYW@9icKTKbP9
+@3jhXXXX0::::02RRRP3om?mo:n?OS]OO7f7hTJMKO/g`cg7R5];1_ee`5O1jfYN
+L@]8jhW5o`2J6f[Ji9SfoJ@4lUQmMGKR>dVT8g1DHhcS>1jR_P7C]0n4Ga?l1O/o
+N:_5?QoFHIoR?YnWjGJ@fORSF[M;28j?NJbXUJ6kR=bbR1hc;83:niBc4:1@1m2o
+/gofjO15nO65g[mehZ>YBWF_n4PSB5h[o`0V7M7I91Ve5T8mQPnc<lIbaIVV<Y[j
+1[PoQil=O2O`/dFO`oh=S_8k:h^6^W5kZ=kZLWV^R8LBgddlR[]AL862Pi86BBNl
+X0::::02RRRP0[bKhfaACn07QV@BA_ZVR1UHI11eBeh8[eV_:_S?o`0R9og5M4om
+>U[@1n9?o1D^a/]?oJ1l?`f44M_6gQNdH[6XD4Vm_AW0klEnJeOYYo`EGoi>6l?O
+mR]JOnUemGiUd05Nao/kAAco0;@?`aQVD?79hXdEFEQT46mR117L6_7:mWoIaoi>
+6n5ooHdj9ojG@d0OKGkI=[KFOkB?Rnf]8UQRCncmZ80ZS=QKTh0hjelaEmBO]YOl
+W;n<OnhOo`2Vng[iK[mkbOl0gBSo08HoTSiG4Oa9N[2_CoPU57?lI_0D<bQhi=Od
+YFEQT46kS117L6_<:mBn1_l0bF_hOol0H`jEo`2ULEM><oPcm7nA5?hTOCokD][K
+FOaglCfeY4/<BOH]Z80ZS=W0CP3S[GcmGdAneMobGkaCo`1^?oY51Gc_GcFFOk]B
+o`0:o8n>c?l0gV[o08WnHEm0o/]F]]NO7O`aKGLBcA?m]g8h3:LFLi6@N>]O?eOA
+7k:?o9O_2goKmojACdIWo^eGo2ob3;?miYOhUnIe?a3RSPlOn9XHE2AajWNZZZ<0
+0C^00>`5LMGJO4So09:9hYok2]moj?N^;[ibSl2?RlMo7Wj_l`[f7h1f]]NO5[@[
+JkRFJ9o]Fi70ICRfU8b3ae[aj_J?fN_nB`J1o`1_GoY;;FN;oQCm7nAeI9o_]3o5
+7ldH7Sj:>3aghSQQD977ZEhZZX`01<`00k0EbEMSl@onAol04goHC_Oo04NmLMG`
+S?Vl`oSe?EoV5O@ok=5SIJQhk_hKn2>hSGCIF2b:608VQ6L7_cGcaGdUnbko0<So
+0:Qof39OoAl=2?GhBoi6E3e?1J:::o9S`0[jXoIWdcCMAohBCnd;F:il_k7]la0n
+g?WIaTLI`:nEjn]_fF_nIWokL_l0f_G[i5o_L?WnC?[N1Ol0TJdOng_o04UW`kAA
+AGj:Od>5OCok?^VjMZ7QOhP6n]X[PaFLFcc43KLag>LIjM1Gc1GeKncUo`0R]lA?
+n_:7o`15g=07e_l03L0O3_`/1d6UF?l0j8B^d[S?QaobCc`_o`1PZbom49G0j3lC
+O46ZO4JC@[Zc]Dl?GMeZFWfDR6CkH;[Ba4IFV1nCbi2IP^0=XS@iOc@40?LJ:hch
+QN:;W`Kh>e;a3HfjGEi0ZAfdDS58g^9i5QQ4S:2ECc7GN`1`^Cf[b:in:OSmm6/M
+7dfcdao5[j_ZFVC_:ITdoKY/4eciZ39L6I4RGHG?U6ARC88R60?Y2R_6en9FYGma
+l<]CdZeQ6Rn?^74flGD?VJILJS6Ej;`8M[1QWi^f>J6Qo4oGm@n8T^RgUWJYhM^K
+WD[2cTS<Q_ALjD/IUJEB=_Ub4c1L05O;@iOc@40?Ljl[lAOlUNl5o`3H>e_o0=2/
+jioh=o53G_R2I4l@fM[JbGFSj?hQ]?/YLQ;7Fo]7T`BUlkYXSK=_ML:n@@Zh=LaZ
+GaHl4JYlH?32FMaM/M>/]IRVgjMNahIV]@=YN1Mhn@lYT3S9i6@3nLgmXkoThKhX
+OmSC[Ol0jGCEhaG[o`2d9L`gWaln9MiKTV:Oa=[<R5U:WJek:AUF08>>a08kei1@
+0EnVWo1:SoThKa3o0=R]Mol0YMHenIMOXmo`C0e[C]1n?V_gVY/jA?hI^X`HhY9S
+^=kI7k/J/LH1iaSm:0?j5Z:hKoQHoQ?o09kg?oP3Mol0aZSo08F?hCoikg?o080g
+OoaZP3^J:hKo08F?hCoikg?o080gOoaZSoQHoQ?o09kg?oP3Mol0aZP3^J:hKoQH
+oQ?o09kg?oP3Mol0aZSo08F?hCoikg?o080gOoaZP3^J:hKo08F?hCoikg?o080g
+OoaZSoQHoQ?o09kg?oP3Mol0aZP3^J:hKoQHoQ?o09kg?oP3Mol0aZSo08F?hCoi
+kg?o080gOoaZP3^J:hKo08F?hCoikg?o080gOoaZSoQHoQ?o09kg?oP3Mol0aZP3
+^J:hKoQHoQ?o09kg?oP3Mol0aZSo08F?hCoikg?o080gOoaZP3^J:hKo08F?hCoi
+kg?o080gOoaZSoQHoQ?o09kg?oP3Mol0aZP3^J:hKoQHoQ?o09kg?oP3Mol0aZSo
+08F?hCoikg?o080gOoaZP3^JlIoJ3oi93[oo06jonUDEMKo`/O`Wo`0mkWo`1^oo
+08eGToa`lJn7]Gn5f]JOHbc]?;mVfQkFhSGiKR=SUWSEA`>im^]07ilDDDD05OKo
+08Doi8Sl?_l0/HK;o`1>Sel@EmQn5?4NTol02Z_QoX6nCkJ?4=Sl_TBk>MBI_mK/
+l_XOkg]eX0neJ:::0:FYJOIj_YeeYFXAnKJg/C`C9T[^STDZ`bY16@B<PPnUNCOl
+<nO27oX0OnCEeol07JmVXX0lIohIln4?o@0olV[[o`2>edgQChFn1?16XbJ[hHdc
+k5MBa61WljJC<K<[4HTMQeD7><lEj1A@0DDDD0555501AAA@0DDDD0Ooe?giTSBF
+=XY1UG117/N]O84?k1Ok;]_1Ym[Kn6mBRQdW7f=5lBJjZfff=XQi85oR?4K<Pfhn
+DUNQ8[k2XX0lnn6g`^l6O2C@io3WPJg^[J`^KU[]e^knle6@c>RATRFmVWTEM/Jo
+862Pi86BBO>ORahilGn7_55_Kn7ke;:cdVd]]@W]gPBE]C=aOaFQ]TISU2Z5P2^3
+i//99:QTOj7[W=Il7n4_4NXjIZoR3AK;DkkAI3=Hcg=_7=;Jb4ZBl;^Y<KIACUB>
+EDm@:0=CneM<o]<j9m/Qo]4@oJ?/gV;igTU]WVNGWM/gO;^aS?6LelTJ3lH?R0?0
+_RWa?Z5g3MGAl:FGRNdBBfE4dZKD3N:KJL8`;aFoT:BBO<9BK;HfPOEXl>n7ahP?
+RdJIJofhKDF9_o9CkFK@?iXPlk6ob]igk<kMg><eVjIh3l4J95Zl6Sn7m?/H]OTT
+Ue58;F:=KfBK?V=L1E0U;kS^;icTijVP3`dn<?7a/HO1@eXSDI?5Cn7c[gfF3MmV
+B`ODA=i>?8lc:oI2MVgc>MWJ]3BOR1h`eSC?PUhQJkRPSlJBR7E;N>0NG?iVRgUl
+98WH/lJNKKZb079@hHej/g`cn7;N4Ah0K`]YIl<Q]ol0II/XO/Fkc?>gNA/l_MiW
+cifigo=eiZGEoQel?_44fTg6_N6=;e:G@B3Ycg=U1<eT@=X=^G@V;061/aa@1i8_
+SoaNOS0M9=dQd@n83hKn`NB^EDJ0=InfVKkno`0cmc]ciN`SSOcBO7Sa7h]]M96T
+FGQ:Nmd`jSX[OfR]gJY666Xfc1?:N@Bi;09WKS9cdbJm[7Po`T?51lKSAK8N8SKo
+06@jUmWSnfOIlil[cm_VK<lkLh[SOS?o0<R9o`1aGA?o04jF]07hOOl01Cnme6on
+?VPCJWYcjI:?3=ZXSNB>DUO]]jMfHbAbBAS[aGi`enVWo1EOoThK`mof:eYojGGe
+OVG@0Ejoncg9=3lO?QY=K`VhUCa=Xc9625;/;f8Q@F`1TlI?7[GT5Nco0;>?o9`g
+`_l0naYdCod^QX0ndof`;Vk^o`1X[aKLGmXeS>of3M2c[8DaHfh6F@UCTLl7_GcC
+Ge9nfUobL_hao`2hOojKkN_U^_g_9ol0M:?n6?i8nEa7lBGZ`[d_h;bC@o6;`9=K
+`VhUCG];I8`@YMQMAT:2f0<WS9hmJld[e;h6o`39JoQoo`1S3YGo0:EaEdhcn3?d
+Oi4DoRAm<O]>G=gMo73a9LGmXeS>o`1Sg@/jb5<FL86F@UCTLl7_GP]OA7kEgo9O
+_5?o06honTD5O>mO=IIo^e;o00[lShk<o`3NJ_l0ROiQG_Gk<McMfWa`l=g5QJ=O
+CYm/f`ZjaUlfL`>6LQAPLlW]GP]OA7k:?o9O_2go06oOnTDm6Iok]Eo`_lPbcoNJ
+Gn9OVM;hnTVVlMn8i[R4fl[jUN<lI8HXaVHUBEb3PlI77YG9EfWa8oi:9hYok2]m
+o`2Sg[RjnLXo0Sh_7Oain[o<:mJn1UcMfWaCdBh/;A[jM?]>f5GF<_VfU1`cT:<3
+WTmZlU[fSmW[oT/6POl0KeojBbeWRohDoAoTMFBOkk@oaAo=7>N>I9Y_6gR2JhQ=
+_:nXgK?6B6:<IV9DULPh?6AajEbeMSl@o`3TOo4goHC_OoAkeaeO2<nKc3n?DmGn
+HEkincYNjSHN=[fKC=>ODiCYdRV=98hR5lj8k/b43PP37GV_0jnT_fGOnAoe3o/6
+Bol0Xn6Q7[l9OlS:QjWP]555OTah0Em=O/jJSZnWo`32@ofEY4VZNImTgk9XX_;a
+if<nHbicTm>V>NeO<]OFgk;Go<co0?KUo`2ejmO8_mkQlobImK`;o`0SFSofmojB
+chMXXX[m5?j72_Y;h4jQZeShHlNSC=:ODa9IaNHDURRl_4MaS?V<<ibNWYm:nKJn
+[OfL_nAFn8Wo05i@o`3X^iX0n]oQ/BOQehF963oIESaof`BX]?l0QahAd_aUNN?[
+>eUGF;i7FAV^[Qh5ldA;8dM/dQPSN@@A1gA5I]XbCTiVn77o02Cc`_l0mPZbo`3A
+2EfM070fg``l5F^Qn8o3LEU8M?l05MeMg^Xa_MG3]9?OHliTMY2l>L0Z/C8/Ii@:
+NJbKgh;o00oe7`WJn2kZf_3YmWLcGTLRjSNag_fRi4XWUJmBHG;=:/lZ^C8Mb^E?
+61GZU5070jgl<o27R3Do3f[Gl=g7?hET4^V[JjQNFL<;R=XPC1KcAaBO^gI<B8`:
+<Ej4RYM?n77Q7Bo6Eihn/kFEMH_TMI6Jj^7PGcA4/SAfcB62=i1147M4EVfS9>CW
+^J:0>5l4o3O`Ql?D^dl:f/]^;gb`gWGDme/RQ14<4?WbBNC146KbhHm/JKS]DI>L
+Ga5obEk`Gof3]Kom2/jmD[b_a5obEk`Go`1PkFoo04:cX0oV6oJ>o`2CQ_RQo`1S
+C[Oo0:GCEhaG/okAgo9`ga@ok6WFo`3d^V[aRP0[m=?n2E7o02L=hQok5Jko0?Bj
+a[lbjoCCoPUAo`0W3N8OnaF^o`3d^/J0>1n>Go9JoR1of<>Zo`3YG;GU]NYO7;oT
+]Oa0o`2aQeGo0=:iJl][nQ<7o1Qj;lSi:YlC2__KoPWKo`0U[e_o0;5jiol0B^d[
+h9[kfoh9fol09JmKo`2aN^Oo04[]:lgR;oLJ_XKH?n;4oIZRRR_`dnW2RRRP0XXX
+X0::::02RRRP0XXXX0::::02_6OfPol0TT>_o`3K[ojEAEk=GS?k@Ol0bB7Go`3]
+eol0BZ:P3lcJ:::02_]o`YobA7hOOmS3IOl0YdN_R2_]o`0:OlTAn7go06<=UojM
+7X0n^J:::02RRRP0XXXX0::::02RRRP0XXXX0::::0?oeOglXXXX0::::02RRRP0
+XXXX0:lZn<oo028WoLEdCodjF]NZei=lKHeVl0?4iH:nZJ83]HZNMD]NS:@Am@J0
+?aHoh:[o0?9`gQko0;5Jdol0Bjn[lbjoBWoPZGI`f?k@?Qn:5Y6Dn5kA/bb_<fO]
+]j?_B<aaadcR_cFX0:mWoIaoi>6n5ol0f=>ROnUd=N<Ek7nc]6/gk@?`bRLT:oRS
+AE9ER[H=k4>6DPPnh>A@1mbo]YOlW;n<OnhOo`2Vng[iK[jMoK9]hkCmY7aOKa5f
+EOk?`I7JA^K2g?;>Bao4neO<EO_NCokYAo`ao97b^8oRBmF5NYO0goT]O`oo0>aQ
+d[od[R[bf_C_PU6/gaVl1A>B5OGm:DUF:]PgLHhIB23kPi5M><oPcm7nA5?hTOEG
+kEgo02GkaCofhol0Y51Gc_Gd3ne;KafWaglCflAMUGk5Pb>dSLfL1iIbF?hWf[in
+[i[;?mfYOhEnAlMVOnleOlCo032_XSmU7oT_gQKo0;O_oB:N_WN_X7mUZgS^oS_h
+H]iBjZgfg9SMXfh/ic`b4<?`?]AVOnkEOl;o023;?miYOhUnIfOa8oi:9hYok2]m
+o`2Sg[Rjk3hQa[3ho`34dB4UDe>mD5V;=PC^>FHTTni>CG7eliAn17aN>oScmGnH
+EkAnceobF3@?ng[o0=9IJlG[f7h1flMglFM2]iBjZgf[9SMXfh]YC`b4<?`?]FN;
+oQCm7nAeI9o_]3o57ldIOa3o0>AolCOmQ>mom7_G7Ee_Sj=HO7OR>92BZJUN:2c5
+V`9V7;<BBOLW9[TZn4IlgV7lNYj_l`[jBoIMo`2Ao`1@o`2`I;oj?Q[i][j7oIY/
+hKkagOaC=8ZSCIFc5:l;Ilj4ONSICSWYW52?GhBoi6E3e?4::::o9S`0[jfoIJoi
+VOl0kL_o06_GbCGeAnc?Ye_Oo`32BNNlbnGmSaiDl/?Gc^_U/^NW6NWJ_Gb;oNhO
+?lVOFl2olSFSo`1_OnT/n:j:::oACnQ`[j]oIboi5KhROmND?oX^i[iB[jOo06O]
+?P__2oa0<cB[iMW5SbYY8^/Mcel]UgM>nJ0?/KhLOlTll;omPZbom49GIeaO`g6?
+QghF7oD:/Ol0d@UMY@0DDDD0555501GT7RfBmSn;GPXf<:C_oIn]I3b6<0I/nLQF
+oUG[mNEn8_l0T[gP_o/7Jgoj5Id0Oc1O]4VA_fPORLdbQ93hXe[LX>h0oKILP70c
+mL2_7:mWoJ>oi>6n:7oHdjgo0>UdeN<D05OYCo`BdT_8o`1X7a0eS2TlWo2;gNEN
+@aS7ffbib5Kl/EnJeOYYo`04Z?l0ThKa3of:egojGF=07Wga]<SO6KajdbQ93[nZ
+kU1g07kG9T0h6O[PEiQGZGabo`2Beo43o/HMEol0B^F_;JoXC1o`HNRo8nBZO4`[
+k/oh9lBGTOaVeU[659i?k0^LZlQS6?]M[cT:giH[hC[kfoh9fol09JmKo`2aN^Oo
+04[]:lgR;oLJ_XKH?n;4nNJ:::a?cX:no?f7[jhdjflNGR93i4:JM9=9?=i2AXP^
+RF;KF60<TThaR_P>_]cmU7oTWOaRo`2`E3oj8_JlK?hg`TejOVSe/TZLV9S=M59o
+nB/nm?l0QJGQcoX<J7oh=h_o08RSoQJGQcoX<J7o0>3N;ohR_b_X[i3n`hOc<Go4
+A:go03jGg/oE3oQJGQco0:36Qol0PgRon8[JdOaL?4?WOf19Y^YOIm_VOI]@FKI_
+c]gK8cS>3S?G1[lUJn^?fI=Fo/7`o`2?mMl[cok>]KNil_M]gnBUbngMPhcS6L77
+YG=S<ZSCY^JU/NWTo6llAR8dZT4TkgN_A=oXOIWf[a3o0=0ngol00Y_o08eAmZl@
+o`3@?]oo00:Ko`2=El/ol=Go0?D[OnCgo`1XXohJ_ojUKobNo`3]5N7LmKoG_:_n
+OgoT/_l08nY_]GR7oX7fo`3h5=olJXneN8OnPOKo0?PDgoaZ_UWo08J_o`2YFol0
+9kokAGEJ[lD[o`0Jo1Ka1h[db6G@[Vc^X[I33L<dPa90B`TEHb<R@ZAjMnJb[EU2
+4YmULeQaUUmB<g@Wc><G:eV]4[mDTNnOJ_4?o@?]o`3`:KoheAmZl@om0ngo0?0Y
+_oSEOVko0<9ohkoj6CD_o0bKo`2;XohCo`0Mo`3@bJUoh6COo5elko[ACoTIleoa
+4nQociOgXoB;kEhQo`2POKon1COo01Z_8?Se?[;o00WeaK^cQRR?fG;;>G8odV;6
+5<Jiimjn??l0Q?l0agod<VYOn1Tgo`0GGdA[^XGnZO/[cgnYg<]gLbkMl/c]98fg
+D@1UV99`00?J^o;/iSR9^4Hfd^Nk`maSBc2/j<8==:n]^jGjW`kAAAG/Wf8EmXn5
+9MAohDkl?Xo/lOfGoQ8K7miiYgolQ=_h=V>_7g_N_Rj_]o`Yo`0TAn7goH`fGoYd
+NP3jiXXXX0::::02RRRP0XXXX0::::02RRRP0XXXX0ooe_glXXXX0:::l>n9?a=l
+@N4O4<=QX]WJg5QY][1Z6[=L6@BVe^;];EE]MW1TEO=T>kMTXTN1iVm@3g6RR_U[
+@_SchS^_26_n:mCd^dL;hN]?4fSa@_:Vnfe4g2fm]M<`KI8YR@bB01OgQ0CmfB`1
+mBdEll7hWn=SYlGQUH=>o`24`TlA=hMllY?o06KiRF;JYioUk_<fVdG6cc>9C]gl
+ERg?aflAG>Sn6_4>TJGJAfTnSf6]Jc5>lSBA`g]a7KV:dI@0kaiVOL@@na52Sc@j
+07e3GUGaWoi4Co^:j9ojM;F/Jcn8WR9?RkON2_444NUj>mb;GBGT/K[MZCR`S_93
+5NIncKU?WSblKR/;44hK61lN?70doBOn4Ko/7EkTWDM5Tnf@FQNche6fOKi^hO=a
+]aSka0X0o8co08:[o`39`gQko/E[Cod^_Zo<^_dNo`22WnZSEoSkX5b;Bh/]_QVe
+CILanDiaNgYb1TlLhcjPenL=01G/o`2cSobL=l;o0?/JM4om;XJlH[eomW^Ok;lO
+OQYLnFl_UN9]6OI6=c]]_HSQAg9j0N]07gCnfUobL_hao`2hOojKkN_U^_YKm/2n
+o];mX[aKNoIi[Gc?/7k^M?;TG5SKSiUiaW6AkEldenmi?o^U7o37lTO:hSn9;eHE
+jUl3OnBeo3oo0;67B_l0d[R[bf_BoP_?mUn<GPBil]iO:ekBgfASLkKKZ<hDMbNP
+7[GCS?h<oAoTACn97eKneMobGkaCo`1^?oY51Gc_G_GkCUmoJGa`lBg_fNJelck7
+nkWCbi5aI`SiUiaW6AkEh;GcFFOk]Bo`[lShk<omiZohWnHEm4O/Xol09O_2goKm
+o`2TDmO>mNmO/aggmVo73`eNoIi[[bo]Wk^1?<TK=W<?UGS><i?]AVOnkEOl;o8<
+/ogVUoRGiWMO4SoTXWRWo/:ggoXmjh^^]lOCoJ_7OR>il]h_=e:lOI8=[[^VHhHM
+R>Q7[G9EliAn17aN>oScmGnHEkAnceobF3@?ng[o0=9IJlG[e[h6GgmVo5?A;gk?
+=MNGmYoM`9iTSI]YAlZlIaW9mZcaOl:OXob>[9?mmXOhXoVRUl@onAolCOl0HC_O
+oAkeaeMChiWneN=_45ciKaNKZ=fnb@KGGM<a``k4M2?F^F[hAWcNHOajWZoc2_Y;
+mUgo097o053o0;1T_oXn6_Vf_O?fM=E6TN=[fi=YLG^kCYDfFdOV^<c@W96AaaS?
+ZA@Sen4_nAU@mCa^RRR_bHl0:n]_fF_nIWokL_l0f_GbCGdencY[PdKo08B7=QMg
+gWOI?n?F7cM^gc__LS6LlN^3G[i5o_L?WnC?[N1OnA[Ao`2g_oBFO7=555OXYo@h
+EmFo/iOlR]lA?n_:7odGLelYEm9O0WFQY7QSajY/K^mlncR6KJ;c@Vf>hnob<Ica
+m3@1mYo3SoTWWQOo0;1EUoj8B^QRe[AimDWd>2nPTe:eA9I[EID<lLLWg7N<7LZ]
+SPTH?J^Mn6acl>_2aaS>UF?Go[PUN=n5o17RJan<UcZ]cXCfe]KGN[gSjhF]R]o3
+ZBFXQ]@ZB6O<GU1FgaZX5]7QVg2P3jCWWQ]HI;ViTF:69Bk^i2ZZZ<TTWP03TTeR
+BN;?2/FR`n99MI/TdRifNEN=LARfTl`kDfbU]Qg7QL7Tl2_<_6L7S?aml>?6>RgG
+QRCCkZ:jV]kBcT^KJHJ_IFdR>[1UOI4UjPJ?I:EI0gckAcGU6YN1_5Go00RVWJ`o
+PJGE8A[n]jRgQTbF0UQPe>f^h8f9NLFaMWVgb:9S]4lQnIUa@1mHgV]J?YmkIjIO
+gl5]NJRc[J`bbXTTkASLhRAR2iDLT:3PLVZm[hVl>G^[g7QnbeFd^=D]5;CFTLlK
+g4JS09N8<GDO<>B>hmJnF=Mn5oSZ;DO2fWbJM9hQU6VN5[5mE3fbYYUaXFXRk_KU
+a;8TY=dVdX8Xi=c`Z[QE8=MmhHl;n9M7n;6XgVRf>YjOX=lfXCgl^X7CY;JJNIXf
+QNblQW^enH>a4feM^@bk]Vd0madgF]7eTG9dNoP_QIc?KcnA:T_UCaoOSOJC]MLl
+ZL4MaGWgR;oT[gP_o/7Jgoj5Ieiancah7lDn4Q>O4FR?X8/m1d7@fAg]g5kNJB;[
+kCOaVgUUc7?ilHAYMTc13_AL2Ue;`Yhh]OS1hHJmlKg=j;RbeUX@eSIYmWD=JiAM
+THg0i7;I?blMCT0oW<oJ>oi>6n:7oHdjgojGCEhaG[ok@TLd?amn9L=a<KRE?4f/
+ZlQ0D^`_I@F8G06CcPLEi1@0EnVWo1:SoThKa3of:ego0>UeSGiUenSgo1<2be6n
+n?^_`jIZ;jK:?3=daTB>>DUO]]T=^90AbB3W[a@1boabo`2Beo43o/HMEol0B^F_
+;Jm;n=4Ld?aRlM`g4a^9DekE5N@P:GHGDP;4;P39i`>:ld[nQ<7o00HNRo8nBZO4
+`[kfo`22M_l0bF_Fo`3/G[Wo0=:kB_PV_^7mPBbe6nn<F/@jIZ;jK:=1^6<RAabT
+[mZ]A]a82>B@LmN:lgR;oLJ_XKH?n;4l>XXX[4o>P[kLoIAoi9glH_l0/5@onR;f
+_R>_/Ol0IQ/]A^_0WaGV/]ANcRPdf9YXeSSLC[i=fMY;PUN0AUL7Wf5NAW_njbmE
+o`2U8m;:_hgbUojBccRRRR_:?cd:nX?P=ob87aBok1RonR;Z_Un_X[h;FFXgGPWh
+ScFFX_Ia@JL[CA[76hWGbKTkBG1:l0S:h??/:lo=?h4_UnIkW3_nm;dWo`2TB?4J
+:::n;?Q`[jHl8ol09]WR_o/9aol0XEYGc?Gd5hG/]AOh1N9;j?DGS/hmAAG]A76E
+TKMKO<G8gSZ>0LLNi[Uagl2Yj?l08nShJn>]o`1NjWoY;?5J:::o<C`0[j[__nCC
+Go3o0=>@[iD[j?_]>eOo08IWOD?kFOk3aoXOTaK?n@P5o`1I]goNnK[kM:nShHoS
+bm?eAnRN6Wnoco`?o`1:RO8U555OLWkP5OKo08Doi8Sl?_l0/HK;o`1>Sel@EmQn
+5=>eOoQE?`o_o`2eWna7a3Hoj7i<F`OlC9Qo[=^o[cem^U07f[AAA@0DDDD05555
+01AAA@0DDDD0555501AAA@1oomOmo::::02^6lDO3S`ShaeOB]LeneUV^m7L=0Hk
+ZhPA]//Lj[?738RCX//B>4UEe3;T3TikVRP3Uah=l?3aXga144Wm^=Yhd/cNO=iO
+f@BVL9i6o`0WMiQciVcOSiMfgR^Jd[h?O3gA]?l046UFVWB?In9hF][j:Nj^KQF]
+Flgo04N;cI6lR1O?UfAAK4CNfaAV_CJ:0?<Sl8O13N4el6V:mna;M6n4he:m6XOJ
+biLcOKa=m[gW9G?VoLoMoLnFWgo`Qn7nXol02>;=YcaAN58XH;2:2j^88UQ]gRTR
+RUSRTE9hdN2=UBH>0EcSTim:XX0h/n0?3LWR^?aYLRk^MB]gJB0Cgee=Jfl[a61Y
+8;FBE[N9c4c8FB<73?l0gggLmlIonA4okR^ROnWBe[eF_:_S?ob8WoLEdCodjF]0
+7hZOl5EonCQ_3goH[FWo0:GGeOVGGjJOl5EonCQ_3goH[FWo0:GGeOVG@0Ek?ncS
+o`0W3O2oo/JM4ol0Bj6_6:mWoIaoi>6n5ol0f=>ROnUd=07g3nfUo`0W;n<OnhOo
+0>Vng[iK[jToKBoi>GlHo`3L?ol0COKel]enmi?o0;YAo`0<ObAl[R?hT_EQGZG`
+=oi;Gl?o0?/HM:om:hZl][e;h6olU[n7o`3f<>UOnULEM><oPcm7nA5?hTODgkEg
+o9O_5?l0fhonTD5O>mOA7kEgo9O_5?l0fhonTD5O>mO=IIo^e;o2_b?S/cogV[oR
+OiQGdAnbSobGk`]ofoOnTDmO>mOA7k:?o9O_2goKmojACdIWo^eGo2ob3;?miYOh
+UnIeWa8oi:9hYok2]moj?N^;[]?RAobDCaCo0=QFnol0AkeaMO>DOPAlGS_hloEo
+V5NdO/mOlUPd3o]jo`3BFF_5jmXoIjoi;1X7oKeojBbeWRohDoAoTMFBOkk@o`0D
+OcARO4?o097o0<COmQ>mo`3AkeaeMSl@o`3TOo4goHC_OoAkeaeO2<nKc3n?DmGn
+HEm9O/^olSoZ7oH<Uol0Al=O=]OBGk;_o8ojQof39Ol0dO3@Sen4_nAU@mC`FRRR
+_bHl0:n]_fF_nIWo0>g;o`1[elTemKO/]Ol0<com^Go]N_Gb;oNhO?l09We_0_l0
+b=J?oKgo0:BchMXXX[m5?j72_ZgmW;oTE_R9o`1ND?l0j;^JnDZn[OfL_nAFn8Wo
+05i@o`3X^iX0n^?QaobCc`_o0=PZbol0A2EfMLIl>?l0TWWQOo/5FGoXQ:k>P0XX
+XX0::::02_:o4Go9G_1OoH>e_od:c[eB_:o4Go9G_1Oo063]Kol0@[>P3nHKmXko
+09>6n:7o06=>]ol0YM=GS5Nco]7OlW3O53o/JMKo0?BjJ_6:02_ddoh9DOl09`gR
+7o/E[_l0m;[6_c;[m=?n2E7o02L=hQok5Jko0?BjaX0h7hiOlU[n87oH`j[o0>UL
+]NFejUlL_nBeo43o0;67EOl0d[U[bf_j4`Ol67X_b?TZWa<:nm_n2M_o02F_Fol0
+/G[Wo`1:kB_PV__KoPWKo`0U[e_o0;5jiol0B^d[cN8_maZnQ]Poh/CiiXXX[4o>
+P[kLoIAoi9glH_l0/5@onR;f_R>_]cmU7oTWOaRok1D?oXRm[b<mo`1eUj[o0=:A
+jFEOa_U;o`19Ii7AAAGU7ij5OD7`6oi43hYOmPaOoA5eGboGe1l1_nA0n:Go0635
+o`3A5eGWiYo0Ul_c?LhMo`1jGY?o0=8TO?M555O5W`hEm<N4OnCK?5Oo064ho`3d
+:d[iW[jHl8olVfN:o`3/9aonQFUL^>oPE?AoTOAl=O7Fo`2_MCodUWco04DDEnHW
+P1GeGOOlVV_n7oYb5O:UOEMmo`0VV_l0QojLQGdO37lNGYnZ?dC`dognOn1onUA?
+RRRRR_^Cm`2_]o`Yo`0TAn7goH`fGoYdN_R2_]o`YobA7hOOmS3IOnWAj0?[VRRR
+P0XXXX0::::02RRRP0XXXX0::::02RRRP3ood?glXXXX0::::02RRRP0XXXX0:lV
+n=Z=9h0M4TJ9VeCA06G6EohVU[b=`8o<6_FJlZn<o`3b8WoLEdCo0=>U[@1n9?l0
+`E;]i[KmX7`o7=MBGK7`_J7O:430OKKgSmfZ37hImjo=J_ddo`22Zol0bL=hNok5
+Jdom;[j_c;X0:mSo06MTJCmX7hIAXiRI_56RP>^=bTg/G8g0S8m`AkEhiG/ok>?o
+02L=l;onaYdCo`1;XJ0?][m/V6B3mY7aO5;>m`bofOVB@:6>K2g?>aEGSY`1Gc5G
+e9nfUobL_haokQoo0:KkN_U^_g_9o`3M:?l0QSnB?ULAo4Uj/:m>n2B=9lI_0DJ>
+HVKGm:0MLKU9^hnA^16AkPSf[c6_D_PKo`0U[n7o0?f<>UOnULEM><oPcm7nA5?h
+TOCo0>e;391lMo4lD/kg3;mRc98537=W0NMRZ_7CP2_Wj_XSmZko09;mhYokLOl0
+dRP[ig[i[;?mfYOhEnAlMVOnleOlCo<:nPOfFXI9oS_hHRRWNgI_]^98`YHH/ica
+_EUijLPeloEm4O/Xo`39O_2goKmojACdIWo^eGo2o`0PbcoNJGn9OVMAl@dJ?aoh
+VSMc:bjWNP^f=c4C_bMX0bOH0NeLOGJO4SoTXWRWo/:ggoXmjh^_W:?`8n;aglNO
+Zoc2_HOP739?lFM2RRWNgI_]F98`YHH]YCa_EUijLPehmG]7k?Go02F3@?l0]jom
+9IJcaOl02Wj?lSZbCoOJ7n:?iX`?7b=7hklAa^iUIMB_0GK6iR9Vi>d0I?/0?J^B
+[/OR7ob?oRKo0;2Mkoj?N^>[hAWcNHOajWZoc2_XOmVVgV^O7Mo73MBFS3CIC_R2
+5R?>QhoN:han6ON_WR_Y;mUgoTOm@ok1T_l0j?QXAjo2Go8bXNYh;AAAGi<N05OE
+7k<mYLGGo2BNANcFNgk7WbQ4MfO>jnHSm>f<NmO:mOFgk;Go03<ooKUokG[elRog
+^7co02ImK`;o0<SFSofmo`2T/n7J:::oACnQ`[jOoIn]9kW`_l@33NBfVbcRb8Q6
+MnHkW[iR?dm/MObnH:n[OfL_nAFn8WoGU3oj;^J0?[OhKlO3_`/>_o4Z/Ol0d@UM
+YG6O3SoTWWQOo/5FGoXQ:k>P0XXXX0::::02_0oRIZoQSAoRQh6WlD^ZFcf>]1Md
+KB3MVck8[7YG_UN7O47`eXWROhZN1k?G;KkC37HJfj[_M<=Vc6LXE=AEi^ElVoVM
+N1mQkF?eVo9eiKGnEm3nJShljO;Oo7;hRGfUA1[:hlAj_90@@X<CgTY@P717bTL4
+0R_:?k4e?oWSo`2?;oSG[Oan_;WB_S]lAm;/7lZe/o4V/@a9P=]SS_9EDIK9>0>Y
+>JlTo]_Do`3W]ohj_n5NDok@o^OnC7fZo`1EN_eSo`0YQoHVYol0?7oaiOl06_d5
+o`22KL^SN7?SU[Umhb2aFCn7;V=2jVDNJKbc86437kXKW6:o?[nfmCoikOl0SZoh
+EnR7o1=3C;;aWlM]Md_a;7m/]H_3Me<ZI<N95_;=@LaUCdHlIacA7joOGTolV5?o
+05F]k_eRo`3g3>4n<4eWMO5[a]MJL@KBKG=BN4P5AiKG<QG0>2><L4EiePejClIK
+Bgdkh_l0SWCk=?;]kKGMCRSG9>e4^Y5DI>BL0MnJlfbJoN<;oJo/XfmW/_i^al_?
+oE>k_mIolY1PemWo0;36Zn6]6n;F[GGRYUBdK@idD_6dPl`g=/A`PHm0NLElHI=O
+KGk1WQcA_57aOeSCmM]o]=_7XEa:ZkgC3Rj]E1bQDm6?]G1Wgm[ODjW?k>e^W<JH
+OoECWG9mH_l0m`c`SkOJOlm?d?l0QAm_]?l0WYnQo`0:?/5Yo`0lo`1CoSAmP]?n
+NOjWo6/?n5Ko0:MonC7`Wo67OmAGoU8?]mYocdo@o`25OG?k=WR7`SHN2?RS7[LZ
+[LCjM4;GM4kWN8K_>2ZW79G[R_TKk1JOlloe?n=OHOk<WQ3`k[?P?h[gFYFWWBf>
+Va?2O<TGHaQ^cW2/0NE7G=NGW?l0JWeNG?k>fVg=gAfiOoZQkGg?[=kBgmUo:cbk
+oQ8M7oin?o77o`0:?n4QdOl0in?o01aol:?n4NdOoWgo0?7go`0J?n4NdOl0imoo
+01molJlgoQBo^Ol0Tal=o`0HGoe5OnDPo`24QdOo09n?o77o0<:nPoPih[l5FoPc
+hQYZdjoJ9M?DFfj:AS_lZhj4:LLUN^:nO?l0Q7]7o`2OOoamo`36_Xgh:N1_2fYN
+1oRCLg]UiT]WYb_4O<T6e_9^CW0H0lZ>]L>IOfSk6G=bFokNkW[i7oZMmIG/o[=k
+BgmUo:ko087QOo2Bj9oclOl0SSohDOl02Bj9o`0o7oSSo`257o2=J9ockol0Skoh
+dOl02=J9o`0no`3hnol0SGb7ngOg?a?So`3S2Ol0Z:olXQo`T^ROlo7o08hon5Nm
+n6O5gPQ?PAhSP^;QOkCKD4<A<<QKI^]/hKKPM6keh9o`SFROlnoo08non=O@gQO`
+7hDWoImlCJ];Hk[^7DDA7lf@HD]JlH3HoR?J^O6OGOHe;l^ckmSgLPoe=ij_/o[G
+l>MknbfiMOWf?3_n4Yd;oWiolLOo0>9Xo`24Yd;o09nOo77o0?RJ?n4Fd;oWfol0
+7gon:XohAK@_nOKo0<OOo`2:[lgo0=Xo^oRN;oaQGoDEo`2D@ohBW@_nOWoaaol0
+hV_XVmlHO3lo/g?KRhCne^>O8UgOlOl0Wkfc7g?Of[ifo`24Fd;o09m_o7go0?RZ
+nUkghNN3anc2n/SCo`3C>?gWVbom13ImgO]nkad[j3Q_jekNG;bkNOM7g?QooZQm
+MUk3jcOUNo/][akMChoo0>4UdCoWhol077o`XohBGA?nOSoaaol02SoQ6]4oimoo
+01molJ?n4JdCoWgo0?7go`0Jneofgnkn9nbOlHco0=?o0?bV7o2Bj9oclOl0SSoh
+EmPn3?4oPJjn6g`mdn2I6eU_4ER?mC86o`2@Ra7cUM_gLMjn?_l0Q6]4o`2OOoam
+o`36_/o`Ih5l:f_`Zn7_R22afghlAF94_Vb7YZC;md]]j3dZjOe^ji^Fgc>O5oj_
+NcUk3fg?KBo9JoBm]K7g=AAAGXWaPDDDD0555501AAA@0DDDD0555501AAA@1ooA
+oObRRRP0[`khTo4ga1hAl@`f6RfM[LF6Vf/6XJ/e`I1:KFh^d]EFefL6AElf@k]f
+BRAh7VKema[Q_57`hl8n<MGd[G=O]II[_Ag3@6>j^84KK;7>Zca`b8Tj;;4SQ9EM
+@bi0i>@3^JnF]2n??R>jl8Joh[e?BkA`_QjdlCJ?52lZKkKDCL;Kfedc1]TRV939
+805oN41?gI;NnS`KhN7SA_R289?kLKCaYIVlnKbo/PU<hCb=oTk_<>O<fKlO;^fl
+EcFUO1khNj=YoR3B[CCY7/o4l;Fem5?MG=`[F[NKoXlGVb=i42nO;/RRf8Vm]RS=
+072WhWn=SYlGQUH=>ohC2Ca4gQgcbTomVnHURfZNOiNkc=Y]5a/lcRDkMo5H]clM
+_4EcXoQ[a3Y6UfTMY?XmQ[F/aC_8dTL=kLAfiR]6D0>lNIWg44?/A@Xld>WZQn4?
+PQ_2Jn3C5NoHU^SO2LJUNSD?]IL^I_]hVnekcT[WcO^O^o^O;Cko0>4?`oe7oQ75
+VdihX_2TD<5Q51MG44B`fkaBAABaaB:TlJ?16bY<70:iabLP79[lDmLohFUo`RcF
+M]oH;JbO3Z]Uo]WfhJ?o06eiioPlWbPH]VgM^0OLE>:aoSalAo26UJCo0<8SOGDb
+JXMAdFGbe];Udf3DKJ@WcES<OgE9a^cfjh5NZ;l=o22n=Vn88]IOkIKTWkE?mVlg
+bQKnOmUlck?ioTPANMiOVNGlVkKaF9lJA:?QmLCA@bg0][oBKQdPRNJCbX=A]i96
+4LHIffXYHQ@CP6P3lLOn2S_Q?aQlCOSOXN_O3o`gZf_jM1hM][JBNddjjTSFIKbk
+MT94OgP[ZLNQ5OWo0?l02SoSEod87R3o0<5Egol06joZ?ohGAh2oijJSo`22OD_o
+096Xo`25dN0_nNVXo`3PWe;o0>AZ0?iL?n57o6[o0:43a1oh:[_o0>=ej[l2OQ=l
+Eo3o0<Ko08NJm[OPWGK;C]=lAJCLg<l^UgJaa@`gTCb>al_QED4TnP[nS6dn>W`g
+_hALf=gOG49;:7SdWDGGLS5F6AKTIEP@O@PR[?l0`^S`5ocde7o`CjUolSD0OT=n
+eIhBlHN<_SihXlBN5_3fZJUYMimRlVhQ/;QXgl^bPSK1l_/bT7g5O??o00Z_hWom
+2Q[7oP_^?oR:oOl0o`25dN0_nNVXo`3PWe;o0>AZ?n5dN0_nNVXon2OD_oTJ_]/9
+a[EYDXDUCG^Y;Mm5HlfYU/IBL[kWh0Ol:[n9o`3d:6/On2nho`3R:m3n4G`nlOj9
+lF?1F/j]hGeJe/K3Fm=^9iW/;P9755La^k/MWAE19[m/k?hjO3KD;F:n/;^n^KJh
+D?7;5Y>X^SX`b6EU]b22>Q5FOn5dN0_nNVXon2OD_oTJ]:_7=FLG7fJelfC7:hYg
+^OVQndKX7R;aIlI_4>_n7=6_koC[[k9iDlMW?/OIJ@Xf<X>S:An5N8ol:nlNo`3@
+]JWo0>0Lgoa5O/ko0<;Xl1Olm=Aol4nYOo8eAbo6ghNflCcccjQ776YIVKB=A2ZX
+6BBCKh00jV_?`o5=BWCSCD5XT_^?:a72e>YDUDLgZfo_?aVohEmhmoj5[Doo003V
+o`3R:m^oIbd3a5hCn<gQkGo4NSGmQYe[m[lfNBcWf9_]9TG>4?EV0o6_dZQn=g`l
+^8D^;Nhe2F:E@b>^TJRb/[3888]l44M3D_l0`^S`5ocde7o`CjUolSDHSRVYDYbY
+^2eCGgQQn5ZM>Y6XY_AYoLOWghid?GMDlKN8=C/=;^i[Jke2kVRLFl^7STVIUHIG
+?8>JiKoQ5?57o@7_?o0NCo2_d]ohGAh2o`2NVXon2OD_oTJZeilM?Q]YeY=OjQMg
+e]KFj=9;;;Y>XY6R:</c<e^001bBCPEilLjVTUbWTE^0:<i^KZ?EgfAnKOl0`RWR
+SoX3gWoP?9oQGZG`F/MBl=o4cA]Jeb`^kBb]_]7VB]KBT;_]i4GXY?;43YGfgo`^
+S`5ocde7o`04nYOo02=Ao`0;Xl1Olm=Ao`31?ZGo0<SDZ^LbU5aiMcG1l2DJ=J5I
+E6nEYm>S^O27SGAmIe?aU[fYF>WGD]]Mgme;4hPT0I99FICb^N@Lec?o00SGR?l0
+j1Ego`1n9?l02_dEo`25dN0_nNVXo`3PWe;o0>AZ[GGacn6mQ0KVn^kjgQDZ2lVT
+jRRP^@ZS9]`<TT0NY>:lGU??[n6U2LiCMEj^nb?ccohA[a7o0=0ZkoklBOhEkUl0
+7Tl8n<[cD_4M]LfE]9HBA:kFlc0^IHV0nE2NRToQGe7o0<;Xl1Olm=Aol4nYOo8e
+7o2j?0Go03de7o`CjUolSDF>[:o3jSQLA34AZ]^;_/Slo`3o08AgGol0X6GGoOUo
+l:?n4MeooX6GGoOUo`32_d0ohGAh2oijJSoh9mBonAZ[G?adn6mTZ?NGMm0/[Y4Q
+TdWDE3BB7JRS=_bc4h0jTl2_V?l0ENWo03/h_n8HD?l0Wlo^Al4Ol8k[o`3d3;[o
+0;l_oQGdMnco0:WKn3okNohBB>h/_]OfGb]e]<fkbo=gOLA^VhMOF_L_n5dN0_l0
+WYZ?oPWe;oi6XohGAh2oijJSo`22OD_o096[Z`F@`XeEEDVk7Yi=`9A`F9QRHe6g
+6nVWE=OZOVco0<8]hWoj15ioh3bOo4dOl8]hWoj15ioh3bOo01=OY=o`^S`5o`0m
+=Aol4nYOo8eEYoSYl=kEh8kZk_XG^WlZ8?Y>XZI9=YOHP=_lcKEHh7>0Cd1[gSk/
+o>;o08AKa?l0m0Rlo`30NCohV_X;h;gZN3o37SU?4/5cH6n/ha3_]YS_fAck_^XL
+Hg3[jemBOl;Xl1Olm=Aol4nYOo8eH_RCh`N2;_`mZU[K=ZDT/e[>R:=6e;;<b403
+oA^iX0k[hK4=l>_2c3XM:/Co0>@4[P]1n9_R3E?R=9XEeIfZN7[^je;Ck:A39m/5
+eYHR<[C0o9iLQ<`G06dAXL_iX2NQo3n2Nel1n6kFjSJ6J7CK=7A`EIFF50EH7T47
+PPeDdohLN4M;lIGWSjc]IEeRnAeTI[ZhN1O=4Bb=7K=8H8gT44@MdAFKJ<Ti>@2K
+hQN:;W`Kh>e;a3HfjGEi0ZAfdDS58g^9i5QQ4S:2ECc7GN`1`^Cf[b:in:OSmm6/
+M7dfcdao5[j_ZFVC_:ITdoKY/4eciZ39L6I4RGHG?U6ARC88R6mB]_QQh:]M3lAn
+6h[:@jOh[^[^me6=kZhMY9kk7W<S]8GQcP5ERI5S?:1CcFCNo1OhOjShC]O1MeKG
+Qdnc^I[b>AMA_HkgkALRDCb]NY<;UVUFNEG9T>iG:WS0X0loe3hiJ[LG6QJUhMdn
+0j?=YoQkE=@Fjl`G?fOa9N6d]ePfP:7QfBBB1PaK2X0YKL>Qd?hWjoZ7a4UdFl/k
+E?3]cLjUHFLTIT=j;WBUS<[BZA]l^@VH;P0[iJ7;nJ0WIjal;_16^J_Xf]GmRh^=
+14:fZ@g<l41FfTFJ1IX8Y5RWF6E5TR4Z>8g6i<4W<nWo00hl8jGhb_?7eWJb[[5l
+S[8cGE`l2nJ8UTJ>fJ@`A_888PkXR/fdI9bLP72O1_hXJml@C8WR6c]KFBjdOAo4
+=YmU;T9HjgmXlV2D_WM=4KI]k[QGb25G1[V=Bn;?PCE?S1hHBb_Ig>WFF/aCK[:k
+CJk=JP0KXQ^nhNEb?OTImQl4o3O`Ql?D^dl:f/]^;gb`gWGDme/RQ14<4?WbBNC1
+46KbhHm/JKS]DI>N@n86/f_Q[hRn3_46ZAGAdn:ceN1iKNd^;/99:KDX65_78Eg1
+6`B0>:0?if_S]l9_R_hPn=oa3ekA?1>^g^WJUhReJi]Yh];^fSUQV_9GSMCiO:/Y
+11m3GUGo00XoheOm21hPo`31EMoo01^_jSon5dN0_nNVXol0PWe;o`2AZ[GOadn6
+nWfd]kOgMmKFl:UY99M9e54AAe;<KL03g=07l_?o00XoheOm21hPo`31EMoo01^_
+d0oh9aN4o67`bn=n^Jml@?3N[J1YdoQfi]Xik_C[Z>=YV_;Ae@4aoN:Xaaj0enao
+o2j?0Go?CDOo00CjUol08e7o00^S`5ocde7o0<4nYOl0b=@1n8OaMn7gSoFoRahe
+eWBO2n[GESOjgZEa1<UQL598YKVAdMC/j<Y15NNOl:[n9ol0d:6/On2nhol0R:oO
+o`3hGAh2o`2NVXon2OD_oTJZeelM?Q_H`oJ;jk_[N;LRKi=9e55gB<4ALVg0bc4:
+1g907=OMD^>J/8Z?/eYi/l^FEaK_Lo0WoQEOa?l0nQ@eSo`Gg7oa5OI?k3fRn8?Q
+mlF=FeWa[X^Xj?HcJ9?KY=LF=`Z=:ecK>41l_ZEASn1[m=_n5dN0_nNVXol0PWe;
+o`2AZ?l0QM7P;oWYZ?l0h9mBo`3TJ^O7lHeJm6E5dd[nIM;;X`TYG?aRo`25ON?O
+nQJe?o`3Vol0R:?n5ON?OnQJe?l0l0i_oR:oIgoQM7P;oWYZ?oPWe;oi6Z]LO7?h
+KfHS=gMgd0VMHTgjCZ:kY7njZi]nF?H3Te?n]mCnA7PojXD_ifOSGo`[kako0=2e
+ZOl0h1cOo4EmIo/hFVYN5O1?a?dca5YekHG>]JO53IY;JCPcB26jDZ_bHj^XimJn
+j_l0QM7P;oWYZ?l0h9mBo`3TJSoQM7P;oWYZ?oPWe;oi6[Ta_4/je=dg1:m_`McX
+`g2m>U?WDg/emjJoDo=;oQ5?57o@7_?o007To`0:?n4DlDOm0Nlol1i?l:oBgoQM
+7P;o09jJSoh9mBonAZ[Co7ChKFd]_1LgMm59M^HhEOBMAEY72/iE0KO;4:[=PLh1
+?@6^Kng9o`0YhGo4>j?o03mOg8o=_oQ5?57o041kco`7To`[gkh?VK`mh=n8>Vjc
+JGE[Lj_H;5JXe]<C:oUG2h6487;Z>LMJn[on5dN0_nNVXol0PWe;o`2AZ?l0QM7P
+;oWYZ?l0h9mBo`3TJ/<CV/ZT71ag>c0L3dZ5GfZZ=j=M>ZJoDo>[oQ6_4Ol0d2[_
+o_a9oQAo`SGR?oX5GOl0ghTo`[m5On5dN0_nNVXon2OD_oTJZdWacn6lEc3IbgMl
+Tm`6<LKJCZ8M`V=aECKi>g8cSYWV_9iCaol0R5m3oWlo^AnNOo2=N8onPEMomn9?
+l:mgl=B?Io0ca5hE^KJiSeFl_dUQP=_;Ud3Fa9c]fo`=e?J_YkoQM7P;oWYZ?oPW
+e;oi6XohGAh2o`2NVXon2OD_oTJ/Ze5CQ:7MF>o;o3jSQiCJZ]ldIAfGfUHo?ol0
+hAgGo`3X6GGo07iOo2So08AgGol0X6GGoOUol:o@3oQM7P;o09jJSoh9mBonAZ[7
+hjO3MK]K1[^n5dj=:/GmTjSiQSDQFH;mWbE1H0WX2AjelkoZ_CoWIaOl@`XOloWm
+b?PSoQ7MOoj1UeogiOl0`[j4_=AQKmW=o1ZaG1eThodHFdfkoSnlg[/foLnK[n]N
+nOl02j?0Go?CDOl0`CjUo`38e7o2j?0Go?CDOo1?ZGob=GOUfCA`lg><[jF?MhNh
+>YIOFMJ4ffeKFgM?m3lfOn4FlCom0Rlol1i?oRJ?n4FlCol0@8_?o0NCo`29[m9_
+n5dN0_l0WYZ?oPWe;oi6Z/?SYl=f^gdmK^n=e6Rb]4=9e7c5SLUEL[mWb59EP3d9
+1m3G/Wf9nLGo00RgROl0j15io`20lWoa=OEWQgFK6an67P7`]NRJ3E8o4=Q^QTPU
+G6kDFLIHY]iDPmJmjohGAh2oijJSo`22OD_o096[Ro6?So`mh`Tl=j=hNSe2i^_k
+MdbHQ];_XDF>6MGMfTUPE5EE199HD0OA555501AAA@0DDDD0555501AAA@0DDDD0
+555507ood_glXXXX0::::02RRRP0XXXX0::::02RRRP3U?1GQ6`l3N7Xo3VVcBC`
+AcgM`7V:UmeiLBG;Si@1P=8@>>P6LWV^[XXX0:hChPO4?AOQ_YE][>_Fmg=Jg=`]
+]_]H3:/C<[<6VO:Y4Qfk@k/5;UE1g<0Nk[RO6nZn;]=]]?Pl7n7kOa3LJQLVgWBj
+_6/X;N7bII3;98/5`aD/RaQA6L/hcPI=07Vgk>ORG@=Bl1@N4?3FUJaYnWn30M6S
+UeN6>:Bho/nJJbIe<K5FnJgKMP;S810?0mo[b;hFFgRWB7eC`iZoQ?B_26SjN8Gd
+jfdJDcF[6hJFBiH=mW]@6<Qg<XR7;KRc5SSefP0[bchXn:KGBm=7Q@j?ZF^g?R:f
+^ho/nURg=a7JaXZG4ol0Y<d:/8o=Ci4;b<F0B=^LNYeighi^O55_Oj8gQG`[Hn8[
+Y99i1?OgQ/T/F4ACLTRFedhJAGM?UEN<PW3H81To1ga]hBlGN7[_B_1L/ecYgQ2J
+gdGkA<51VJ>a]KT=]1g:EFhE94TA7BEGET6>OFZlWn5T7RN:OaQ?h[l;JIhG^[_F
+Q<Pd^@cYO8eQIPgDdk@FkCBV@?4FJ<4;4ZI8D4n/D05N4o6oE];e[AkWh;BJIOj[
+On>m9e>8AF4]Y197J8/L5a;iUi;6VE=bP0DB=Ti:K@CG^eN?O5CCMDlABjMhIQl0
+J?hgdjiR^9kPjiL26d]gQJ9HdfVc_=cbRAR_bP0A]Tm0@3[?0WSR`lNjCLjUIFTm
+Q;HgLeSLfebHFTQ^820jUkNBJ5nX>DTHLh>63:>e[cOhH3a=3XUiYoRG`oHn6CHG
+TT5YIJJiT]5]@R<SA^HX=`;<fCiBH>ASS9m8X0:nJ?fP?R7hHdfco`242egC=B_D
+_9]6IiK2BcRl^h_M@4NWA4gLdI?fRjPl/U5HAPkW:;l`nUjnHOSAoJUah/][Jnd2
+dUdF?Cb/>Xbn6;SaA=9?M?95LFWUF[QkN;bUSlaV@Y:/QGLV`i0?Mo1gRVelIn7h
+=O];JFc4TUa191?/<TDe[<m_<S6=WSKK96`38c:`6E911[Yjh3hF_[Cn0]96_j?1
+X=g4TT@/kJ4Fd:@aB/T3906Ob194ZBNBGHaK_;;4ZBNoX0:nMORmhil7=Z5Sh:e>
+:l^=N/=FdVn/[6fT]X9K]hfNkQL?MBAa23=]:/S<bWLQAL^b1_XZ_U7hdaJQ[WRf
+;BO4GQfb^m3/8kNOC;Rjl9G?R[c[aboV3=_8?/XSfYWNRK/QQ<>@X1m5n3o56WN=
+_2fUN;]9Ed/mG]XkV9IM^mETG>eRS>Q8jIAVDmEIU`CdMLWh4^mN_o1NRGWRSC4d
+KEY[>5[ZcS`4]iBPgAP:cQ@?kXI]_CLf<W[:02^ClBn4;3aAZ7QcDKfJF:C`cZGm
+Y`2<Z0l_fFh]M/V@OUfG37S1b1cS8?FDD0555501AAA@0DDDD0555501AAA@0EbW
+S[`SHN?_1n/N2mDVU]kCFKJBfUTQ:RADT62Eg1QWdb3GEdD0555501GcKnd9l@O1
+VQj?;hElFFF[cK8X=LS>WfjTCOfAL;ONC7;<ESJC=]VB<4//Ig7J26[jB[aohR;h
+]l@G=eh;]O0NTN:o3ecIaBG;JgO62fVNBBAFP40/[`BK0R^aOJ?WG0>3P0kW`MhW
+SlHn7h?4<>WgNUY?9?6;NnR4=`_TC?3^I0F`7fKT>NE8?N^W[RoQoON;=Al<Ag?S
+OCXM9eHGEm4e]K^I8DQQ^iHkLXk:QMFPF=PiA=fMfa<kAfU01GcglB?6OQFkejfd
+Ga1IJW1YOQCDk2l^]IQFgo/ne_D2c@@G9J@cXS;8QNGbO9@<=lZhK7d9GSf^g?Sl
+N9mHPl=N0m7e2dVQ]hIKoD=CNcT_Hm[4AU8k2ig94GM@7Ol0RK2P=b0Mah7lFFGS
+c`EhOlLjI3;KFOR;CkCDHHYmXUSS^hEVAI=S<^h1P6f/AWXB>JjV^4n5]_Z5Yl<_
+2=[ZnSfgQjnQdN`BhdfcS4E[Hb[KX7]XD00B>5/XRPH2P2^kX0:nI?7o08kdODO5
+RJQKj1Z^ZAo2CDg_;fh]KSCKN5;RKBY4<K9NG<DS:]]O2@W2:CSJkH:WjK[i`lLJ
+7hVlAN9]Be>3hCN6MOUd9a7YfYjcN1;^HoIhiO<QDJML55EgJ;oFPUTKX<6P3goB
+MC]=Jd^ceWCf;F]o37LA5U:<HiE3ZB[0471716Ag[@[5l>G6ZGWQkBk_G8AKjU?J
+`?La0K@Tk838X6CS3I6<V]ZP0[i1lGo6c`O3lC=>_k[@mGU^?2U][ddL/<VWR2Fa
+/YX[?DkSbg^A>AKC2=ECH[bK]dJb077emGa5hZTlF_hXeRo7PSCKSGh]CTWdn`Tl
+9CgJgh/i6R/kVGGEU5[5=92@bb?]Jg3/QSTfWL0OK]55501GbSOO67hNbO4[B_5U
+[1OgUmHf;JAO;79IY7Y`e7DhkGKLAbc9<lbgE[]:@2@Z^BE9N8?mGElB_=h^^?R7
+5h[^?1FWbn<Hm@Ff4CN4Yc:VWOJa5iPlAVKk?TFokgL3d6gb=g507feAAA@0EbL7
+Q2`]o7=mhnBJDg]oY][YSaT[i@R]9YiTH36kLF^61bLH0`1cW[::02RRRP0XXXX0
+::::02RRRP0XXXX0::::02RRRP0XXXX0om?mo::::02RRRP0XXXX0::::02RRRP0
+XXXX0::Z3D;4gkJF9d=hTBc67L=hRIRXOKefTZAWe5Fj02_;OR]1l@Y];dco08@6
+BhAD_=fY;H=J9Z4UWi4^5]6_dJf4QWl[MiVcmg_f^[HcjUF3hSlDn6_1nWOf_h[e
+FedNbg[69[^I88c8fMZ1W81I/72STmQ@1`G`XPn8LD6Z?hfNm5U9;4M>ReEk6CDh
+TfO_EWOCU5^EgHf0=8ogRcW:QOFjldn7dgPgEkca7h/l6N:9?4T>]GTLU`Pe3kKK
+F<d=_75i44H95/2Z[8lO1;/F8beNUd05NAO5N3hRBajDoPY[i[2=iSZ<>T_HaJW:
+2PlT@?Z8ncQ=fkc1^SOkYE`0`?[]LghVlHn4o1MW7Z7RkF;CA[NMo:RNkVB4BB45
+Q77_8g^@2@Zi9`N:0>Cn5D7a1PdWD_l0Q?i9gggYKCE_F]7e2>blR;i;][54]S89
+o=fnG^oMk=c/nhejQGWG`h7Q>h/mIeg`MhUUlCfF]jU=N_:fXOfQ3Kc<TJ?KFig<
+8HTf0R4H2<c709=NRd05N:o5N3hUbJQY<_Q4jU;XJ@gGfn3A9=>Re>Bh;@oI][JV
+13i8Gc_<fbAbK]V2bkP?JZiKaAhhl6n2HX9_5n]fNS[MUUP5e>TCC<X1HAZa1LP4
+4Q@B1c@1Ro3:7ae1hKM?7ldTejKVHfi^3K]M[J4o^U^F]4S]c<>LnD^d3J</`;7d
+>^0n6e]hIRl?CG_Q7a5=hXdgDkjm_D_9Kol0]5@mc>lS``cIH;32a:AaPhSD1NeM
+o@0Eh9lC;OhZ?hWRVl?WEi_3Wf>9DQl?bjE5N2nlfCcI;TjZ0YQ4OUNF8W1b9=j>
+2X7_MLKhXn8WP?`C=1KN;o4=QXlmdYN:>j^HhY94DhIeAR6:[WiV0`_LRP1?Qm3h
+bPl8F4GSjI;SG5lgcWGHBHc:iPl`a976IA3/4YSAHc9^:0;PEfMLAl>=;dCAO0nS
+jMhKebilBjG73Vge:k_CZDec6k5`kGA;6G[P=Tl00L2^gX0:nNoR5KO5Y_5l/^S]
+[L^P=1K[IYhOUdN9h[W<WWBGPeEMc;mcIiC>Y6@dFATo@UNOn<OR7l>_33=X?Roa
+CHj5MGT1H9=NAfe`/;iCcUb`I511a9`0Aec@1/N2Ho5D?Q3Ah_7<T<gR1;F8Gc`H
+<KG0DKbY2X3ce8E@Cb5DH0jR^Fl3jIY^Rn3M3dSA]D^=L/;>b]h[No^[Xg/mg4TH
+2CBG99<cB336C?c4ikee=01AAG0Jo`35OhHn5=DOAO4gRcBm:_h`[B@G=i3594[S
+:]86HK0`njF`3fc@1gm5=EUM@j4<[388i11Ye01AAA@0DDDD0555501AAA@0DDDD
+055E;?D;7D5UNaWBhF2EhI2S1]//If^QadIC`AfZg@0Eh9lC;OhZ?hWRVl?WEi_3
+Wf>9DQl?bjE5N2nlfCcI;TjZ0YQ4OUNF8W1b9=j>2X7_MLKhXn8WP?`C=1KN;o4=
+QXlmdYN:>j^HhY94DhIeAR6:[WiV0`_LRP1?Qm3hbPl8F4GSjI;SG5lgcWGHBHc:
+iPl`a976IA3/4YSAHc9^:0;PEfMLAl>=;dCAO0nSjMhKebilBjG73Vge:k_CZDec
+6k5`kGA;6G[P=Tl00L2^gX0:nMO7][lGWlGgLVU_[T^Rb90=>7QnKAXUPL9nmNm6
+ZYiS7OW7UVA=QGme^1HoAENKN>OR1l=M3S^_2_RoaMIN7kZn]W31[n>d^XXIPb2M
+F;1XP3WK:L0<>3TD0M=h?Ca?5hBdF?a]91;hQFb]aZ;f^O8Jl4JnNH/QC/<VM_0h
+k3YGAePN5=>/]8l;J?Y>VglfZfMUIfl4=iLcVjW^HhheE9YIbBIGT03=8Cla9K_F
+o@0ElaN=k?hi?hWe`j?9[CF/c[oHSj?=X/ESKaoIX`CO[Z<KG1Lg7Vil]Iel_HEE
+FcGdkGT?a9lKo2/jK[7`nlGN>;K`cMJSJBFlc`jW7HGmXUc6EFE9M`J1l7<LQalf
+2<d0NWJB^YYYEV^]_4nXR6<G;@0R8cKAiQS3LQBfM^NLMJd:ZF44M[Hfe[5:lj@a
+XRbB>I7L:00c>NFHmBCe?=Fj02_U7Gk7mXI]GeI=;WeGndI;^iKBkR2GAQhMR]O=
+?fE;Z:J<jRCiFckA/Eg;Qo:TAB^?Zj_5o7oS3hDN8X[[hKJchmQd;DI[RfSLF>[9
+HglDlLdL/L8TA`lKbU@YS>6TAR^22J0?J::::02_U=K;mXCng5DcJ[m_o]8>e`I]
+6ohAcnco0;GTaR;bo`2dMgfGX=Voc>??fo=GeIGRgR_aOl9o5moJn1io7/>WJ[Jj
+YJ>8M>eI;FjNk/kQI1I^DO;NHbk9KLl^Y:TLd0NddDDD0555NOF7aIn5nZjh_Q[C
+?5^UGFZ_8d:FdEk2l[bYWO6RQ_VM<7LPbbhi0X0m1XXXX0::::02RRRP0XXXX0::
+::02RRRP0XXXX0::::0?omCmo::::02RRRP0XXXX0::::02RRRP0[UO6?P[`chnd
+LN7o01KHajUYoW`G3@BZ7SMkN@B:7EPEIBAQP@@@B:jZRP3`[h?n6?QUKJShQlCn
+0O2m[hHWR_;W@[Y;B6:2>Ol0/^hTDB5HUD7;<a1?81aG^]InWJCYVT9?7YMY5J;L
+cBg<XR@87VVKM98f>[>aba?9?F]2P0[Ro6OPN`lIYYT/eiMJGZ6Rg;GUQNfCX/m_
+>d<U^c1IDTRL6:Ie:bA^_>LI08kBRP3aKh8ffVGo08LWlM@GEoZ>Xn89GBj^mBN5
+[RCnciI;I1]]XXH4DKFH;74XnHTi=NdeWjGY>VJ7HYY^Sf/EUJAUfF:50R:I6;^@
+X`?VIRamBBJd:02^6lHN1;CaKLJOZTFYg^Qj_Y?W2d_k1X_?RFh2[:VbhRVPMGfZ
+B98V6E16:kVRP3aKh1;X^Zo3OC?R;YCg/dga0]k?Gk^KDI8i;ZBFi/h4Cc?9B>5B
+T<LJKHXdCiLQLTTndeVj?XnUN7]9/m1d:cRdoCM>QS]kJfP@Aa@`a:5B=4G0EED0
+03P2]:P0[b_hTn4K>nS?SbgeGD=2eW`mYmjTEiY[@NJKJGbiYXC7M`g5^`M[N<P_
+4BY7bTIK?ZU@g=]KgU_;JGLJc@CXbB8hb[8``bT7Z2>2:0???Q=YVTFWPR`eWBF^
+IChTA=G^9Kb@Bg</mk6SUY6AEC8GJ^4EE0D1E0[dVZ]UIFNVfE_YfW`YKF][6TDD
+DJQDSS@KEEE7000007@EJX0:l2n=NUF7QC@_4Wa[]=FeGAMAdCAVJkKBW]MmiIjM
+iec70bG/5c426UUf^Z:hgWi^V?OJc]GdSB_46UGNQjiJAGnWGlC`G5_>PTRURT6e
+dM6b6EPL47[@1VN4_2^Tn2]1Pl>j:9?/d;cc5YW<T/Tec:lll[/N[BBb>kH`<WP0
+H5M9AGWWa<n:GPghAj1Kn9O6dmc3IgMi1H@;JFMcOg4eeM4[357KfTL/[/i605@l
+d0NQeh3lF]4/o2TFXO4oC]KeOA;ZiOCK>mCBg]M]fSG:fd>mKbg^5@Yiibd@AbX0
+gL37@n6_SKh=lEjI9ZnWF>_Fl4EkJF1Fnl?J]HBVJmT4DAF:j]HY6R3<?<U2V>9L
+]8bZ2JkbM_2_Re=@d2Mk?EaYdlDMkJUXio8^44Mc4/dO>a`37:XH0h:/>23@0k`]
+hJdW`KhLdk`]XDKAJOYL2@@Zk]8na1S;>i;<ajTTi9i[OXXX0:lQeSh@FNXjW[=o
+YORCF=2]o4T_WJYIf<U]i5i8KN>e;5YkNJJ4V:95?fNB;>=ggRBOGZ:0:>UjKHj=
+Y]YXnVA22c/HHh8H`B@TDBQDD4i?007=GZ:iOa[hcl>O3g`]Z?S?aKM6cdWBha9?
+8/LTch;1EE8hUJBAgIPZ8RUVHQE190X0jRR/;`c[bN9]3]MMS/KcCE^`a5_O`=KG
+:KF:o_8VnIBLI0?>23FGhdlMJ1h2]M;_?43B97[6ZF>TFoUY_9^]AVF20=j:GHIK
+/>J0>aXX[>/]HdSD[Zn/M>_X;Zid^EH;^::EGNgUJ=IESUEBBS6=dL:f2EIFj46P
+3AX[6eWGK7@QI6nFM_]me5IanAKbg69ISQBoU:gUYaldShAOhV5K=01AAA@0Ehil
+F_1O`f_];__R;hll=F_RA_2fUgdZ@GL<LjV954kQEUEU3Wb/:f><W/JmRIUEBc70
+799j0ER`G7QgaWhNFNeV]MKd?F[KiGSI;Re^[JMLIEU;996jWZ<PPnU07?O3K`ah
+El:n4[Fdl6JK7Y6UGaOD4]8UE8hV_CicZRX0ZSLah0aGNEaGRSaShKn7]]XD6ZQX
+8=He6ddJcB6?LX^;XU8E87gDnG1?J^eX0:l2n=NUF7QC@_4Wa[]=FeGAMAdCAVJk
+KBW]MmiIjMiec70bG/5c426UUf^Z:hgWi^V?Bo7gS_`ol=_3Cn;?4kb9YlMeHfI<
+B6Ao=e2jR/h1]7Hbc82N`bNeD=8l@n3OR]Y_RO@1K3DM?dfn^]2e>g^h@HY9HTGc
+Xb[I3aUI0>N3c@1^n4_2^Tn2]1Pl>j:9?/d;cc5YW<T/Tec:lll[/N[BBb>kH`<W
+P0H5M9G7n<?76Pn1edImNJAA[^Yf^TfgUY_cMGQ:a1_ALSTmZk2P0[iin;>SF?Pd
+Co4?C]KeWAI=Ke?A=>_hM;T]=Ue9OgU_YL<SRl]kSHHa<Vh`V=RZ0IcPem3EVj[X
+nUJiJ;HjcIaGe/Td5`8iT4R2JeUFN6C3I6j>E5M3eEU178505C`ahLdS`MhKd[`U
+hOQ=_YVRf/=UJa/kB58;M176YMbFHQE6Ba9?DW=K]5501GcQlB_26UN7[i]D]=Ke
+[BkKag[5WIJUIjO=K22iW_8Xk8B/eaKcBaHRR@=mWTR9aWka9?dOFOZ6TjIZbfjj
+YJaGH]IXkV4BX7l^J8iSTG?AU?88i503];dfadKCKCAm<R45WH`a`@aPTQ8XU2XX
+9bN00>J_DDD05O;gSO`1hJd_GM6l2cJ[[:n7_RCZ^Y@GFS`CF`/GV^;JkeBkJAgP
+JkE9fRT395L8^I3P0L3jQ[>_=8d[DK^`_kndR^;WBiFW]9943?1:lC`/lI?:/Hi7
+@TMEHSXC@1XdDDD05O<FZo3o0<>jAhbl>o3NCEmJTd3GY;gDh]94m/;2:GCkR6l8
+;nAm/:==:28o]?Uh6d[]h[jM[?WdWC;[DKCEkVdRU_[5ID]if@6B9I]_V16?:QmZ
+k/ML3?BP3@XXXX0:lBd[h6J9YD>Tj<=NeJjl=J1;JCJMXTd]_mR]W/7FBea8T2gK
+[2j8EFFhMOU6@No]]501AAA@0DDDD0555501AAA@0DDDD0555501AAA@0DDDD0Oo
+eOglXXXX0::::02RRRP0XXXX0::::02RRRP0XXXX0::::02RRRP0XXXX0::::02R
+RRP0XXXX0::::02_T7m/R7FkS`]l>X?3MgKf>ZbN?_3Bf/me0eeKaC6i>ai8DUPJ
+A@NBXU@TL1Qe[jn[:eG@]3eiKE=Ldjge5K6hR_;LG<:C26iP>j:J?N3]TS?:^<<Y
+i1507bUlHkgh_N4?Q[hLTlFn:[BleVjlNN4KKkEX=ULj;6K2jeVbQU]Y8i;jlMa8
+[B;9nm2>SK2V0Bg2O1ShOj9hLn<7kAV]FFZJeoJNVje4HXYmLe:N4aGOQn`V4[fl
+]`dDS1bjaB>S=6ZR>=UB=EGkYeK@m5en26eegCkODX;NhP^XXkV99UBh]I5UPVD>
+21958Z^S3UF0H440ecEml<OQ_ZOS:gn8VXn5];^_5=Y0m]5Z/]W2mlT3Zb=6]`El
+`8DMefk/KFHM6881nMW`/QlJN4?1Ok;_aGOaUhRlBN8_R6UYIJe5Z>[G=cJGm_NN
+7;boR@f/SV198IKN;K<R;:ig=:kUg9InccZ?aSlBf_`/n<V^jm1JGgRno`3n9bmm
+h__I8M@ln6LcjIKj1?J[JFdmZjiB>1UUCbG3B>38FoBZ7`Ih?]k;@m<]m2/8[?``
+HfdV5KF9Hm><D;FlI]42hP:@^dBnF5`S5AlY8[Wm=n47`WdKaWLo4KB?1VSFGR^l
+gnMZd>WflMm8I1Qbe`Z2@Ua`a;IH0IcPD0O4oPka1ZWPgh`N7MMlOJeZ7R:glJJm
+[EUXoR;A_4d]iX]e6D^kV>b_M3UL@fbfL<CAnIJY8ETQ3BB[_H6gl0=Ee[`_lC_2
+NUO47E=Al@Jehgd_D9k7a3Y_RJGFO3_R26g4Di^SY/kHdmQ6E<GfJ?bA^<OV_^G?
+fSXg`Un5WQgaGON>_3oPoAm=lBJVFJje:f/;N6lWIo_6BM44S5/o<Bg?O=7Q?hBo
+2c`5Z]o[_PO`OXoQoD]EIV^kWCk2g]I[P/McNI94R/fFnHi?9ijW=07Qgk@EmZ>Z
+o5;hAO2bneRmd;`Uh`^]Go]:KCk^KCikbi/K@CFNWRl]WSVQ4fIIB8gEY11/c];0
+o9Ga;];Wa;l7oS1l?;gGmHeS`ah0lOl0QZbdBo>ZgX^_;^9m;=eIcGRC2Jj5Y;MB
+ZYVNAUL8a?VA8boZ3h^l5n3o01oXLgQWaeXMUhQdRLZdUYZ5_7M@<b7:/HiEILZN
+@LI1i5Dk7hMO3oC?2/7PGC_3>VFgQ^eJ=X]<S/hE/XfQT4dK;054H:BZ/RT;T>0`
+i0=05cAM1Ql6n5Xm2d=k^oGChY10M@_KRo^I6bF0U^[^BFJ@TW6GLT30j02_bUFe
+o];hCO/mo5[a1hie?DO6GSka_hD^=H]K_D[RNdV^I;/CcfD6Wbb=1J6aT6dNC6SZ
+4:>C^8[mP:lb]oP[l7KGa7Mn<;K`=XLF^gma7Mg5n^Vf`^YKV6@Bac?;iNlb;8Z^
+79g1P6cT0P0o??`3ZgaZlHb`O62me^gdOEUlLbJILcJQh`_KFbQ]H=IJbOAChOJe
+naNM9K3bXBF<kc<T`Tb`5N^O1ShOj9hLn<7kAV]FFZJeoJNVje4HXYmLe:N4aGOQ
+n`V4[fl]`dDS1bjaB>S=6ZR>=UB=EGjgUn3o0<9i_72O4fK`IXcn;hl5MHKCkLjP
+25f0Ri:NIT;lX>k8GSYaEfnn6?`ge?aUKo4CDO2fUgGRVdPNfReFFcQNnB1eI6SF
+h:nH4:>jkMf=[<>S440n0OQaIN9o3g`4n0Ga6^o6OR7F?4WSoD?19eJi_]F^iUVP
+^8=iP49TlYD8O4Y2KYR=dcB?leL;5YGSnln66Qo5N3hSn9X?4nYo56il>fl_mZc_
+Jf^TGORRidUkHFDS=JbkHf;A_=58lI4JXbaaXPoDj?`MhARdWBM0Rd>aCC=0=^fW
+FZfd@P/V]1]]cKaQM/AQ0a7/0f3QLE4WPO`E7Y/6S9hOdmM?]KgndX[HFT@QS__]
+1^o]BAkMZcoJ2I_<0gnHBnMac@1nLGa7lBN??PUXga_l6o3ga3ZTeUYDoPe[FjeO
+DkVoWdZ7a1LVee:MKfkndcAa[6QU34B;0aJAD`2]E?7]_lG_QWl=_R]YfTn9_n4M
+Hn7m<^m?]1h`__4fZf=k9ONDKmI[f6:jR]kUC]:nHdK?6faE;?Wm<iO2gQVNheBj
+VdRcTWeb5;OD96]hbmi34[:TM`B^IDEGH:[i0340LV^>l>o1Ch>N4M3e3`ahFl2j
+7Y6Sj/j_NfM[Y]]3Kg;8@D<dBAQI=^1]g0kL36<2P3iY]O0L_QOhmgG`TPlDN9MC
+d?a[h9e7D[hGN^GdU`=A/KndP5aJc2EG/fUBjH>]ZHXl:XE505N?O26fl;n1_f7O
+QDH]ElFCg?SB;`kI2cdWFKPgMcOc:Z6`]ik^OKYU/c8bcOIi;ObeEPQE/0oYRnQj
+;9[DGRAm?]feN2gT]8k`a8KU;JEdTTQFG6lA^lJ<b0kBbZB<PHlnCh5O1B:dej`R
+l1J2U]hYVBheJ9M=]PUo=4c>TU`XSa:j>k>[=TQV;0i990?c/d;GmO^=Oe7`CZ]c
+:eUhDn;WQFg/k>KF;SGf/5^;::NJg5oM:9Wfb/aJ=R`RL]6[5E5OMgkBGR?Bo3O`
+^WOE;gFk@JWZ6VjK2WQfE;KDk^h_[^:6:dQ^92P]aL>`RNHBA]6S5TTAm[3d7C_Q
+Ol==8SRQdW`UY5TT4][?6/=QKaQ9K5MU[8XE1Qh5nF9QbPhDPE_N9?3?QcaSXUeh
+JlFjGJjeY5lXBh/kf5;RgUD4<0lLPIF`@2<SPP7Z:0?bPeoG=OC`[lJ_QkZD/l=Q
+hIlCo3QkKC[SGKSa39YlUm[5TldA_;XNJYKH[V7O8TK4k6`L3LlAN8?7<6[gGP?`
+[:e[YgSCh]JmIJRjJY?XSc[3YP^8;9MB]XYIKHg4TH>j=@kk?;EUgi[m7[7hCO2c
+C;2GBm>l7J=JfLjfJB@ajOKY78^WBVNc3Z4``]iF<T>LnFi;;QSV[^[O3ShNjoXV
+ZN6]Ll<JIZ6TJg>eeOfMaI`bfmgL?];Bca/QFB@UE9MPFh7?0X0n29;GaSY6Qn7_
+3ORcE[GD8]8n;6P`f5[5[TgR6kd^gN2:DfEiOG<DDkbY:kbX9PdR`baZF80=LQh1
+eKheN<IH?S1NjgKj?Zbn>I=<^I]@lHG][I@f/6/]I?XYl?]JoH_>T]QiD9;6MiVB
+HBIH2_dQdChIO3O`gXFWn5o3oQGB]=dOBKUKbc/kNbPR]kNjARbcaAZPE9@a94P0
+K99cVZ<_`Ol0Q?=hhChVcN3=6OaO7P[[3JOKWD0@^`4G9Cc<QOU1gI2lM>:0?AZ:
+::02RRRP0XXXX0::::02RRRP0XXXX0::::02RRRP0XXXX0::::02RRRP0XXXX0::
+::02RRRP0XXXX0::::02RRRP3ooFoObRRRP0XXXX0::::02RRRP0XXXX0::::02R
+RRP0XXXX0::::02RRRP0XXXX0::::02RRRP0XXXX0::::02RRRP0XXXX0::::02R
+RRP0XXXX0::::02RRRP0XXXX0::::02RRRP0XXXX0::::02RRRP0XXXX0::::02R
+RRP0XXXX0::::02RRRP0XXXX0::::02RRRP0XXXX0::::02RRRP0XXXX0::::02R
+RRP0XXXX0ooI2VE^I7=dLVEQK@YUKVA_HVX:=b0`86mRJPXl?20_CR0c82m1K7AU
+LViQM6DP;dAUMVUSIE97@R0_C6E^IgAX838f<C8P;dIYK7AULR0_AVaQM6E4IF=_
+I6DP?Sh:LgAbIF5]2WP1WIIgE5?I5XO?_CNmd18R82Gd6WX98=8kB1D4DHU9P502
+QX@VMT@5AQ@A:EITE<01AhLRHdDD2h>2H]L9lQ1@a/5AA4GUgHa[2Nn]=O?NV_g7
+FMoIikOGfFO_OMNj053lPPC2M5P1P3BQF1C^jl5L4Q?;a?L261013UP1`>5VIPA7
+n4@2e?bm?IVIZ4S6/oK^;X1T^m//_e0VLmKoOi4R=d<T1P0:AMDf?7hV5nD2U5>c
+aATbo`C:m9DY<XHa<QJQ2J:/8^?4[fcfYnH[^lVHUbKTXAYIcQVl=9j<^e3NVRGQ
+Xh`4XEbH9N1WXg`7IKeDBIX0iOLXdm?hW4`0<1BIGlcW9Z5/RC9551W^RO8200RD
+a3VlLPj;nCUXWP1hYVOTRPB9BF:V4MNHJNGXb6KjlK=CnF8a:iC3CN68N4c?m;@<
+SS0GP:m_UTD19EU]VFRAkJdLkNeIe^IXnKoIgainDodmb7[kEO4Vk<nN@HbNFMm/
+k:`__AH0mRAJVafc_YEE0;A]1T3UhJa?kb00lPD0]=jLlaj6K5jBa>8<9`^;k>a/
+L`6OJbh[j3OkWh9_b[n6>ONIbnkkES^V5cn18dTE<fE5iJJWYT]4c<`<3YO?I?gg
+4?oS`3UYcLW3;9bO`1OaQNQEDNRD2HB9J;^5?85HT2iT2XAoeN5o63HW1aUnWF/D
+J7EO07f5>E2hB@O8Kcd0@b<396hoNP9mje/@<@[8_[aX[I6_LhlbN_kWnQl;G8Y^
+hDa18U?VmPb?I78UXR`IXmn4K<424Y07M:0:=84^<08/H0dLP3=`0mhP08B0B103
+UP<^B09Y@0Bb@CkH00Y1<MP1MX=ZL03DPG[@14j2=W06G0AG`0e`2`b0Ad0:Q/5;
+<07NPFT8P_0@5J91ZY0FY0nI@]H@6eX8ND=1D3PD0lE3RI0@TT3id2JX62Z3ZZ53
+D3gd8g@J^PQMPoZP1m0P=0Km0Gf44IP2df4=f02fP=V`>a`8Al;;h4Ah5I`75l3K
+hDZh5Sh>]l8GhA_`02b5Gl:C243820?AAUP86o54@Y1H904A8F^A8Z@2ZDFJT0jT
+6kV=B95ai0<6Qj5QV1PFaQWSQeV<hF9FHMIRBS3EV6>HET`GiSIV43>1nH:UH]Fa
+YUPW[3mf2CHAVhd]a5IPSf1K/9Na0mQQk3/L3/O06N8LL7jh65`bKSF^1;L?ehbk
+P>_33N4VlGRl:]hDkh8?`G?`HW`Q_PYo77lNghlOa[lWT0UJ16^23b6F82A/95@@
+6PSW2?f44L8dDH6XCg@RQQ1ia5aR:K6>f46lBA`VCY<DBHHT5e8T:IVdPEA9JR9M
+9SdV_B6CbCYTAg8HFD1NCjhTWb1O9@nB?e2D:2HDCdXLAD;ICSU:^D1i@7U3YE8=
+Z6kDF:ZH^YeJCke4ODYm;dNC<iOcUn?9[I>[TF^EjiMk9DnDeiMgUel^WbMO8Gm:
+oZKl^09A`D31Dh6S/5JQA^6d`Sf5BDFJXYERR6:JHXURPn8eaE4U_9:1T[LBCjU0
+jK3B9JDQ6T;CYGWB^;A=]3[JIMX`7DLgY?_CTnW5m1oX_O@9IBEUFnDXiAcU6^Fc
+bU86`S1Pn3=B6JF<ThbkS8oc=>Jicn??fcJ_JEko_2VEnBY^:WbE8YEVU@6ESjY<
+EFoE5=FMZVfZCm@`JRIZHF[IJ__E;Z^=cjO?Mik?WEldonClQnZ`^XUj^?YZmL?Z
+?NZC6YXJ_QXI6UDJUcC6=AVJKY[9V^FJicC7]6QJ2kD4F^EJikEN<9FIk/aDIRFc
+RcVQ[Jk]YbgA?ZCMZcf]HjRcF6NSC[?>4efB;U/g@KML]e=g@Tm;;eP_GjmAkj4n
+DIn]WjBoAkmKOl[0d23JH8]1Vl6XXHZQ_f6NHJ?QHb>ZTJ_A:Z=JXc_6>6>fLH[a
+?^=K9[29WDVBBHg9CE?He=iDH;[?]<l<JnIX9SB[=K_7X[3LFEV/A]JP>L<lb7bS
+NI_i:`/mReR;WAKM5Ul/kBaC;N//7eTYF@EHKKCZ/?[3f/BJJeeSOLN6J^=S/ljV
+gNJe[JT]ggJokGdkVUf`gAJkC[_?mPkf8_/Vnc47?HMhQkd>mmQdMRRkQ7gE4N_X
+hKS>lHcS1bMk9k7CBJOOWEW>:Lh=cZ<;31O`5m@]67;ALN6h77:A;V@^S5mhL:7D
+EM^Ehe[[n/a=ehgWM/A]a=gH?MWm^?/[3d/?TDN;aiBWTnLJc`]NR9N_Ei5G[kNB
+mf;_J^nW?SXnRCj=?Q>nM[j[OBohHOd2oGKjgO?Gl>Ojeo]?13P4[0WX2Z@4APAF
+1ch;<PTB1GD4`l41`K^27boBGbALe1H2@_a3MXDl2CD<GAGjLaP^;3B/9^ai^5Eh
+OWQg12eRADA3a;]8SlSBb4N;SAI;5WM6bDO5AME7CDEkAIM5BiMH;5Vci4J<FX`P
+YSdF7a/ENbAfLZWgd]e;Qn?/hP[SkRhcG9Jck=Yb]NFYbln^T5o1FG4Z7Q/O7Ml@
+ohTC`ZWUC:kdGkUgi@CGTk^7ni;WaR_WSO5Mn6GlT@BGQ;:4dDBGa5f9HdV^BAE9
+h`9?@KGPMK9OlX7TZIB@U:<Y<jWAZLeYQ;Ch]==29F6:/2]M<cdW_Bo3=:<`@k[:
+JMG^EA>R@=6AC2QcFFJkV8knC?E8S2BK9H=I2k=Z/]iWAfFObU7<4NKdi9[TK//M
+bO?9ngheISEgMFNnM_j6o<4ekV/>[HGF[UcK^DigGL6jhOFnjhm]86e8fO3;A/^=
+IA_OKX[Ne56PDK2nH6RcknK6@[U2DN6m;LiK3Vc5K1E/kMeV/jeZfiLRG]7eH/_R
+R^9?9MbBjmmIOEOigLcfQ>fmYOJUngOPMPQgg=gY^_=HVF9IG]W@[^1M[NG<lZ;b
+]k]Gk;iFHE]aH0mYSfB?]3:X/[e:[fY7eJOZY>Z16XnJi[gZNkO]WM[7fmNogfeo
+d`6=0lD7?QhD7;aob?M@Jje1KLEQg>6/`lo[X^Zj_fMoGgm4kDSaTLm7QDNUal:?
+MMDke=LgZ3ND=/:=T/Jahg77KogPmD=k4j_YD3>S^OP4>24ilN;7n1o_WP`lfGV:
+OJ[Y9ofOm[K@FXYJXMKLeXVfY3IYNdakgnV0didMcQd]?i_oO?B<mYVJ/lYWBlnA
+cQFLVcVOMgkb@/J5lH^95hLjEg@n^[CTdYf^/:kNbh6G[eka^G:Yfkgko5FGZfN^
+>EdkOIem_Nf6oHgF7[^NUUo/OVWY]Nm]_NU`/ofFhjf>_PEmioYMnboNm[YmiHko
+WA/3R`KjkRjnNomNg3gYOMkmd@NY3ehoc7XhoFSmHncSXRL:CbZNZSn]oMGhefJY
+_OC/X=MPck>8Ihn6^4<_oiGi[do31LnYcb]6]4KZAje7chciS=ej/OC5l<^<Um?S
+QKlYo[KgUM6[WgignkeWH/W4l6_AjiToB]jX_SWje_I]ifCXi==gJNnVYh[NZkho
+mX7mXO]Sm<NAjNa?n4nEWhdoMg`9o?9h9VeVi]ogQ??k2VE^I7=dLVEQK@YUKVA_
+HVX:=R0`86mRJPYK82m9@d=2HG=UI20g830PDR1M2VE^I6mRJPXb830PKf9Z2S`l
+82mDNG1U82m@HFMULb0_CFETJF52KgPPFc0P<20c>CHP<SPcGB0_@fmeKW@P<B0_
+BfUTLb1K834P<21B85dP?Sh:IFiTKf9Z2SPP<21_HVX:?3`P;eAiL6DP;d=QM65/
+KfLP;e1QIfEc838P<21B83hn2VE^I6mRJPXi830PKf9Z2S`l82m@LVmTMF=ULR0X
+KF5SCe<PEVEbLfU_KR0a<Bhd85`X@WEYK6@P<S16=c5L:B1AMF5bM7XPD4A6@fm^
+M6EhM2TP;d=bIF5dJFm^A65dI@XXA3Xb<38a<3Hb>38b=C@`>EX`<2L`<2LY82m=
+KfA4HGAU82Q4>S8`<S4`=S8h<S8e=30iFS0`9c0`9bTP?Sh:IFiTKf9Z2WQbIFH:
+<20a<0X`<30`<30`<30`83He=C<e86HP2S0`<30`<30a>CPP<30`<30PKR0:<30`
+<30g>3Df=R0`<30`<21^80X`<30`<30`<38b830`<30`86hP2S0`<30`<30c<38P
+<30`<30PKR0:<30`<30`<3<i<B0`<30`<21^80X`<30`<3Lh=C<a830`<30`86hP
+2S0`<30`=cDh<CTP<30`<30PKR0:<30`<30g>3Hd>B0`<30`<21^80X`<30`<3Lh
+=STh830`<30`86hP2WAbHFU/IG8:?3`P;e=YNVDP<C0P;e9_Kg@P>20`858P;dU^
+IVlP>B0`858P;dU485/P?30a=f5UHS1TICLc=cHiHSL`IV@`>34`=3QR=f<c=C4e
+?PXl<34gHFER<6AU=c<g=SUR=c1VI30h<C0d>68gHc<e<CDn85dP?Sh:LgAQLWAh
+LVEV2SLh>3Di2RDUADm62P\>"], "Graphics",
+ ImageSize->{396, 283},
+ ImageMargins->0,
+ ImageRegion->{{0., 1.}, {0., 
+  1.}},ExpressionUUID->"2875f626-5318-46db-86db-f1f968bc751d"],
+
+Cell[TextData[{
+ "It looks like the probability of fixation when there is no background \
+selection and ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"b", "=", "0.21"}], TraditionalForm]],ExpressionUUID->
+  "0109bfb8-d79d-4ca3-83c0-7d0542f5e045"],
+ " is about ",
+ Cell[BoxData[
+  FormBox["0.00188", TraditionalForm]],
+  FontWeight->"Bold",ExpressionUUID->"e41ab389-e25e-41a8-8c0f-44bd7ffc9a92"],
+ "."
+}], "Text",
+ CellChangeTimes->{{3.8339096832733192`*^9, 3.833909791519176*^9}, {
+  3.834848790922718*^9, 
+  3.8348487915282583`*^9}},ExpressionUUID->"e6e54841-ddab-4a0d-b7d9-\
+1b63a1e0bf24"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["\<\
+Reproductive variance, dominance, and the correct fitness effect.\
+\>", "Subsubsection",
+ CellChangeTimes->{{3.8339102738405743`*^9, 3.833910278453495*^9}, {
+  3.834848768357945*^9, 3.83484877006286*^9}, {3.834849022458045*^9, 
+  3.8348490287319803`*^9}},ExpressionUUID->"1e402cb7-e982-4527-8df1-\
+87e445692ce5"],
+
+Cell[TextData[{
+ "In julia code, I simulated as best I could the mating system and demography \
+in the model: 4 offspring per mating pair, sample juveniles without \
+replacement for the next generation with probability ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"K", "/", "#juveniles"}], TraditionalForm]],ExpressionUUID->
+  "5fe73272-6961-4826-829c-5b4922440856"],
+ " where ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"K", "=", "1000"}], TraditionalForm]],ExpressionUUID->
+  "81634ca5-a868-4ddb-8344-416e94254943"],
+ ". I then calculated the variance in offspring success and found its about \
+0.75. Lia confirms this is the same value from the SLiM simulations. \
+According to Ewens (2004) eqn 3.107, this means the effective size is \
+actually larger than 1000. Moreover, the simulations have the altruistic \
+allele dominant, ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"h", "=", "1"}], TraditionalForm]],ExpressionUUID->
+  "87c12bf3-8172-4f1c-addb-160f657079ae"],
+ ". Finally, an examination of Roze and Rousset (2004, Am Nat), shows that \
+our fitness function should have fitness effects equal to about half the \
+normal fitness effect. Using the fixation probability in  Ewens eq 3.30, we \
+obtain for ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"b", "=", "0.21"}], TraditionalForm]],ExpressionUUID->
+  "fa261441-3fc8-4f95-8167-192637f301ff"]
+}], "Text",
+ CellChangeTimes->{{3.8339102850004683`*^9, 3.83391034100423*^9}, {
+  3.833910372863944*^9, 3.833910399214088*^9}, {3.83391055511729*^9, 
+  3.833910616701284*^9}, {3.834848775440996*^9, 3.834848863733698*^9}, {
+  3.8348490160868273`*^9, 3.834849046999549*^9}, {3.8534259302859287`*^9, 
+  3.853425931994413*^9}, {3.8591332095947857`*^9, 
+  3.859133229720211*^9}},ExpressionUUID->"f473aafe-3c33-4167-9cba-\
+61837acd14af"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"fixCI", "[", 
+  RowBox[{
+   RowBox[{"1", "/", "6000"}], ",", 
+   RowBox[{"1000", "/", "0.75"}], ",", 
+   RowBox[{"0.5", 
+    RowBox[{"(", 
+     RowBox[{
+      RowBox[{"-", "0.1"}], "+", 
+      RowBox[{"0.5", "*", "0.21"}]}], ")"}]}], ",", "1", ",", 
+   SuperscriptBox["10", "6"]}], "]"}]], "Input",
+ CellChangeTimes->{{3.8339101416527863`*^9, 3.8339101513520737`*^9}, {
+  3.833910685371243*^9, 3.833910686361162*^9}, {3.834848964515832*^9, 
+  3.834848988501424*^9}},
+ CellLabel->"In[7]:=",ExpressionUUID->"07950b88-8d25-4619-b6bf-cab1b67308dc"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{"0.002008255310965974`", ",", 
+   RowBox[{"{", 
+    RowBox[{"0.001921`", ",", "0.0020959999999999998`"}], "}"}]}], 
+  "}"}]], "Output",
+ CellChangeTimes->{
+  3.8348496372840014`*^9, {3.834849828405221*^9, 3.834849841245075*^9}, 
+   3.8538912365066767`*^9, 3.8539638046958523`*^9},
+ CellLabel->"Out[7]=",ExpressionUUID->"5982a8fb-4749-421d-a96a-65716eed4c03"]
+}, Open  ]],
+
+Cell["\<\
+which is a bit high but very close to our empirical number. Moreover, the \
+predictions for the rest of the benefit values from figures 1 and 2\
+\>", "Text",
+ CellChangeTimes->{{3.8348490688536263`*^9, 3.834849094612214*^9}, {
+  3.8348491896105824`*^9, 3.83484919845218*^9}, {3.834849319751195*^9, 
+  3.834849330598776*^9}},ExpressionUUID->"173c1d1c-b685-4f18-9fa4-\
+f5e1d4ae9e71"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{
+     RowBox[{"Grid", "[", 
+      RowBox[{"#", ",", 
+       RowBox[{"Alignment", "\[Rule]", "Left"}]}], "]"}], "&"}], "@", 
+    RowBox[{"Join", "[", 
+     RowBox[{
+      RowBox[{"{", 
+       RowBox[{"{", 
+        RowBox[{
+        "\"\<benefit\>\"", ",", 
+         "\"\<\!\(\*SubscriptBox[\(p\), \(fix\)]\)\>\"", ",", 
+         "\"\<\!\(\*SubscriptBox[\(CI\), \(0.025\)]\)\>\"", ",", 
+         "\"\<\!\(\*SubscriptBox[\(CI\), \(0.975\)]\)\>\""}], "}"}], "}"}], 
+      ",", "#"}], "]"}]}], "&"}], "@", 
+  RowBox[{"Table", "[", 
+   RowBox[{
+    RowBox[{
+     RowBox[{
+      RowBox[{"Join", "[", 
+       RowBox[{
+        RowBox[{"{", "b", "}"}], ",", "#"}], "]"}], "&"}], "@", 
+     RowBox[{"Flatten", "@", 
+      RowBox[{"fixCI", "[", 
+       RowBox[{
+        RowBox[{"1", "/", "6000"}], ",", 
+        RowBox[{"1000", "/", "0.75"}], ",", 
+        RowBox[{"0.5", 
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{"-", "0.1"}], "+", 
+           RowBox[{"0.5", "*", "b"}]}], ")"}]}], ",", "1", ",", 
+        SuperscriptBox["10", "6"]}], "]"}]}]}], ",", 
+    RowBox[{"{", 
+     RowBox[{"b", ",", 
+      RowBox[{"{", 
+       RowBox[{
+       "0.19", ",", "0.196", ",", "0.197", ",", "0.198", ",", "0.199", ",", 
+        "0.201", ",", "0.21"}], "}"}]}], "}"}]}], "]"}]}]], "Input",
+ CellChangeTimes->{{3.834672196681548*^9, 3.834672309367185*^9}, {
+   3.834672350115806*^9, 3.834672510074604*^9}, {3.834684424327347*^9, 
+   3.834684434931088*^9}, {3.834685029088393*^9, 3.8346850431724033`*^9}, {
+   3.834685089862472*^9, 3.8346850903989773`*^9}, {3.834685300598366*^9, 
+   3.834685301540559*^9}, {3.834747453311102*^9, 3.834747456747612*^9}, 
+   3.834747574718713*^9, {3.8348391663889313`*^9, 3.834839169330793*^9}, {
+   3.834839681415139*^9, 3.834839698288967*^9}, {3.834849130188664*^9, 
+   3.8348491812408123`*^9}, {3.8348492773882647`*^9, 3.834849291537837*^9}, 
+   3.853893302555398*^9},
+ CellLabel->"In[8]:=",ExpressionUUID->"69a00f02-a2a7-40eb-a5e9-1a4c4f48d539"],
+
+Cell[BoxData[
+ TagBox[GridBox[{
+    {"\<\"benefit\"\>", "\<\"\\!\\(\\*SubscriptBox[\\(p\\), \
+\\(fix\\)]\\)\"\>", "\<\"\\!\\(\\*SubscriptBox[\\(CI\\), \
+\\(0.025\\)]\\)\"\>", "\<\"\\!\\(\\*SubscriptBox[\\(CI\\), \
+\\(0.975\\)]\\)\"\>"},
+    {"0.19`", "6.188102425782613`*^-7", "0.`", "3.`*^-6"},
+    {"0.196`", "0.00002180444280711016`", "0.000013`", "0.000031`"},
+    {"0.197`", "0.00003772235476436422`", "0.000026`", 
+     "0.000049999999999999996`"},
+    {"0.198`", "0.0000637913235053961`", "0.000049`", 
+     "0.00007999999999999999`"},
+    {"0.199`", "0.00010487742408577692`", "0.00008499999999999999`", 
+     "0.000125`"},
+    {"0.201`", "0.00025462823447484033`", "0.000224`", "0.000286`"},
+    {"0.21`", "0.002008255310965974`", "0.001921`", "0.0020959999999999998`"}
+   },
+   AutoDelete->False,
+   GridBoxAlignment->{"Columns" -> {{Left}}},
+   GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}],
+  "Grid"]], "Output",
+ CellChangeTimes->{
+  3.8348491852749233`*^9, {3.834849285530984*^9, 3.834849292794269*^9}, 
+   3.834849842925849*^9, 3.853509270324967*^9, 3.85389123823246*^9, 
+   3.853963806518758*^9},
+ CellLabel->"Out[8]=",ExpressionUUID->"d798a64c-81c5-4eba-b628-b97c7e10f2b2"]
+}, Open  ]],
+
+Cell["look pretty good.", "Text",
+ CellChangeTimes->{{3.83484931583628*^9, 3.834849337169504*^9}, 
+   3.834849446094376*^9},ExpressionUUID->"202d2587-3612-4816-9da4-\
+d22957fd2c8c"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Background selection...", "Subsubsection",
+ CellChangeTimes->{{3.853697291063341*^9, 
+  3.85369729443779*^9}},ExpressionUUID->"c332b60d-acf6-4c6d-9d8f-\
+b16ba51b4c36"],
+
+Cell["\<\
+Using eq. 17 from Wang et al. (2016, Heredity), we can get the effective \
+population size including background selection\
+\>", "Text",
+ CellChangeTimes->{{3.853697299233788*^9, 3.853697300567848*^9}, {
+  3.85369941613214*^9, 
+  3.853699439858756*^9}},ExpressionUUID->"d0cf69f9-00dd-4c38-88c3-\
+8cc888c88961"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"NeBack", "[", 
+   RowBox[{"n_", ",", "s_", ",", "u_", ",", "r_", ",", "L_"}], "]"}], ":=", 
+  " ", 
+  RowBox[{"n", " ", 
+   RowBox[{"Exp", "[", 
+    RowBox[{
+     RowBox[{"-", " ", "u"}], " ", 
+     RowBox[{"L", "/", 
+      RowBox[{"(", 
+       RowBox[{"s", "+", 
+        FractionBox[
+         RowBox[{"r", " ", "L"}], "2"]}], ")"}]}]}], "]"}]}]}]], "Input",
+ CellChangeTimes->{{3.853689848438323*^9, 3.853689863675803*^9}, {
+   3.853696808870928*^9, 3.853696998380453*^9}, 3.8536974172001753`*^9, {
+   3.8536975546341333`*^9, 3.853697555282249*^9}, 3.8536976920993757`*^9, {
+   3.853699452756*^9, 3.8536994829516687`*^9}},
+ CellLabel->"In[7]:=",ExpressionUUID->"1e0deb92-e6cc-45f2-93a9-5b1fec573796"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"NeBack", "[", 
+  RowBox[{"1333", ",", "0.01", ",", 
+   RowBox[{"1", " ", 
+    SuperscriptBox["10", 
+     RowBox[{"-", "7"}]]}], ",", 
+   SuperscriptBox["10", 
+    RowBox[{"-", "8"}]], ",", 
+   SuperscriptBox["10", "5"]}], "]"}]], "Input",
+ CellChangeTimes->{
+  3.8536994905357027`*^9, {3.853699682291902*^9, 3.8536997031179113`*^9}, {
+   3.853699778056368*^9, 3.8536997802503757`*^9}},
+ CellLabel->"In[8]:=",ExpressionUUID->"e39c15fe-6333-439d-9dcb-b6c1b6ff092e"],
+
+Cell[BoxData["514.2998020032226`"], "Output",
+ CellChangeTimes->{
+  3.8536994909735727`*^9, {3.8536996828651733`*^9, 3.8536997100229063`*^9}, 
+   3.853699780919384*^9, 3.8538912429439793`*^9, 3.853963810980443*^9, 
+   3.8584409276971903`*^9},
+ CellLabel->"Out[8]=",ExpressionUUID->"12470bc3-ccb6-4bdf-8c4d-46e169c19192"]
+}, Open  ]],
+
+Cell["\<\
+Using this we get the following fixation probability interval\
+\>", "Text",
+ CellChangeTimes->{{3.85369950049319*^9, 3.853699558938072*^9}, {
+  3.858440956593752*^9, 
+  3.858440957402763*^9}},ExpressionUUID->"82afc1b9-f1fb-4055-a876-\
+b94cb25618cc"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{
+     RowBox[{
+      RowBox[{
+       RowBox[{
+        RowBox[{
+         RowBox[{"Grid", "[", 
+          RowBox[{"#", ",", 
+           RowBox[{"Alignment", "\[Rule]", "Left"}]}], "]"}], "&"}], "@", 
+        RowBox[{"Join", "[", 
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{"Join", "[", 
+            RowBox[{
+             RowBox[{"{", "\"\<\>\"", "}"}], ",", 
+             RowBox[{"Flatten", "@", 
+              RowBox[{"Table", "[", 
+               RowBox[{
+                RowBox[{"{", 
+                 RowBox[{"s", ",", "\"\<\>\"", ",", "\"\<\>\""}], "}"}], ",", 
+                
+                RowBox[{"{", 
+                 RowBox[{"s", ",", 
+                  RowBox[{"Table", "[", 
+                   RowBox[{
+                    RowBox[{"\"\<s=\>\"", "<>", 
+                    RowBox[{"ToString", "[", "s", "]"}]}], ",", 
+                    RowBox[{"{", 
+                    RowBox[{"s", ",", 
+                    RowBox[{"{", 
+                    RowBox[{
+                    "0.014", ",", "0.012", ",", "0.01", ",", "0.008", ",", 
+                    "0.006"}], "}"}]}], "}"}]}], "]"}]}], "}"}]}], "]"}]}]}], 
+            "]"}], "}"}], ",", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{
+             RowBox[{"Join", "[", 
+              RowBox[{
+               RowBox[{"{", "\"\<benefit\>\"", "}"}], ",", "#"}], "]"}], 
+             "&"}], "@", 
+            RowBox[{"Flatten", "@", 
+             RowBox[{"Table", "[", 
+              RowBox[{
+               RowBox[{"{", 
+                RowBox[{
+                "\"\<\!\(\*SubscriptBox[\(p\), \(fix\)]\)\>\"", ",", 
+                 "\"\<\!\(\*SubscriptBox[\(CI\), \(0.025\)]\)\>\"", ",", 
+                 "\"\<\!\(\*SubscriptBox[\(CI\), \(0.975\)]\)\>\""}], "}"}], 
+               ",", "5"}], "]"}]}]}], "}"}], ",", "#"}], "]"}]}], "&"}], "@", 
+      
+      RowBox[{"MapThread", "[", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"Join", "[", 
+          RowBox[{
+           RowBox[{"{", "#1", "}"}], ",", "#2"}], "]"}], "&"}], ",", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{
+           "0.19", ",", "0.196", ",", "0.197", ",", "0.198", ",", "0.199", 
+            ",", "0.201", ",", "0.21"}], "}"}], ",", "#"}], "}"}]}], "]"}]}], 
+     "&"}], "@", 
+    RowBox[{"Transpose", "@", 
+     RowBox[{"Flatten", "[", 
+      RowBox[{"#", ",", 
+       RowBox[{"{", 
+        RowBox[{"2", ",", "3"}], "}"}]}], "]"}]}]}], "&"}], "@", 
+  RowBox[{"Table", "[", 
+   RowBox[{
+    RowBox[{"Flatten", "@", 
+     RowBox[{"fixCI", "[", 
+      RowBox[{
+       RowBox[{"1", "/", "6000"}], ",", 
+       RowBox[{"NeBack", "[", 
+        RowBox[{
+         RowBox[{"1000", "/", "0.75"}], ",", "s", ",", 
+         RowBox[{"5", " ", 
+          SuperscriptBox["10", 
+           RowBox[{"-", "8"}]]}], ",", 
+         SuperscriptBox["10", 
+          RowBox[{"-", "8"}]], ",", 
+         SuperscriptBox["10", "5"]}], "]"}], ",", 
+       RowBox[{"0.5", 
+        RowBox[{"(", 
+         RowBox[{
+          RowBox[{"-", "0.1"}], "+", 
+          RowBox[{"0.5", "*", "b"}]}], ")"}]}], ",", "1", ",", 
+       SuperscriptBox["10", "6"]}], "]"}]}], ",", 
+    RowBox[{"{", 
+     RowBox[{"b", ",", 
+      RowBox[{"{", 
+       RowBox[{
+       "0.19", ",", "0.196", ",", "0.197", ",", "0.198", ",", "0.199", ",", 
+        "0.201", ",", "0.21"}], "}"}]}], "}"}], ",", 
+    RowBox[{"{", 
+     RowBox[{"s", ",", 
+      RowBox[{"{", 
+       RowBox[{
+       "0.014", ",", "0.012", ",", "0.01", ",", "0.008", ",", "0.006"}], 
+       "}"}]}], "}"}]}], "]"}]}]], "Input",
+ CellChangeTimes->{{3.8537014476388817`*^9, 3.8537014511659813`*^9}, {
+   3.853701720425918*^9, 3.853701727404644*^9}, {3.853702111352427*^9, 
+   3.853702151678604*^9}, {3.853702291660411*^9, 3.853702308999501*^9}, {
+   3.853702343291814*^9, 3.853702346842407*^9}, {3.8537024114418783`*^9, 
+   3.853702412646956*^9}, {3.8537025463269043`*^9, 3.853702559092284*^9}, 
+   3.8537026118909063`*^9, {3.85370265138422*^9, 3.853702678882395*^9}, {
+   3.853702937530664*^9, 3.8537029641800737`*^9}, {3.853703035396667*^9, 
+   3.853703093688745*^9}, {3.853703147425411*^9, 3.8537031502205133`*^9}, 
+   3.853891725040227*^9},
+ CellLabel->"In[9]:=",ExpressionUUID->"b6ff1a88-dbbd-4a0c-8de1-8c706d429851"],
+
+Cell[BoxData[
+ TagBox[GridBox[{
+    {"\<\"\"\>", "\<\"s=0.014\"\>", "\<\"\"\>", "\<\"\"\>", \
+"\<\"s=0.012\"\>", "\<\"\"\>", "\<\"\"\>", "\<\"s=0.01\"\>", "\<\"\"\>", \
+"\<\"\"\>", "\<\"s=0.008\"\>", "\<\"\"\>", "\<\"\"\>", "\<\"s=0.006\"\>", "\<\
+\"\"\>", "\<\"\"\>"},
+    {"\<\"benefit\"\>", "\<\"\\!\\(\\*SubscriptBox[\\(p\\), \
+\\(fix\\)]\\)\"\>", "\<\"\\!\\(\\*SubscriptBox[\\(CI\\), \
+\\(0.025\\)]\\)\"\>", "\<\"\\!\\(\\*SubscriptBox[\\(CI\\), \
+\\(0.975\\)]\\)\"\>", "\<\"\\!\\(\\*SubscriptBox[\\(p\\), \\(fix\\)]\\)\"\>", \
+"\<\"\\!\\(\\*SubscriptBox[\\(CI\\), \\(0.025\\)]\\)\"\>", \
+"\<\"\\!\\(\\*SubscriptBox[\\(CI\\), \\(0.975\\)]\\)\"\>", \
+"\<\"\\!\\(\\*SubscriptBox[\\(p\\), \\(fix\\)]\\)\"\>", \
+"\<\"\\!\\(\\*SubscriptBox[\\(CI\\), \\(0.025\\)]\\)\"\>", \
+"\<\"\\!\\(\\*SubscriptBox[\\(CI\\), \\(0.975\\)]\\)\"\>", \
+"\<\"\\!\\(\\*SubscriptBox[\\(p\\), \\(fix\\)]\\)\"\>", \
+"\<\"\\!\\(\\*SubscriptBox[\\(CI\\), \\(0.025\\)]\\)\"\>", \
+"\<\"\\!\\(\\*SubscriptBox[\\(CI\\), \\(0.975\\)]\\)\"\>", \
+"\<\"\\!\\(\\*SubscriptBox[\\(p\\), \\(fix\\)]\\)\"\>", \
+"\<\"\\!\\(\\*SubscriptBox[\\(CI\\), \\(0.025\\)]\\)\"\>", \
+"\<\"\\!\\(\\*SubscriptBox[\\(CI\\), \\(0.975\\)]\\)\"\>"},
+    {"0.19`", "3.6456993589990094`*^-6", "0.`", "8.`*^-6", 
+     "4.5725913893251514`*^-6", "1.`*^-6", "9.`*^-6", "6.11642311456558`*^-6",
+      "2.`*^-6", "0.000011`", "8.991896677340794`*^-6", "4.`*^-6", 
+     "0.000014999999999999999`", "0.000015258331910466798`", "8.`*^-6", 
+     "0.000023`"},
+    {"0.196`", "0.00004124433618466308`", "0.000029`", "0.000054`", 
+     "0.00004471973985571069`", "0.000032`", "0.000058`", 
+     "0.00004961071217871625`", "0.000036`", "0.000064`", 
+     "0.000056918597822807825`", "0.000042999999999999995`", "0.000072`", 
+     "0.00006874224305503229`", "0.000053`", "0.00008499999999999999`"},
+    {"0.197`", "0.000059821031449527`", "0.000044999999999999996`", 
+     "0.000075`", "0.00006343409419187864`", "0.000048`", "0.000079`", 
+     "0.00006839525578896733`", "0.000053`", "0.00008499999999999999`", 
+     "0.00007557560182796455`", "0.000059`", "0.000093`", 
+     "0.0000867093329325705`", "0.000069`", "0.00010499999999999999`"},
+    {"0.198`", "0.00008557748109376961`", "0.000068`", "0.000104`", 
+     "0.00008885078030627743`", "0.00007099999999999999`", "0.000108`", 
+     "0.00009324491441235377`", "0.000075`", "0.000113`", 
+     "0.00009942106038248664`", "0.00007999999999999999`", 
+     "0.00011899999999999999`", "0.00010863031644763255`", "0.000089`", 
+     "0.00013`"},
+    {"0.199`", "0.0001205005279589486`", "0.000099`", 
+     "0.00014199999999999998`", "0.00012267474464698497`", "0.000101`", 
+     "0.000145`", "0.00012553529911659274`", "0.000104`", "0.000148`", 
+     "0.00012945217520360884`", "0.000108`", "0.00015199999999999998`", 
+     "0.0001350911458322637`", "0.000113`", "0.000158`"},
+    {"0.201`", "0.00022600188927996665`", "0.000197`", "0.000256`", 
+     "0.000222455338231366`", "0.000194`", "0.000252`", 
+     "0.00021793108779783726`", "0.00018899999999999999`", "0.000247`", 
+     "0.00021198348745304058`", "0.000184`", "0.00024099999999999998`", 
+     "0.00020388673875231675`", "0.000176`", "0.000232`"},
+    {"0.21`", "0.001345378808875195`", "0.001274`", "0.001418`", 
+     "0.0012603450215723628`", "0.001191`", "0.00133`", 
+     "0.001151626178955069`", "0.001086`", "0.001219`", 
+     "0.0010091755992987096`", "0.0009469999999999999`", "0.001072`", 
+     "0.0008190077317717903`", "0.000763`", "0.0008759999999999999`"}
+   },
+   AutoDelete->False,
+   GridBoxAlignment->{"Columns" -> {{Left}}},
+   GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}],
+  "Grid"]], "Output",
+ CellChangeTimes->{3.853703151052746*^9, 3.853891725858617*^9, 
+  3.853963815773197*^9, 3.858440959894678*^9},
+ CellLabel->"Out[9]=",ExpressionUUID->"bb069364-0a3f-4eed-a258-0531ff570274"]
+}, Open  ]],
+
+Cell[TextData[{
+ "which is just a little too strong/weak. Not sure what\[CloseCurlyQuote]s \
+going on...Although if we use a what might be the right genome length, ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"2", " ", 
+    SuperscriptBox["10", "5"]}], TraditionalForm]],ExpressionUUID->
+  "197f7353-1ab3-49be-a8a9-0b9c06b2dd4d"],
+ ", we get"
+}], "Text",
+ CellChangeTimes->{{3.8536996475358152`*^9, 3.853699657931863*^9}, {
+  3.853699790348814*^9, 3.853699815968911*^9}, {3.8537031634067383`*^9, 
+  3.853703166465868*^9}, {3.8538937319757433`*^9, 
+  3.8538937522717133`*^9}},ExpressionUUID->"d751507b-f399-4417-8296-\
+b6b0cd27119a"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{
+     RowBox[{
+      RowBox[{
+       RowBox[{
+        RowBox[{
+         RowBox[{"Grid", "[", 
+          RowBox[{"#", ",", 
+           RowBox[{"Alignment", "\[Rule]", "Left"}]}], "]"}], "&"}], "@", 
+        RowBox[{"Join", "[", 
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{"Join", "[", 
+            RowBox[{
+             RowBox[{"{", "\"\<\>\"", "}"}], ",", 
+             RowBox[{"Flatten", "@", 
+              RowBox[{"Table", "[", 
+               RowBox[{
+                RowBox[{"{", 
+                 RowBox[{"s", ",", "\"\<\>\"", ",", "\"\<\>\""}], "}"}], ",", 
+                
+                RowBox[{"{", 
+                 RowBox[{"s", ",", 
+                  RowBox[{"Table", "[", 
+                   RowBox[{
+                    RowBox[{"\"\<s=\>\"", "<>", 
+                    RowBox[{"ToString", "[", "s", "]"}]}], ",", 
+                    RowBox[{"{", 
+                    RowBox[{"s", ",", 
+                    RowBox[{"{", 
+                    RowBox[{
+                    "0.014", ",", "0.012", ",", "0.01", ",", "0.008", ",", 
+                    "0.006"}], "}"}]}], "}"}]}], "]"}]}], "}"}]}], "]"}]}]}], 
+            "]"}], "}"}], ",", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{
+             RowBox[{"Join", "[", 
+              RowBox[{
+               RowBox[{"{", "\"\<benefit\>\"", "}"}], ",", "#"}], "]"}], 
+             "&"}], "@", 
+            RowBox[{"Flatten", "@", 
+             RowBox[{"Table", "[", 
+              RowBox[{
+               RowBox[{"{", 
+                RowBox[{
+                "\"\<\!\(\*SubscriptBox[\(p\), \(fix\)]\)\>\"", ",", 
+                 "\"\<\!\(\*SubscriptBox[\(CI\), \(0.025\)]\)\>\"", ",", 
+                 "\"\<\!\(\*SubscriptBox[\(CI\), \(0.975\)]\)\>\""}], "}"}], 
+               ",", "5"}], "]"}]}]}], "}"}], ",", "#"}], "]"}]}], "&"}], "@", 
+      
+      RowBox[{"MapThread", "[", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"Join", "[", 
+          RowBox[{
+           RowBox[{"{", "#1", "}"}], ",", "#2"}], "]"}], "&"}], ",", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{
+           "0.19", ",", "0.196", ",", "0.197", ",", "0.198", ",", "0.199", 
+            ",", "0.201", ",", "0.21"}], "}"}], ",", "#"}], "}"}]}], "]"}]}], 
+     "&"}], "@", 
+    RowBox[{"Transpose", "@", 
+     RowBox[{"Flatten", "[", 
+      RowBox[{"#", ",", 
+       RowBox[{"{", 
+        RowBox[{"2", ",", "3"}], "}"}]}], "]"}]}]}], "&"}], "@", 
+  RowBox[{"Table", "[", 
+   RowBox[{
+    RowBox[{"Flatten", "@", 
+     RowBox[{"fixCI", "[", 
+      RowBox[{
+       RowBox[{"1", "/", "6000"}], ",", 
+       RowBox[{"NeBack", "[", 
+        RowBox[{
+         RowBox[{"1000", "/", "0.75"}], ",", "s", ",", 
+         RowBox[{"5", " ", 
+          SuperscriptBox["10", 
+           RowBox[{"-", "8"}]]}], ",", 
+         SuperscriptBox["10", 
+          RowBox[{"-", "8"}]], ",", 
+         RowBox[{"2", " ", 
+          SuperscriptBox["10", "5"]}]}], "]"}], ",", 
+       RowBox[{"0.5", 
+        RowBox[{"(", 
+         RowBox[{
+          RowBox[{"-", "0.1"}], "+", 
+          RowBox[{"0.5", "*", "b"}]}], ")"}]}], ",", "1", ",", 
+       SuperscriptBox["10", "6"]}], "]"}]}], ",", 
+    RowBox[{"{", 
+     RowBox[{"b", ",", 
+      RowBox[{"{", 
+       RowBox[{
+       "0.19", ",", "0.196", ",", "0.197", ",", "0.198", ",", "0.199", ",", 
+        "0.201", ",", "0.21"}], "}"}]}], "}"}], ",", 
+    RowBox[{"{", 
+     RowBox[{"s", ",", 
+      RowBox[{"{", 
+       RowBox[{
+       "0.014", ",", "0.012", ",", "0.01", ",", "0.008", ",", "0.006"}], 
+       "}"}]}], "}"}]}], "]"}]}]], "Input",
+ CellChangeTimes->{{3.8537014476388817`*^9, 3.8537014511659813`*^9}, {
+   3.853701720425918*^9, 3.853701727404644*^9}, {3.853702111352427*^9, 
+   3.853702151678604*^9}, {3.853702291660411*^9, 3.853702308999501*^9}, {
+   3.853702343291814*^9, 3.853702346842407*^9}, {3.8537024114418783`*^9, 
+   3.853702412646956*^9}, {3.8537025463269043`*^9, 3.853702559092284*^9}, 
+   3.8537026118909063`*^9, {3.85370265138422*^9, 3.853702678882395*^9}, {
+   3.853702937530664*^9, 3.8537029641800737`*^9}, {3.853703035396667*^9, 
+   3.853703093688745*^9}, {3.853891611858877*^9, 3.8538916173940973`*^9}, {
+   3.853891695178196*^9, 3.8538916983957787`*^9}, {3.853891730530843*^9, 
+   3.853891730755117*^9}},
+ CellLabel->"In[10]:=",ExpressionUUID->"1694b141-614a-4e6f-ad6e-55b0640ad94e"],
+
+Cell[BoxData[
+ TagBox[GridBox[{
+    {"\<\"\"\>", "\<\"s=0.014\"\>", "\<\"\"\>", "\<\"\"\>", \
+"\<\"s=0.012\"\>", "\<\"\"\>", "\<\"\"\>", "\<\"s=0.01\"\>", "\<\"\"\>", \
+"\<\"\"\>", "\<\"s=0.008\"\>", "\<\"\"\>", "\<\"\"\>", "\<\"s=0.006\"\>", "\<\
+\"\"\>", "\<\"\"\>"},
+    {"\<\"benefit\"\>", "\<\"\\!\\(\\*SubscriptBox[\\(p\\), \
+\\(fix\\)]\\)\"\>", "\<\"\\!\\(\\*SubscriptBox[\\(CI\\), \
+\\(0.025\\)]\\)\"\>", "\<\"\\!\\(\\*SubscriptBox[\\(CI\\), \
+\\(0.975\\)]\\)\"\>", "\<\"\\!\\(\\*SubscriptBox[\\(p\\), \\(fix\\)]\\)\"\>", \
+"\<\"\\!\\(\\*SubscriptBox[\\(CI\\), \\(0.025\\)]\\)\"\>", \
+"\<\"\\!\\(\\*SubscriptBox[\\(CI\\), \\(0.975\\)]\\)\"\>", \
+"\<\"\\!\\(\\*SubscriptBox[\\(p\\), \\(fix\\)]\\)\"\>", \
+"\<\"\\!\\(\\*SubscriptBox[\\(CI\\), \\(0.025\\)]\\)\"\>", \
+"\<\"\\!\\(\\*SubscriptBox[\\(CI\\), \\(0.975\\)]\\)\"\>", \
+"\<\"\\!\\(\\*SubscriptBox[\\(p\\), \\(fix\\)]\\)\"\>", \
+"\<\"\\!\\(\\*SubscriptBox[\\(CI\\), \\(0.025\\)]\\)\"\>", \
+"\<\"\\!\\(\\*SubscriptBox[\\(CI\\), \\(0.975\\)]\\)\"\>", \
+"\<\"\\!\\(\\*SubscriptBox[\\(p\\), \\(fix\\)]\\)\"\>", \
+"\<\"\\!\\(\\*SubscriptBox[\\(CI\\), \\(0.025\\)]\\)\"\>", \
+"\<\"\\!\\(\\*SubscriptBox[\\(CI\\), \\(0.975\\)]\\)\"\>"},
+    {"0.19`", "0.000011458367998164965`", "4.9999999999999996`*^-6", 
+     "0.000018999999999999998`", "0.000015258331910466798`", "8.`*^-6", 
+     "0.000023`", "0.000021455501184328932`", "0.000013`", "0.000031`", 
+     "0.000032212835367259114`", "0.000022`", "0.000044`", 
+     "0.00005195417255584647`", "0.000037999999999999995`", "0.000067`"},
+    {"0.196`", "0.00006205906863249697`", "0.000047`", "0.000078`", 
+     "0.00006874224305503229`", "0.000053`", "0.00008499999999999999`", 
+     "0.00007766489195312694`", "0.000061`", "0.00009499999999999999`", 
+     "0.00008990034222996604`", "0.000072`", "0.00010899999999999999`", 
+     "0.00010698416297240172`", "0.000087`", "0.000128`"},
+    {"0.197`", "0.0000804826082422408`", "0.000063`", "0.000099`", 
+     "0.0000867093329325705`", "0.000069`", "0.00010499999999999999`", 
+     "0.00009478946608967155`", "0.00007599999999999999`", 
+     "0.00011399999999999999`", "0.00010550581516944902`", 
+     "0.00008599999999999999`", "0.000126`", "0.00011989958663565547`", 
+     "0.000099`", "0.00014199999999999998`"},
+    {"0.198`", "0.00010353075164118683`", "0.000084`", "0.000124`", 
+     "0.00010863031644763255`", "0.000089`", "0.00013`", 
+     "0.00011507604353413304`", "0.00009499999999999999`", "0.000137`", 
+     "0.00012336390191573465`", "0.000102`", "0.000146`", 
+     "0.0001340996005905601`", "0.000112`", "0.000157`"},
+    {"0.199`", "0.00013199675212698225`", "0.00010999999999999999`", 
+     "0.000155`", "0.0001350911458322637`", "0.000113`", "0.000158`", 
+     "0.00013891023420503602`", "0.000116`", "0.00016199999999999998`", 
+     "0.00014368368256695115`", "0.000121`", "0.000168`", 
+     "0.00014966329602239116`", "0.000126`", "0.000174`"},
+    {"0.201`", "0.00020826438080193686`", "0.00017999999999999998`", 
+     "0.000237`", "0.00020388673875231675`", "0.000176`", "0.000232`", 
+     "0.00019869161783474078`", "0.00017199999999999998`", "0.000227`", 
+     "0.00019250025697124164`", "0.000166`", "0.00021999999999999998`", 
+     "0.00018518122990258194`", "0.000159`", "0.000212`"},
+    {"0.21`", "0.0009210340561556519`", "0.0008619999999999999`", 
+     "0.0009809999999999999`", "0.0008190077317717903`", "0.000763`", 
+     "0.0008759999999999999`", "0.0007016105063245824`", "0.00065`", 
+     "0.000754`", "0.0005693033979578288`", "0.000523`", 
+     "0.0006169999999999999`", "0.0004276868086611969`", "0.000388`", 
+     "0.00046899999999999996`"}
+   },
+   AutoDelete->False,
+   GridBoxAlignment->{"Columns" -> {{Left}}},
+   GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}],
+  "Grid"]], "Output",
+ CellChangeTimes->{
+  3.853701293893071*^9, 3.853701451981785*^9, 3.853701642387896*^9, {
+   3.853701696348728*^9, 3.853701728059299*^9}, 3.8537021538977537`*^9, 
+   3.853702309842341*^9, 3.85370234758191*^9, 3.8537024134983177`*^9, {
+   3.853702549200375*^9, 3.853702559794599*^9}, 3.853702613151905*^9, {
+   3.853702660525057*^9, 3.853702679842291*^9}, {3.853702959216124*^9, 
+   3.85370296495483*^9}, {3.853703038997287*^9, 3.853703094789836*^9}, {
+   3.853891685063772*^9, 3.8538916997353497`*^9}, 3.85389173226514*^9, 
+   3.853893758626799*^9, 3.853963819530315*^9, 3.858440961961491*^9},
+ CellLabel->"Out[10]=",ExpressionUUID->"e07ee42c-d484-4356-abd3-028a357dbe7d"]
+}, Open  ]],
+
+Cell["\<\
+which maybe better. In any case, I can output all the options to a CSV here:\
+\>", "Text",
+ CellChangeTimes->{{3.853703110109386*^9, 3.853703113335286*^9}, {
+  3.853896096514029*^9, 
+  3.8538961074940653`*^9}},ExpressionUUID->"bdc82b1f-def4-4027-9db6-\
+8f420d79d8b7"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{"Flatten", "[", 
+     RowBox[{"#", ",", "3"}], "]"}], "&"}], "@", 
+   RowBox[{"Table", "[", 
+    RowBox[{
+     RowBox[{"N", "@", 
+      RowBox[{"Flatten", "@", 
+       RowBox[{"{", 
+        RowBox[{"b", ",", "s", ",", "r", ",", "L", ",", 
+         RowBox[{"fixCI", "[", 
+          RowBox[{
+           RowBox[{"1", "/", "6000"}], ",", 
+           RowBox[{"NeBack", "[", 
+            RowBox[{
+             RowBox[{"1000", "/", "0.75"}], ",", "s", ",", 
+             RowBox[{"5", " ", 
+              SuperscriptBox["10", 
+               RowBox[{"-", "8"}]]}], ",", "r", ",", "L"}], "]"}], ",", 
+           RowBox[{"0.5", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"-", "0.1"}], "+", 
+              RowBox[{"0.5", "*", "b"}]}], ")"}]}], ",", "1", ",", 
+           SuperscriptBox["10", "6"]}], "]"}]}], "}"}]}]}], ",", 
+     RowBox[{"{", 
+      RowBox[{"r", ",", 
+       RowBox[{"{", 
+        RowBox[{
+         SuperscriptBox["10", 
+          RowBox[{"-", "12"}]], ",", 
+         SuperscriptBox["10", 
+          RowBox[{"-", "8"}]], ",", 
+         SuperscriptBox["10", 
+          RowBox[{"-", "4"}]]}], "}"}]}], "}"}], ",", 
+     RowBox[{"{", 
+      RowBox[{"L", ",", 
+       RowBox[{"{", 
+        RowBox[{
+         SuperscriptBox["10", "5"], ",", 
+         RowBox[{"2", " ", 
+          SuperscriptBox["10", "5"]}]}], "}"}]}], "}"}], ",", 
+     RowBox[{"{", 
+      RowBox[{"b", ",", 
+       RowBox[{"{", 
+        RowBox[{
+        "0.19", ",", "0.196", ",", "0.197", ",", "0.198", ",", "0.199", ",", 
+         "0.2", ",", "0.201", ",", "0.21"}], "}"}]}], "}"}], ",", 
+     RowBox[{"{", 
+      RowBox[{"s", ",", 
+       RowBox[{"{", 
+        RowBox[{
+        "0.014", ",", "0.012", ",", "0.01", ",", "0.008", ",", "0.006"}], 
+        "}"}]}], "}"}]}], "]"}]}], "//", "MatrixForm"}]], "Input",
+ CellChangeTimes->{{3.858441932886569*^9, 3.858441975857315*^9}, {
+  3.858442009878964*^9, 3.858442053371426*^9}},
+ CellLabel->"In[18]:=",ExpressionUUID->"ea25a943-c545-49d8-b562-d40efd66ed17"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"Join", "[", "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{
+     RowBox[{
+      RowBox[{"N", "@", 
+       RowBox[{"Flatten", "[", 
+        RowBox[{"#", ",", "3"}], "]"}]}], "&"}], "@", 
+     RowBox[{"Table", "[", 
+      RowBox[{
+       RowBox[{"Flatten", "@", 
+        RowBox[{"{", 
+         RowBox[{"b", ",", "s", ",", "r", ",", "L", ",", 
+          RowBox[{"fixCI", "[", 
+           RowBox[{
+            RowBox[{"1", "/", "6000"}], ",", 
+            RowBox[{"NeBack", "[", 
+             RowBox[{
+              RowBox[{"1000", "/", "0.75"}], ",", "s", ",", 
+              RowBox[{"5", " ", 
+               SuperscriptBox["10", 
+                RowBox[{"-", "8"}]]}], ",", "r", ",", "L"}], "]"}], ",", 
+            RowBox[{"0.5", 
+             RowBox[{"(", 
+              RowBox[{
+               RowBox[{"-", "0.1"}], "+", 
+               RowBox[{"0.5", "*", "b"}]}], ")"}]}], ",", "1", ",", 
+            SuperscriptBox["10", "6"]}], "]"}]}], "}"}]}], ",", 
+       RowBox[{"{", 
+        RowBox[{"r", ",", 
+         RowBox[{"{", 
+          RowBox[{
+           SuperscriptBox["10", 
+            RowBox[{"-", "12"}]], ",", 
+           SuperscriptBox["10", 
+            RowBox[{"-", "8"}]], ",", 
+           SuperscriptBox["10", 
+            RowBox[{"-", "4"}]]}], "}"}]}], "}"}], ",", 
+       RowBox[{"{", 
+        RowBox[{"L", ",", 
+         RowBox[{"{", 
+          RowBox[{
+           SuperscriptBox["10", "5"], ",", 
+           RowBox[{"2", " ", 
+            SuperscriptBox["10", "5"]}]}], "}"}]}], "}"}], ",", 
+       RowBox[{"{", 
+        RowBox[{"b", ",", 
+         RowBox[{"{", 
+          RowBox[{
+          "0.19", ",", "0.196", ",", "0.197", ",", "0.198", ",", "0.199", ",",
+            "0.2", ",", "0.201", ",", "0.21"}], "}"}]}], "}"}], ",", 
+       RowBox[{"{", 
+        RowBox[{"s", ",", 
+         RowBox[{"{", 
+          RowBox[{
+          "0.014", ",", "0.012", ",", "0.01", ",", "0.008", ",", "0.006"}], 
+          "}"}]}], "}"}]}], "]"}]}], ",", "\[IndentingNewLine]", 
+    RowBox[{
+     RowBox[{
+      RowBox[{"N", "@", 
+       RowBox[{"Flatten", "[", 
+        RowBox[{"#", ",", "3"}], "]"}]}], "&"}], "@", 
+     RowBox[{"Table", "[", 
+      RowBox[{
+       RowBox[{"Flatten", "@", 
+        RowBox[{"{", 
+         RowBox[{"b", ",", "s", ",", "r", ",", "L", ",", 
+          RowBox[{"fixCI", "[", 
+           RowBox[{
+            RowBox[{"1", "/", "6000"}], ",", 
+            RowBox[{"1000", "/", "0.75"}], ",", 
+            RowBox[{"0.5", 
+             RowBox[{"(", 
+              RowBox[{
+               RowBox[{"-", "0.1"}], "+", 
+               RowBox[{"0.5", "*", "b"}]}], ")"}]}], ",", "1", ",", 
+            SuperscriptBox["10", "6"]}], "]"}]}], "}"}]}], ",", 
+       RowBox[{"{", 
+        RowBox[{"r", ",", 
+         RowBox[{"{", 
+          RowBox[{
+           SuperscriptBox["10", 
+            RowBox[{"-", "12"}]], ",", 
+           SuperscriptBox["10", 
+            RowBox[{"-", "8"}]], ",", 
+           SuperscriptBox["10", 
+            RowBox[{"-", "4"}]]}], "}"}]}], "}"}], ",", 
+       RowBox[{"{", 
+        RowBox[{"L", ",", 
+         RowBox[{"{", 
+          RowBox[{
+           SuperscriptBox["10", "5"], ",", 
+           RowBox[{"2", " ", 
+            SuperscriptBox["10", "5"]}]}], "}"}]}], "}"}], ",", 
+       RowBox[{"{", 
+        RowBox[{"b", ",", 
+         RowBox[{"{", 
+          RowBox[{
+          "0.19", ",", "0.196", ",", "0.197", ",", "0.198", ",", "0.199", ",",
+            "0.2", ",", "0.201", ",", "0.21"}], "}"}]}], "}"}], ",", 
+       RowBox[{"{", 
+        RowBox[{"s", ",", 
+         RowBox[{"{", 
+          RowBox[{"0", ",", "1"}], "}"}]}], "}"}]}], "]"}]}], ",", 
+    "\[IndentingNewLine]", 
+    RowBox[{
+     RowBox[{
+      RowBox[{"N", "@", 
+       RowBox[{"Flatten", "[", 
+        RowBox[{"#", ",", "3"}], "]"}]}], "&"}], "@", 
+     RowBox[{"Table", "[", 
+      RowBox[{
+       RowBox[{"Flatten", "@", 
+        RowBox[{"{", 
+         RowBox[{"b", ",", "s", ",", "r", ",", "L", ",", 
+          RowBox[{"fixCI", "[", 
+           RowBox[{
+            RowBox[{"1", "/", "6000"}], ",", 
+            RowBox[{"1000", "/", "0.75"}], ",", 
+            RowBox[{"0.5", 
+             RowBox[{"(", 
+              RowBox[{
+               RowBox[{"-", "b"}], "+", 
+               RowBox[{"0.5", "*", "b"}]}], ")"}]}], ",", "1", ",", 
+            SuperscriptBox["10", "6"]}], "]"}]}], "}"}]}], ",", 
+       RowBox[{"{", 
+        RowBox[{"r", ",", 
+         RowBox[{"{", 
+          RowBox[{
+           SuperscriptBox["10", 
+            RowBox[{"-", "12"}]], ",", 
+           SuperscriptBox["10", 
+            RowBox[{"-", "8"}]], ",", 
+           SuperscriptBox["10", 
+            RowBox[{"-", "4"}]]}], "}"}]}], "}"}], ",", 
+       RowBox[{"{", 
+        RowBox[{"L", ",", 
+         RowBox[{"{", 
+          RowBox[{
+           SuperscriptBox["10", "5"], ",", 
+           RowBox[{"2", " ", 
+            SuperscriptBox["10", "5"]}]}], "}"}]}], "}"}], ",", 
+       RowBox[{"{", 
+        RowBox[{"b", ",", 
+         RowBox[{"{", "0", "}"}]}], "}"}], ",", 
+       RowBox[{"{", 
+        RowBox[{"s", ",", 
+         RowBox[{"{", 
+          RowBox[{
+          "1", ",", "0.014", ",", "0.012", ",", "0.01", ",", "0.008", ",", 
+           "0.006", ",", "0"}], "}"}]}], "}"}]}], "]"}]}]}], 
+   "\[IndentingNewLine]", "]"}], "//", 
+  RowBox[{
+   RowBox[{"Export", "[", 
+    RowBox[{"\"\<fixation_probs.csv\>\"", ",", "#", ",", 
+     RowBox[{"TableHeadings", "\[Rule]", 
+      RowBox[{"{", 
+       RowBox[{
+       "\"\<b\>\"", ",", "\"\<s\>\"", ",", "\"\<r\>\"", ",", "\"\<L\>\"", 
+        ",", "\"\<p_fix\>\"", ",", "\"\<CI_0.025\>\"", ",", 
+        "\"\<CI_0.975\>\""}], "}"}]}]}], "]"}], "&"}]}]], "Input",
+ CellChangeTimes->{{3.8584416514122553`*^9, 3.858441653952692*^9}, 
+   3.858441999754902*^9, {3.85844209733882*^9, 3.858442181239273*^9}, 
+   3.85844245257831*^9},
+ CellLabel->"In[22]:=",ExpressionUUID->"02512329-e280-414d-9b18-a61a132238fe"],
+
+Cell[BoxData["\<\"fixation_probs.csv\"\>"], "Output",
+ CellChangeTimes->{{3.858441646923505*^9, 3.858441655706312*^9}, {
+   3.858442138848078*^9, 3.8584421531019*^9}, 3.858442189652192*^9, 
+   3.858442492725279*^9},
+ CellLabel->"Out[22]=",ExpressionUUID->"5b1cfca0-127b-4c01-b95f-25639de8cf60"]
+}, Open  ]]
+}, Open  ]]
+},
+WindowSize->{1499, 1067},
+WindowMargins->{{Automatic, 96}, {Automatic, 320}},
+PrintingCopies->1,
+PrintingPageRange->{1, Automatic},
+FrontEndVersion->"13.0 for Mac OS X x86 (64-bit) (December 2, 2021)",
+StyleDefinitions->"Default.nb",
+ExpressionUUID->"4f58f8a4-2d7b-4751-a17d-923e1cd1b3f2"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[580, 22, 250, 4, 30, "Input",ExpressionUUID->"17845039-9e0c-4fd5-bf28-15f42445562d"],
+Cell[833, 28, 287, 4, 34, "Output",ExpressionUUID->"9d2ed6df-9b44-4fcd-9545-9b315689db6a"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[1157, 37, 254, 4, 45, "Subsubsection",ExpressionUUID->"f3fb7c69-5da4-4d13-bb27-1b2c28622367"],
+Cell[1414, 43, 1392, 38, 75, "Input",ExpressionUUID->"00d06b46-9e6d-4871-b149-98887d688f49"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[2843, 86, 222, 5, 45, "Subsubsection",ExpressionUUID->"6e8f70b0-6922-4b2b-aeb3-cd33a0752168"],
+Cell[3068, 93, 508, 14, 50, "Input",ExpressionUUID->"76e5420f-3e76-477a-a59e-14ce5ed164ad"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[3613, 112, 197, 3, 45, "Subsubsection",ExpressionUUID->"33cd1584-ef10-4e0b-863a-1e92e5c935f3"],
+Cell[3813, 117, 1711, 36, 94, "Input",ExpressionUUID->"2039aea0-2ae8-4ba0-917b-104e39013a29"],
+Cell[5527, 155, 1711, 36, 94, "Input",ExpressionUUID->"3365dff5-ed5f-4b17-b881-1ad010330c3a"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[7275, 196, 183, 3, 45, "Subsubsection",ExpressionUUID->"034353c6-1f10-4b78-9c9d-235d52f0f9d4"],
+Cell[7461, 201, 107455, 1655, 291, "Graphics",ExpressionUUID->"2875f626-5318-46db-86db-f1f968bc751d"],
+Cell[114919, 1858, 585, 16, 35, "Text",ExpressionUUID->"e6e54841-ddab-4a0d-b7d9-1b63a1e0bf24"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[115541, 1879, 322, 6, 45, "Subsubsection",ExpressionUUID->"1e402cb7-e982-4527-8df1-87e445692ce5"],
+Cell[115866, 1887, 1767, 37, 104, "Text",ExpressionUUID->"f473aafe-3c33-4167-9cba-61837acd14af"],
+Cell[CellGroupData[{
+Cell[117658, 1928, 568, 14, 33, "Input",ExpressionUUID->"07950b88-8d25-4619-b6bf-cab1b67308dc"],
+Cell[118229, 1944, 397, 9, 34, "Output",ExpressionUUID->"5982a8fb-4749-421d-a96a-65716eed4c03"]
+}, Open  ]],
+Cell[118641, 1956, 391, 7, 35, "Text",ExpressionUUID->"173c1d1c-b685-4f18-9fa4-f5e1d4ae9e71"],
+Cell[CellGroupData[{
+Cell[119057, 1967, 2032, 51, 54, "Input",ExpressionUUID->"69a00f02-a2a7-40eb-a5e9-1a4c4f48d539"],
+Cell[121092, 2020, 1216, 25, 155, "Output",ExpressionUUID->"d798a64c-81c5-4eba-b628-b97c7e10f2b2"]
+}, Open  ]],
+Cell[122323, 2048, 181, 3, 35, "Text",ExpressionUUID->"202d2587-3612-4816-9da4-d22957fd2c8c"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[122541, 2056, 173, 3, 45, "Subsubsection",ExpressionUUID->"c332b60d-acf6-4c6d-9d8f-b16ba51b4c36"],
+Cell[122717, 2061, 319, 7, 35, "Text",ExpressionUUID->"d0cf69f9-00dd-4c38-88c3-8cc888c88961"],
+Cell[123039, 2070, 736, 18, 47, "Input",ExpressionUUID->"1e0deb92-e6cc-45f2-93a9-5b1fec573796"],
+Cell[CellGroupData[{
+Cell[123800, 2092, 487, 12, 33, "Input",ExpressionUUID->"e39c15fe-6333-439d-9dcb-b6c1b6ff092e"],
+Cell[124290, 2106, 320, 5, 34, "Output",ExpressionUUID->"12470bc3-ccb6-4bdf-8c4d-46e169c19192"]
+}, Open  ]],
+Cell[124625, 2114, 259, 6, 35, "Text",ExpressionUUID->"82afc1b9-f1fb-4055-a876-b94cb25618cc"],
+Cell[CellGroupData[{
+Cell[124909, 2124, 4314, 114, 98, "Input",ExpressionUUID->"b6ff1a88-dbbd-4a0c-8de1-8c706d429851"],
+Cell[129226, 2240, 3867, 64, 171, "Output",ExpressionUUID->"bb069364-0a3f-4eed-a258-0531ff570274"]
+}, Open  ]],
+Cell[133108, 2307, 627, 14, 35, "Text",ExpressionUUID->"d751507b-f399-4417-8296-b6b0cd27119a"],
+Cell[CellGroupData[{
+Cell[133760, 2325, 4422, 116, 98, "Input",ExpressionUUID->"1694b141-614a-4e6f-ad6e-55b0640ad94e"],
+Cell[138185, 2443, 4478, 72, 171, "Output",ExpressionUUID->"e07ee42c-d484-4356-abd3-028a357dbe7d"]
+}, Open  ]],
+Cell[142678, 2518, 277, 6, 35, "Text",ExpressionUUID->"bdc82b1f-def4-4027-9db6-8f420d79d8b7"],
+Cell[142958, 2526, 2066, 58, 56, "Input",ExpressionUUID->"ea25a943-c545-49d8-b562-d40efd66ed17"],
+Cell[CellGroupData[{
+Cell[145049, 2588, 5910, 165, 194, "Input",ExpressionUUID->"02512329-e280-414d-9b18-a61a132238fe"],
+Cell[150962, 2755, 294, 4, 34, "Output",ExpressionUUID->"5b1cfca0-127b-4c01-b95f-25639de8cf60"]
+}, Open  ]]
+}, Open  ]]
+}
+]
+*)
+
