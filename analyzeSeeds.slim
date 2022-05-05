@@ -1,0 +1,203 @@
+//analyzeSeeds, which calculates FST for litters, and pi, from the seeds, using only m2 (neutral) mutations.
+
+/* genomicHeterozygosityForMut & filtHeterozygosityForMut based off genomicHeterozygosity and subpopHeterozygosity from SLiM-Extras, respectively. litterP & finishFST are based off calcFST, also from SLiM-Extras. https://github.com/MesserLab/SLiM-Extras */
+
+function (f$)genomicHeterozygosityForMut(o<Genome>$ genome1, o<Genome>$ genome2, o<MutationType>$ m)
+{
+	muts1 = genome1.mutations[genome1.mutations.mutationType == m];
+	muts2 = genome2.mutations[genome2.mutations.mutationType == m];
+	unshared = setSymmetricDifference(muts1, muts2);
+	pi = size(unshared) / 100000;
+	return pi;
+}
+
+function (f$)filtHeterozygosityForMut(o<Subpopulation>$ subpop, o<MutationType>$m)
+{
+	//grab only individuals with a nonzero tag
+	//(in this simulation, a nonzero tag denotes that the individual is a child and not a parent)
+	inds = subpop.individuals[subpop.individuals.tag];
+	//look through all genomes
+	genomes = sample(inds.genomes, length(inds) * 2);
+	
+	pi_total = 0;
+
+	for (i in seq(0, length(genomes) - 2, by = 2))
+	{
+		genome1 = genomes[i];
+		genome2 = genomes[i + 1];
+
+		pair_pi = genomicHeterozygosityForMut(genome1, genome2, m);
+		pi_total = pi_total + pair_pi;
+	}
+	//get average heterozygosity
+	return pi_total / length(inds);
+}
+
+function (f)litterP(o<Individual> inds, o<MutationType>$ mutType){
+	//this function returns the frequencies of each mutation, within the vector of individuals
+	
+	//get mutations to examine
+	muts = sim.mutationsOfType(mutType);
+	
+	//get matrix of each genome & whether it contains mutations
+	//each row is a genome, each column is a mutation
+	containsMut = apply(matrix(muts), 0, "inds.genomes.containsMutations(applyValue);");
+	//sum number of mutations
+	numMut = apply(containsMut, 1, "sum(applyValue);");
+	//get frequencies per genome
+	freqs = numMut / (length(inds) * 2.0);
+	
+	//return freqs
+	return freqs;
+}
+
+function (f)finishFST(float totalp, float totalpip, integer numInds){
+	meanp = totalp / numInds;
+	Ht = meanp * (1 - meanp);
+	Hs = totalpip / numInds;
+	//FST = 1 - (Hs/Ht)
+	fst = 1 - (Hs / Ht);
+	
+	fst = fst[!isNAN(fst)];  // exclude muts where mean_p is 0.0 or 1.0
+	return mean(fst);
+}
+
+//INITIALIZE
+initialize() {
+	initializeSLiMModelType("nonWF");
+	
+	//carrying capacity
+	defineConstant("K", 1000);
+	//starting population size
+	defineConstant("popSize", 1000);
+	
+	//fitness
+	defineConstant("fitness", f / 1000);
+	
+	//other
+	//defineConstant("replicate", 1);
+	defineConstant("cost", c / 1000);
+	defineConstant("benefit", b / 1000);
+	
+	defineConstant("seedPath", paste(c("seeds/seed_",
+														fitness,
+														"_",
+														iter,
+														".txt"),
+													sep = ""));
+														
+	// m1 mutation type: altruistic
+	initializeMutationType("m1", 0.5, "f", 0.0);
+	m1.convertToSubstitution = F;
+
+	// m2 mutation type: neutral
+	initializeMutationType("m2", 0.5, "f", 0.0);
+	m2.convertToSubstitution = F;
+	
+	// m3 mutation type: negative
+	initializeMutationType("m3", 0.5, "f", fitness);
+	m3.convertToSubstitution = F;
+	
+	// g1 genomic element type
+	initializeGenomicElementType("g1", c(m2, m3), c(1.0, 1.0));
+	
+	// uniform chromosome of length 100 kb with uniform recombination
+	initializeGenomicElement(g1, 0, 99999);
+	
+	initializeRecombinationRate(1e-8);
+	
+	//changed mutation rate to properly calculate FST
+	//(otherwise the mutations evaluated will change as it is calculated)
+	initializeMutationRate(0);
+}
+
+reproduction() {
+	//initialize totalp and numLitters
+	numMuts = length(sim.mutationsOfType(m2));
+	totalp = float(numMuts);
+	totalpip = float(numMuts);
+	numInds = 0;
+	
+	// randomize the order of p1.individuals
+	parents = sample(p1.individuals, p1.individualCount);
+	
+	// draw monogamous pairs and generate litters
+	for (i in seq(0, p1.individualCount - 2, by=2)){
+		//add to numInds
+		numInds = numInds + 4;
+	
+		//select parents
+		parent1 = parents[i];
+		parent2 = parents[i + 1];
+		
+		//fill litter with random individuals
+		litter = matrix(p1.individuals[1:litterSize], litterSize);
+		
+		//generate offspring
+		for (j in seqLen(litterSize)){
+			child = p1.addCrossed(parent1, parent2);
+			child.tagF = 0;
+			child.tag = 1;
+			litter[j] = child;
+		}
+		
+		//pi for the litter, add to totalp, weighted
+		pi = litterP(litter, m2);
+		totalp = totalp + (pi * 4);
+		//pi * (1 - pi) and add to totalpip, weighted
+		pip = pi * (1 - pi);
+		totalpip = totalpip + (pip * 4);
+		//no weighting necessary b/c all litters are the same size
+		
+	}
+	//finish calculating FST
+	fst = finishFST(totalp, totalpip, numInds);
+	
+	//calculate pi
+	pi_stat = filtHeterozygosityForMut(p1, m2);
+	
+	//print output
+	writeFile(outputPath,
+		paste(c(
+				fst,
+				pi_stat,
+				fitness,
+				iter,
+				seedPath
+				),
+				sep = ","
+			),
+			append = T
+		);
+	
+
+	// disable this callback for this generation
+	self.active = 0;
+}
+fitness(NULL){
+	return (1.0 + individual.tagF);
+}
+
+
+1 {
+	print(seedPath);
+	sim.readFromPopulationFile(seedPath);
+	sim.subpopulations.individuals.tagF = 0.0;
+	sim.subpopulations.individuals.tag = 0;
+	sim.generation = 4999;
+}
+
+5000 early(){
+	sim.simulationFinished();
+}
+
+early() {
+	//age table
+	old = p1.individuals[p1.individuals.age >= 1];
+	old.fitnessScaling = 0;
+	
+	//first only consider individuals who aren't meant to die yet
+	adjustedPopulationSize = p1.individualCount - length(old);
+	//then adjust survival for carrying capacity, K
+	p1.fitnessScaling = K / adjustedPopulationSize;
+}
