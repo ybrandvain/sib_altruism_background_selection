@@ -57,9 +57,9 @@ f2 <- read_csv("Data/fixation_probs.csv") %>% mutate(Benefit = b,
                                                   percentFixed = p_fix,
                                                   `Recom. Rate` = r,
                                                   fitness = factor(-s))
-f2f <- f2[,c("Benefit", "Recom. Rate", "fitness", 
-             "percentFixed", "CI_0.025", "CI_0.975")] %>%
-  mutate(Cost = if_else(Benefit == 0.0, 0.0, 0.1))
+f2$Cost <- f2$c
+f2f <- f2[,c("Benefit", "Cost", "Recom. Rate", "fitness", 
+             "percentFixed", "CI_0.025", "CI_0.975")]
 f2Fine <- filter(f2f, Benefit > 0.19 & Benefit < 0.21) %>%
   filter(`Recom. Rate` == 1e-8)
 f2Big <- f2f %>% filter(Benefit <= 0.19 | Benefit >= 0.21 | Benefit == 0.2) %>%
@@ -88,6 +88,7 @@ pibgs <- read_csv("Data/piBGS.csv")
 ##### Graphs
 #benefits 0, 0.19, 0.2, 0.21
 bp <- ggplot(singleBig,
+#ggplot(singleBig,
        aes(x = fitness,
            y = percentFixed,
            group = factor(Benefit),
@@ -103,15 +104,16 @@ bp <- ggplot(singleBig,
              scales = "free_y", 
              labeller = label_bquote(cols = paste("b = ", .(Benefit),
                                                   ", c = ", .(Cost),
-                                                  sep = ""))
+                                                  sep = "")),
+             drop = T
   ) +
-  geom_pointrange(data = f2Fine %>% 
-                    filter(Benefit != 0.196 & Benefit != 0.2),
+  geom_pointrange(data = f2Big,
                   mapping = aes(ymin = CI_0.025, ymax = CI_0.975),
                   shape = "diamond",
                   alpha = 0.8) +
   geom_hline(yintercept = p, 
              color = "black", 
+             #size = 1.5,
              alpha = 0.7,
              linetype = "dashed") +
   xlab("Fitness of deleterious allele") +
@@ -144,6 +146,7 @@ fp <- ggplot(singleFine %>% filter(Benefit != 0.196 & Benefit != 0.2),
              ) +
   geom_hline(yintercept = p, 
              color = "black", 
+             #size = 1.5,
              alpha = 0.7,
              linetype = "dashed") +
   xlab("Fitness of deleterious allele") +
