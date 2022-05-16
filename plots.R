@@ -137,7 +137,7 @@ fp <- ggplot(singleFine %>% filter(Benefit != 0.196 & Benefit != 0.2),
                 mapping = aes(ymin = CI_0.025, ymax = CI_0.975),
                 shape = "diamond",
                 alpha = 0.8) +
-  scale_y_continuous(labels = label_number(accuracy=0.0001)) +
+  scale_y_continuous(labels = label_number(accuracy=0.00001)) +
   facet_wrap(~Benefit+Cost, 
              scales = "free_y", 
              labeller = label_bquote(cols = paste("b = ", .(Benefit),
