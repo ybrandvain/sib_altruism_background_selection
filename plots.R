@@ -157,16 +157,17 @@ fp <- ggplot(singleFine %>% filter(Benefit != 0.196 & Benefit != 0.2),
 sp <- plot_grid(bp, fp, labels = "AUTO", rel_widths = c(1.1, 1))
 
 #generation vs pi by fitness/BGS
-pp <- ggplot(pibgs %>% mutate(fitness = factor(fitness)),
+pp <- 
+  ggplot(pibgs %>% mutate(fitness = factor(fitness)),
        aes(x = generation,
            y = pi_neutral,
            color = fitness)) +
   geom_smooth(se = F) +
   scale_y_continuous(labels = label_number(accuracy = 0.0001)) +
-  scale_color_manual(name = "Fitness",
+  scale_color_manual(name = "Fitness of\ndeleterious allele",
                      values = fitnessColors,
                      labels = fitnessLabels) +
-  ylab("Mean pi") +
+  ylab(bquote(paste("Mean ", pi))) +
   xlab("Generation") + 
   custom_theme() %+replace%
   theme(panel.grid.major.x = element_line(color = "#dddddd"),
