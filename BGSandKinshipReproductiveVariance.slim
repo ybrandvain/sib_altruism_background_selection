@@ -1,0 +1,181 @@
+//  (f$)genomicHeterozygosity(o<Genome>$ genome1, o<Genome>$ genome2)
+//  (f$)subpopHeterozygosity(o<Subpopulation>$ subpop, [i$ sampleSize=100])
+//
+//  Calculate average nucleotide heterozygosity for a pair of genomes,
+//  or for a subpopulation (using a sample of individuals).
+
+//  Created by Ben Haller on 10/24/2017.
+//  A product of the Messer Lab, http://messerlab.org/slim/
+
+/*
+
+Ben Haller and Philipp Messer, the authors of this code, hereby place the code in this file into the public domain without restriction.  If you use this code, please credit SLiM-Extras and provide a link to the SLiM-Extras repository at https://github.com/MesserLab/SLiM-Extras.  Thank you.
+
+*/
+
+
+//INITIALIZE
+initialize() {
+	initializeSLiMModelType("nonWF");
+	initializeSLiMOptions(keepPedigrees=T);
+	
+	//carrying capacity
+	defineConstant("K", 1000);
+	//starting population size
+	defineConstant("popSize", 1000);
+		
+	//fitness
+	defineConstant("fitness", -1000 / 1000);
+	
+	//other
+	//defineConstant("replicate", 1);
+	defineConstant("cost", 0 / 1000);
+	defineConstant("benefit", 0 / 1000);
+	defineConstant("litterSize", 4);
+	
+	defineGlobal("meanN", 0);
+	defineGlobal("meanNoverN", 1);
+	defineGlobal("meanMeanMark", 0);
+	defineGlobal("meanVarMark", 0);
+	
+	// m1 mutation type: altruistic
+	initializeMutationType("m1", 0.5, "f", 0.0);
+	m1.convertToSubstitution = F;
+
+	// m2 mutation type: neutral
+	initializeMutationType("m2", 0.5, "f", 0.0);
+	m2.convertToSubstitution = F;
+	
+	// m3 mutation type: negative
+	initializeMutationType("m3", 0.5, "f", fitness);
+	m3.convertToSubstitution = F;
+	
+	// tracking mutation type: neutral
+	initializeMutationType("m4", 0.5, "f", 0.0);
+	m4.convertToSubstitution = F;
+		
+	// g1 genomic element type
+	initializeGenomicElementType("g1", c(m2, m3), c(1.0, 1.0));
+	
+	// uniform chromosome of length 100 kb with uniform recombination
+	initializeGenomicElement(g1, 0, 99999);
+	
+	initializeRecombinationRate(1e-8);
+	
+	initializeMutationRate(1e-7);
+}
+
+reproduction() {
+
+	// randomize the order of p1.individuals
+	parents = sample(p1.individuals, p1.individualCount);
+	
+	// draw monogamous pairs and generate litters
+	for (i in seq(0, p1.individualCount - 2, by=2)){
+		parent1 = parents[i];
+		parent2 = parents[i + 1];
+		
+		//fill litter with random individuals
+		litter = matrix(p1.individuals[1:litterSize], litterSize);
+		
+		for (j in seqLen(litterSize)){
+			child = p1.addCrossed(parent1, parent2);
+			child.tagF = 0;
+			litter[j] = child;
+		}
+			
+		//have two siblings interact
+		ind1 = sample(litter, 1);
+
+		do{
+			ind2 = sample(litter, 1);
+		} while(ind1 == ind2);
+			
+		// altruism is dominant
+		ind1m1 = ind1.countOfMutationsOfType(m1);
+		ind2m1 = ind2.countOfMutationsOfType(m1);
+		if(ind1m1 > 0){
+			ind1.tagF = ind1.tagF - cost;
+			ind2.tagF = ind2.tagF + benefit;
+		}
+		
+		if(ind2m1 > 0){
+			ind2.tagF = ind2.tagF - cost;
+			ind1.tagF = ind1.tagF + benefit;
+			
+		}
+	}
+
+	// disable this callback for this generation
+	self.active = 0;
+}
+
+5000: first() {
+	// add marker mutations
+	p1.individuals.genome1.addNewDrawnMutation(m4, 1000);	
+	defineGlobal("parentIDs", p1.individuals.pedigreeID);
+}
+
+1 early() {
+	sim.addSubpop("p1", popSize);
+	p1.individuals.tagF = 0;
+	p1.individuals.age = 1;
+}
+
+2: early() {
+	//age table
+	new = p1.individuals[p1.individuals.age == 0];
+	old = p1.individuals[p1.individuals.age > 0];
+	
+	defineGlobal("meanN", (meanN*(sim.cycle-2)+length(old))/(sim.cycle-1));
+	defineGlobal("meanNoverN", (meanNoverN*(sim.cycle-2) + length(old)*meanNoverN/K)/(sim.cycle-1));
+	
+	// adjust survival for carrying capacity, K, and estimate of mutation load from survival rate of juveniles to adults
+	new.fitnessScaling = K / length(new);
+
+	// kill adult individuals
+	old.fitnessScaling = 0;
+	
+	if (sim.cycle % 100 == 0) {
+		print(paste(c("tick:", sim.cycle, "meanN:", meanN, "N:", length(old))));
+	}
+}
+
+5000: late() {
+	sumM1 = sum(p1.individuals.countOfMutationsOfType(m1));
+	percentM1 = sumM1 / (sum(p1.individualCount) * 2);
+		
+	offspringParentIDs = p1.individuals.pedigreeParentIDs;
+	offCount = rep(0, 2*length(parentIDs));
+	
+	for (i in seqAlong(parentIDs)) {
+		offspringGenomesInds = which(parentIDs[i] == offspringParentIDs);
+		for (j in offspringGenomesInds) {
+			oInd = asInteger(floor(j/2));
+			if (j % 2 == 0) { // first genome of offspring
+				parentGenome1 = p1.individuals[oInd].genome1.containsMarkerMutation(m4, 1000);
+			}
+			else { // second genome of offspring
+				parentGenome1 = p1.individuals[oInd].genome2.containsMarkerMutation(m4, 1000);
+			}
+			k = 2*i + asInteger(!parentGenome1);
+			offCount[k] = offCount[k] + 1;
+		}
+	}
+	
+	meanMark = mean(offCount);
+	varMark = var(offCount);
+	defineGlobal("meanMeanMark", (meanMeanMark*(sim.cycle-5000) + meanMark)/(sim.cycle-4999));
+	defineGlobal("meanVarMark", (meanVarMark*(sim.cycle-5000) + varMark)/(sim.cycle-4999));
+
+	if (sim.cycle % 100 == 0) {	
+		print(paste(c("mean freq marker:", meanMeanMark, "mean var marker:", meanVarMark)));
+	}
+	
+	// remove marker mutations
+	p1.genomes.removeMutations(p1.genomes.mutationsOfType(m4));
+}
+
+10000 late() {
+	sim.simulationFinished();
+}
