@@ -224,7 +224,7 @@ singleBGS <- singleStats %>% filter(benefit != 0)
 singleBGS$BGS <- (singleBGS$fitness %% 1 != 0)
 
 bgsmodel <- glm(percentFixed ~ benefit * BGS,
-                data = singleBGS,
+                data = singleBGS %>% mutate(BGS = (fitness != -1 & fitness != 0 )),
                 weights = numTotal,
                 family = binomial())
 summary(bgsmodel)
